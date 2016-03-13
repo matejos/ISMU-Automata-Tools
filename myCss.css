@@ -9,3 +9,11 @@
 .movable {
     cursor: move;
 }
+
+.resizable {
+	border: 1px solid;
+	width: 700;
+	height: 500;
+    resize: both;
+    overflow: auto;
+}

@@ -1,8 +1,6 @@
 var svgns = "http://www.w3.org/2000/svg";
 var movingElement = 0;
 var circleSize = 25;
-var width = 700;
-var height = 500;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -48,22 +46,29 @@ function init(id) {
     wp.appendChild(p1);
 
 
+	var div = document.createElement("DIV");
+	div.setAttribute("style", "background-color: pink;");
+	div.setAttribute("class", "resizable");
+	wp.appendChild(div);
+	
+	
     var svg = document.createElementNS(svgns, 'svg');
-    svg.setAttribute('width', width);
-    svg.setAttribute('height', height);
+    svg.setAttribute('width', '100%');
+	svg.setAttribute('height', '100%');
     svg.selectedElement = 0;
     svg.makingTransition = 0;
     svg.inputBox = textBox;
 	svg.parentSvg = svg;
     svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
     svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
-
+    svg.div = div;
+	
+    div.appendChild(svg);
+	
     var rect = document.createElementNS(svgns, "rect");
-    rect.setAttribute("fill", "#eeeeee");
-    rect.setAttribute("width", width);
-    rect.setAttribute("height", height);
-    rect.setAttributeNS(null, "stroke", "black");
-    rect.setAttributeNS(null, "stroke-width", 1);
+    rect.setAttribute("fill", "#ffffff");
+    rect.setAttribute("width", '100%');
+    rect.setAttribute("height", '100%');
     rect.parentSvg = svg;
     rect.states = [];
     rect.mode = modeEnum.SELECT;
@@ -123,8 +128,6 @@ function init(id) {
 	button3.style.borderStyle = "outset";
 	button4.style.borderStyle = "outset";
 	button5.style.borderStyle = "outset";
-
-    wp.appendChild(svg);
 }
 
 function button1Click(rect) {
@@ -255,6 +258,8 @@ function rectClick(evt, el) {
             var shape = document.createElementNS(svgns, "circle");
             var x = evt.offsetX;
             var y = evt.offsetY;
+			var width = el.parentSvg.div.offsetWidth;
+			var height = el.parentSvg.div.offsetHeight;
             if (x < circleSize) x = circleSize;
             if (x > width - circleSize) x = width - circleSize;
             if (y < circleSize) y = circleSize;
@@ -512,6 +517,8 @@ function moveElement(evt) {
     	{
             case "circle":
                 var str, temp, tx;
+				var width = svg.div.offsetWidth;
+				var height = svg.div.offsetHeight;
                 if ((mouseX > circleSize) && (mouseX < width - circleSize)) {
                     svg.selectedElement.setAttribute("cx", mouseX);
                     svg.selectedElement.text.setAttribute("x", mouseX);
