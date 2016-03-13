@@ -75,9 +75,9 @@ function init(id) {
     rect.states = [];
     rect.mode = modeEnum.SELECT;
     rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
-	rect.setAttributeNS(null, "ondblclick", "rectDblClick(evt,this)");
     rect.button1 = button1;
     rect.button2 = button2;
+	$(rect).dblclick(rectDblClick);
 	
     svg.appendChild(rect);
 	
@@ -249,13 +249,56 @@ function button5Click(rect) {
     }
 }
 
-function rectDblClick(evt, el) {
-	console.log("dblclickol");
+function rectDblClick(evt) {
+	var el = evt.target;
+	console.log(evt);
+	if (el.parentSvg.selectedElement !== 0) deselectElement(el.parentSvg);
+	var shape = document.createElementNS(svgns, "circle");
+	var x = evt.offsetX;
+	var y = evt.offsetY;
+	var width = el.parentSvg.div.offsetWidth;
+	var height = el.parentSvg.div.offsetHeight;
+	if (x < circleSize) x = circleSize;
+	if (x > width - circleSize) x = width - circleSize;
+	if (y < circleSize) y = circleSize;
+	if (y > height - circleSize) y = height - circleSize;
+	shape.setAttributeNS(null, "cx", x);
+	shape.setAttributeNS(null, "cy", y);
+	shape.setAttributeNS(null, "r", circleSize);
+	shape.setAttributeNS(null, "fill", "white");
+	shape.setAttributeNS(null, "stroke", "black");
+	shape.setAttributeNS(null, "stroke-width", 1);
+	shape.parentSvg = el.parentSvg;
+	shape.parentRect = el;
+	shape.end = 0;
+	shape.lines1 = [];
+	shape.lines2 = [];
+	shape.name = String.fromCharCode(65 + el.states.length);
+	shape.transitions = [];
+	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
+	shape.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
+
+	var newText = document.createElementNS(svgns, "text");
+	newText.setAttributeNS(null, "x", shape.getAttribute("cx"));
+	newText.setAttributeNS(null, "y", shape.getAttribute("cy"));
+	newText.setAttribute('pointer-events', 'none');
+	newText.setAttribute('font-size', 20);
+	newText.setAttribute('dy', ".3em");							// vertical alignment
+	newText.setAttribute('text-anchor', "middle");				// horizontal alignment
+	newText.setAttribute('class', 'noselect');
+	var textNode = document.createTextNode(String.fromCharCode(65 + el.states.length));
+	newText.appendChild(textNode);
+
+	shape.text = newText;
+
+	el.states.push(shape);
+	putOnTop(shape);
+	el.button1.style.borderStyle = "outset";
+	el.mode = modeEnum.SELECT;
 }
 
 function rectClick(evt, el) {
 	evt.preventDefault();
-	console.log(evt.clickCount);
     switch (el.mode) {
         case modeEnum.ADD_STATE:
             if (el.parentSvg.selectedElement !== 0) deselectElement(el.parentSvg);
@@ -514,7 +557,10 @@ function moveElement(evt) {
 	var mouseX = offsetX;
 	var mouseY = offsetY;
 	//console.log("mousemove at "+mouseX+","+mouseY);
-    
+    if (svg.makingTransition !== 0)
+	{
+		
+	}
     if (movingElement !== 0) {
         movingElement.setAttribute('class', 'movable');
         switch (svg.selectedElement.tagName)
