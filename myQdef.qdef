@@ -1,0 +1,33 @@
+<script type="text/javascript">document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");</script>
+<script src="https://is.muni.cz/auth/de/422476/myJs.js?r=123456879"></script>
+<script>$('head').append('<link rel="stylesheet" href="https://is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
+
+<!--________________________________________Příklad 1________________________________________-->
+<p>Najděte jazykově ekvivalentní DFA s totální přechodovou funkcí pro NFA zadaný tabulkou:</p>
+
+<p><M>\begin{array}{r|c|c|}
+& a & b \\ \hline
+\leftrightarrow a & \{b\} & \{a, c\} \\ \hline
+\leftarrow b & \{b\} & \emptyset \\ \hline
+\leftarrow c & \{a, c\} & \{a\} \\ \hline
+d & \{b\} & \emptyset \\ \hline
+\end{array}
+</M></p>
+
+<div id="myDiv1">
+<script>init("myDiv1");</script>
+</div>
+
+ :e
+:e="b:DFA-DFA:init=a (a,a)=b (a,b)=ac (b,a)=b (ac,a)=abc (ac,b)=ac (abc,a)=abc (abc,b)=ac F={a, b, ac, abc}" ok
+
+--
+<!--________________________________________Příklad 2________________________________________-->
+<p>Napište regulární gramatiku generující jazyk <M>L=\{w\in\{a,b\}^*\mid \#_a(w) </M> je liché <M>\}</M>.
+
+<div id="myDiv2">
+<script>init("myDiv2");</script>
+</div>
+ 
+  :e 
+:e="b:DFA-GRA:init=q0 (q0,a)=q1 (q0,b)=q0 (q1,a)=q0 (q1,b)=q1 F={q1}" ok
