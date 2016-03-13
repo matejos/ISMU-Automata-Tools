@@ -46,10 +46,12 @@ function init(id) {
     wp.appendChild(p1);
 
 
-	var div = document.createElement("DIV");
-	div.setAttribute("style", "background-color: pink;");
-	div.setAttribute("class", "resizable");
-	wp.appendChild(div);
+	var mydiv = document.createElement("DIV");
+	mydiv.setAttribute("style", "background-color: pink;");
+	mydiv.setAttribute("class", "canvas");
+	mydiv.setAttributeNS(null, "id", "mydiv");
+	$(mydiv).resizable();
+	wp.appendChild(mydiv);
 	
 	
     var svg = document.createElementNS(svgns, 'svg');
@@ -61,12 +63,12 @@ function init(id) {
 	svg.parentSvg = svg;
     svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
     svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
-    svg.div = div;
-	
-    div.appendChild(svg);
+    svg.div = mydiv;
+
+    mydiv.appendChild(svg);
 	
     var rect = document.createElementNS(svgns, "rect");
-    rect.setAttribute("fill", "#ffffff");
+    rect.setAttribute("fill", "#eeeeee");
     rect.setAttribute("width", '100%');
     rect.setAttribute("height", '100%');
     rect.parentSvg = svg;
@@ -76,7 +78,9 @@ function init(id) {
 	rect.setAttributeNS(null, "ondblclick", "rectDblClick(evt,this)");
     rect.button1 = button1;
     rect.button2 = button2;
+	
     svg.appendChild(rect);
+	
     
     var initState = document.createElementNS(svgns, "circle");
     initState.setAttributeNS(null, "cx", 50);

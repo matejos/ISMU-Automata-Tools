@@ -1,4 +1,6 @@
-<script type="text/javascript">document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");</script>
+<script type="text/javascript">document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js?r=123456879' type='text/javascript'>\<\/script>");</script>
+<script src="https://code.jquery.com/ui/1.9.2/jquery-ui.js?r=123456879"></script>
+<script>$('head').append('<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css?r=123456879">');</script>
 <script src="https://is.muni.cz/auth/de/422476/myJs.js?r=123456879"></script>
 <script>$('head').append('<link rel="stylesheet" href="https://is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
 
