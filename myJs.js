@@ -382,8 +382,8 @@ function clickState(evt) {
                 att += controlPoint(x1, y1, x2, y2);
                 att += " "+x2+" "+y2;
                 aLine.setAttribute('d', att);
-                aLine.setAttribute('stroke', 'blue');
-                aLine.setAttribute('stroke-width', 4);
+                aLine.setAttribute('stroke', 'black');
+                aLine.setAttribute('stroke-width', 3);
                 aLine.setAttribute('fill', 'none');
                 aLine.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
                 aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
@@ -396,15 +396,15 @@ function clickState(evt) {
                 var marker = document.createElementNS(svgns, 'marker');
                 marker.setAttribute('id', 'Triangle');
                 marker.setAttribute('viewBox', '0 0 10 10');
-                marker.setAttribute('refX', '20');
-                marker.setAttribute('refY', '4');
+                marker.setAttribute('refX', '22');
+                marker.setAttribute('refY', '5');
                	marker.setAttribute('markerUnits', 'strokeWidth');
-                marker.setAttribute('markerWidth', '5');
-                marker.setAttribute('markerHeight', '5');
+                marker.setAttribute('markerWidth', '6');
+                marker.setAttribute('markerHeight', '6');
                 marker.setAttribute('orient', 'auto');
                 var markerpath = document.createElementNS(svgns, 'path');
                 markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-                markerpath.setAttribute('fill', 'blue');
+                markerpath.setAttribute('fill', 'black');
     			marker.appendChild(markerpath);
     			
                 state.parentSvg.appendChild(defs);
@@ -505,7 +505,6 @@ function selectElement(evt) {
         case "path":
             svg.selectedElement.setAttribute('stroke',"lightgreen");
             svg.inputBox.value = svg.selectedElement.text.node.nodeValue;
-            //svg.selectedElement.text.setAttribute('fill',"lightgreen");
             break;
     }
 }
@@ -518,10 +517,10 @@ function deselectElement(svg) {
         		whitenState(svg.selectedElement);
                 break;
             case "path":
-                svg.selectedElement.setAttribute('stroke',"blue");
+                svg.selectedElement.setAttribute('stroke',"black");
                 break;
             case "text":
-                svg.selectedElement.line.setAttribute('stroke',"blue");
+                svg.selectedElement.line.setAttribute('stroke',"black");
                 break;
         }
         svg.selectedElement = 0;
