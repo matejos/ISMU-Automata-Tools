@@ -420,9 +420,6 @@ function clickState(evt) {
                 newText.setAttributeNS(null, "y", ty);
                 newText.setAttribute('pointer-events', 'none');
                 newText.setAttribute('cursor', 'default');
-                newText.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
-                newText.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
-                newText.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
                 newText.setAttribute('font-size', 20);
                 newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
                 newText.setAttribute('dy', ".3em");							// vertical alignment
@@ -445,6 +442,7 @@ function clickState(evt) {
                 newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
                 newRect.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
 				newRect.line = aLine;
+				$(newRect).dblclick(transitionDblClick);
 
                 aLine.text = newText;
 				aLine.rect = newRect;
@@ -555,8 +553,8 @@ function moveElement(evt) {
                         str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
                         str[1] = mouseX;
                         
-                        temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        temp = temp.split(' ');
+                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
+                        //temp = temp.split(' ');
                         //str[4] = temp[0];
                         
                         tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
@@ -570,8 +568,8 @@ function moveElement(evt) {
                         str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
                         str[6] = mouseX;
                         
-                        temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        temp = temp.split(' ');
+                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
+                        //temp = temp.split(' ');
                         //str[4] = temp[0];
                         
                         tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
@@ -590,8 +588,8 @@ function moveElement(evt) {
                         str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
                         str[2] = mouseY;
                         
-                        temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        temp = temp.split(' ');
+                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
+                        //temp = temp.split(' ');
                         //str[5] = temp[1];
                         
                         ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
@@ -605,8 +603,8 @@ function moveElement(evt) {
                         str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
                         str[7] = mouseY;
                         
-                        temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        temp = temp.split(' ');
+                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
+                        //temp = temp.split(' ');
                         //str[5] = temp[1];
                         
                         ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
@@ -618,10 +616,8 @@ function moveElement(evt) {
                 }
                 break;
             case "path":
+				svg.selectedElement.rect.setAttribute('class', 'movable');
                 movePath(svg.selectedElement, mouseX, mouseY);
-                break;
-            case "text":
-                movePath(svg.selectedElement.line, mouseX, mouseY);
                 break;
         }
     }
@@ -654,11 +650,18 @@ function movePath(line, mouseX, mouseY) {
     str = str.join(" ");
     line.setAttribute("d", str);
 }
-
+function transitionDblClick(evt)
+{
+	console.log("dbl");
+	stopMovingElement(evt);
+	moving = false;
+}
 function stopMovingElement(evt) {
 	evt.preventDefault();
     if (movingElement !== 0) {
         movingElement.setAttribute('class', 'none');
+		if (movingElement.tagName == "path")
+			movingElement.rect.setAttribute('class', 'none');
         movingElement = 0;
     }
 }
