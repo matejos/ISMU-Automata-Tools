@@ -4,6 +4,13 @@
 <script>$('head').append('<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css?r=123456879">');</script>
 <script src="https://is.muni.cz/auth/de/422476/myJs.js?r=123456879"></script>
 <script>$('head').append('<link rel="stylesheet" href="https://is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
+<script>
+$(document).ready(function()
+{
+	var allTextAreas = document.getElementsByTagName("textarea");
+	for (var x=0;x<allTextAreas.length;x++){allTextAreas[x].style.display = "none";}
+});
+</script>
 --
 <!--________________________________________Příklad 1________________________________________-->
 <p>Najděte jazykově ekvivalentní DFA s totální přechodovou funkcí pro NFA zadaný tabulkou:</p>
