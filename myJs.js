@@ -668,7 +668,7 @@ function renameTransition(rect, str)
 function toggleCursor()
 {
 	var str = renamingTransition.line.name;
-	if (renamingTransition.line.text.node.nodeValue.includes("|"))
+	if (renamingTransition.line.text.node.nodeValue.indexOf("|") != -1)
 	{
 		renamingTransition.line.text.node.nodeValue = str.replace("|", " ");
 	}
