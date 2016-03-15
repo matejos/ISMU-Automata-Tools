@@ -1,7 +1,9 @@
 var svgns = "http://www.w3.org/2000/svg";
 var movingElement = 0;
 var renamingTransition = 0;
+var transitionPrevName;
 var circleSize = 25;
+var cursorTimer;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -60,7 +62,7 @@ function init(id) {
 	svg.setAttribute('height', '100%');
     svg.selectedElement = 0;
     svg.makingTransition = 0;
-	svg.renamingCursor = 0;
+	renamingCursor = 0;
     svg.inputBox = textBox;
 	svg.parentSvg = svg;
     svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
@@ -485,17 +487,7 @@ function whitenState(state) {
     if (state.end !== 0)
         state.end.setAttributeNS(null, "fill", "white");
 }
-function stopTyping()
-{
-	if (renamingTransition !== 0)
-	{
-		$(document).unbind("keypress");
-		$(document).unbind("keydown");
-		renameTransition(renamingTransition, renamingTransition.line.name.replace("|", ""));
-		renamingTransition.setAttribute("stroke", "black");
-		renamingTransition = 0;
-	}
-}
+
 function selectElement(evt) {
 	evt.preventDefault();
 	stopTyping();
@@ -673,6 +665,31 @@ function renameTransition(rect, str)
 	rect.setAttribute("width", line.text.getComputedTextLength() + 8);
 	moveTextRect(rect, line.text.getAttribute('x'), line.text.getAttribute('y'));
 }
+function toggleCursor()
+{
+	var str = renamingTransition.line.name;
+	if (renamingTransition.line.text.node.nodeValue.includes("|"))
+	{
+		renamingTransition.line.text.node.nodeValue = str.replace("|", " ");
+	}
+	else
+	{
+		renamingTransition.line.text.node.nodeValue = str;
+	}
+}
+function stopTyping()
+{
+	if (renamingTransition !== 0)
+	{
+		clearInterval(cursorTimer);
+		$(document).unbind("keypress");
+		$(document).unbind("keydown");
+		renameTransition(renamingTransition, renamingTransition.line.name.replace("|", ""));
+		renamingTransition.setAttribute("stroke", "black");
+		renamingTransition.setAttribute('class', '');
+		renamingTransition = 0;
+	}
+}
 function transitionDblClick(evt)
 {
 	var rect = evt.target;
@@ -680,81 +697,90 @@ function transitionDblClick(evt)
 	var svg = rect.parentSvg;
 	$(document.activeElement).blur();
 	renamingTransition = rect;
+	transitionPrevName = line.name;
 	stopTyping();
 	rect.setAttribute("stroke", "lightgreen");
 	renamingTransition = rect;
-	svg.renamingCursor = line.name.length;
-	var newname = line.name.substring(0, svg.renamingCursor) + '|' + line.name.substring(svg.renamingCursor, line.name.length);
+	renamingCursor = line.name.length;
+	var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
 	renameTransition(rect, newname);
-	
+	cursorTimer = setInterval(toggleCursor, 500);
+	rect.setAttribute('class', 'editable');
 	$(document).keypress(function( event ) {
 		
 		var key = event.keyCode || event.which || event.charCode;
 		var s_key = String.fromCharCode(key);
 		if (/[a-z,]/.test(s_key))
 		{
-			var newname = line.name.substring(0, svg.renamingCursor) + s_key + line.name.substring(svg.renamingCursor, line.name.length);
+			var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
 			renameTransition(rect, newname);
-			svg.renamingCursor++;
+			renamingCursor++;
 		}
 		event.preventDefault();
 	});
 	$(document).keydown(function( event ) {
 		var key = event.keyCode || event.which || event.charCode;
 		console.log(key);
-		if (key == 13 || key == 27)	// enter or escape
+		if (key == 13)	// enter or escape
+		{
 			stopTyping();
+		}
+		else if (key == 27)
+		{
+			renameTransition(rect, transitionPrevName);
+			stopTyping();
+		}
 		else if (key == 8)	// backspace
 		{
-			var newname = line.name.substring(0, svg.renamingCursor - 1) + line.name.substring(svg.renamingCursor, line.name.length);
+			var newname = line.name.substring(0, renamingCursor - 1) + line.name.substring(renamingCursor, line.name.length);
 			renameTransition(rect, newname);
-			if (svg.renamingCursor > 0)
-				svg.renamingCursor--;
+			if (renamingCursor > 0)
+				renamingCursor--;
 		}
 		else if (key == 46)	// delete
 		{
-			var newname = line.name.substring(0, svg.renamingCursor + 1) + line.name.substring(svg.renamingCursor + 2, line.name.length);
+			var newname = line.name.substring(0, renamingCursor + 1) + line.name.substring(renamingCursor + 2, line.name.length);
 			renameTransition(rect, newname);
 		}
 		else if (key == 35)	// end
 		{
 			event.preventDefault();
-			if (svg.renamingCursor < line.name.length - 1)
+			if (renamingCursor < line.name.length - 1)
 			{
 				renameTransition(rect, line.name.replace("|", ""));
-				svg.renamingCursor = line.name.length;
-				var newname = line.name.substring(0, svg.renamingCursor) + '|' + line.name.substring(svg.renamingCursor, line.name.length);
+				renamingCursor = line.name.length;
+				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
 				renameTransition(rect, newname);
 			}
 		}
 		else if (key == 36)	// home
 		{
 			event.preventDefault();
-			if (svg.renamingCursor > 0)
+			if (renamingCursor > 0)
 			{
 				renameTransition(rect, line.name.replace("|", ""));
-				svg.renamingCursor = 0;
-				var newname = line.name.substring(0, svg.renamingCursor) + '|' + line.name.substring(svg.renamingCursor, line.name.length);
+				renamingCursor = 0;
+				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
 				renameTransition(rect, newname);
 			}
 		}
 		else if (key == 37)	// left arrow
 		{
-			if (svg.renamingCursor > 0)
+			if (renamingCursor > 0)
 			{
 				renameTransition(rect, line.name.replace("|", ""));
-				svg.renamingCursor--;
-				var newname = line.name.substring(0, svg.renamingCursor) + '|' + line.name.substring(svg.renamingCursor, line.name.length);
+				renamingCursor--;
+				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
 				renameTransition(rect, newname);
 			}
 		}
 		else if (key == 39)	// right arrow
 		{
-			if (svg.renamingCursor < line.name.length - 1)
+			if (renamingCursor < line.name.length - 1)
 			{
 				renameTransition(rect, line.name.replace("|", ""));
-				svg.renamingCursor++;
-				var newname = line.name.substring(0, svg.renamingCursor) + '|' + line.name.substring(svg.renamingCursor, line.name.length);
+				renamingCursor++;
+				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
 				renameTransition(rect, newname);
 			}
 		}

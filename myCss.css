@@ -6,6 +6,9 @@
     -ms-user-select: none;
     user-select: none;
 }
+.editable {
+	cursor: text;
+}
 .movable {
     cursor: move;
 }
