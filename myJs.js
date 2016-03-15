@@ -99,7 +99,6 @@ function init(id) {
     initState.lines1 = [];
     initState.lines2 = [];
     initState.name = String.fromCharCode(65 + rect.states.length);
-    initState.transitions = [];
     initState.setAttributeNS(null, "onmousedown", "clickState(evt)");
     initState.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
 	initState.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
@@ -225,15 +224,15 @@ function button5Click(rect) {
     {
         if (rect.states[i].end !== 0)
             finalStates.push(rect.states[i]);
-        for (j = 0; j < rect.states[i].transitions.length; j++)
+        for (j = 0; j < rect.states[i].lines1.length; j++)
     	{
             
-            var str = rect.states[i].transitions[j].name;
+            var str = rect.states[i].lines1[j].name;
             str = str.split(',');
             for (k = 0; k < str.length; k++)
     		{
                 out += "(" + rect.states[i].name + "," + str[k] +
-                	")=" + rect.states[i].transitions[j].end.name + " ";
+                	")=" + rect.states[i].lines1[j].end.name + " ";
             }
         }
     }
@@ -280,7 +279,6 @@ function createState(evt)
 	shape.lines1 = [];
 	shape.lines2 = [];
 	shape.name = String.fromCharCode(65 + el.states.length);
-	shape.transitions = [];
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
 	shape.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
 	$(shape).dblclick(stateDblClick);
@@ -368,8 +366,8 @@ function clickState(evt) {
             break;
         case modeEnum.ADD_TRANSITION:
             if (state.parentSvg.makingTransition !== 0) {
-                for (i = 0; i < state.parentSvg.makingTransition.transitions.length; i++)
-                    if (state.parentSvg.makingTransition.transitions[i].end == state)
+                for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
+                    if (state.parentSvg.makingTransition.lines1[i].end == state)
 					{
 						state.parentRect.button2.style.borderStyle = "outset";
 						state.parentRect.mode = modeEnum.SELECT;
@@ -463,11 +461,10 @@ function clickState(evt) {
                 state.lines2.push(aLine);
                 state.parentRect.mode = modeEnum.SELECT;
                 state.parentRect.button2.style.borderStyle = "outset";
-                state.parentSvg.makingTransition.transitions.push(aLine);
                 
                 /*var debug = state.parentSvg.makingTransition.name + " -> ";
-                for (i = 0; i < state.parentSvg.makingTransition.transitions.length; i++)
-                    debug += state.parentSvg.makingTransition.transitions[i].end.name + ",";
+                for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
+                    debug += state.parentSvg.makingTransition.lines1[i].end.name + ",";
                 console.log(debug);*/
 				
                 state.parentSvg.makingTransition = 0;
@@ -511,8 +508,57 @@ function selectElement(evt) {
             svg.inputBox.value = svg.selectedElement.text.node.nodeValue;
             break;
     }
+	$(document).unbind("keydown");
+	$(document).keydown(function( event ) {
+		var key = event.keyCode || event.which || event.charCode;
+		if (key == 46)	// delete
+		{
+			switch (svg.selectedElement.tagName)
+			{
+				case "circle":
+					deleteState(svg.selectedElement);
+					break;
+				case "path":
+					deleteTransition(svg.selectedElement);
+					break;
+			}
+			$(document).unbind("keydown");
+		}
+	});
 }
-
+function deleteState(state)
+{
+	console.log("deleting state " + state);
+	var svg = state.parentSvg;
+	var target = state.lines1.length;
+	
+	// Delete transitions FROM and TO this state
+	for (i = 0; i < target; i++)
+    {
+		deleteTransition(state.lines1[0]);
+	}
+	target = state.lines2.length;
+	for (i = 0; i < target; i++)
+    {
+		deleteTransition(state.lines2[0]);
+	}
+	
+	var index = state.parentRect.states.indexOf(state);
+	svg.removeChild(state.text);
+    if (state.end !== 0) svg.removeChild(state.end);
+	svg.removeChild(state);
+	state.parentRect.states.splice(index, 1);
+}
+function deleteTransition(tr)
+{
+	console.log("deleting tr " + tr);
+	var svg = tr.parentSvg;
+	tr.start.lines1.splice(tr.start.lines1.indexOf(tr), 1);
+	tr.end.lines2.splice(tr.end.lines2.indexOf(tr), 1);
+	svg.removeChild(tr.text);
+	svg.removeChild(tr.rect);
+	svg.removeChild(tr);
+}
 function deselectElement(svg) {
 	//stopTyping();
     if (svg.selectedElement !== 0) {
