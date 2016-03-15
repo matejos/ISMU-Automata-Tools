@@ -34,16 +34,21 @@ function init(id) {
     textBox.type = "text";
     textBox.value = "a";
     
-    var button5 = document.createElement("input");
+	var button5 = document.createElement("input");
     button5.type = "button";
-    button5.value = "Vygeneruj výstup";
+    button5.value = "Smaž zvolené";
+	
+    var button6 = document.createElement("input");
+    button6.type = "button";
+    button6.value = "Vygeneruj výstup";
 
     wp.appendChild(button1);
     wp.appendChild(button2);
     wp.appendChild(button3);
     wp.appendChild(button4);
     wp.appendChild(textBox);
-    wp.appendChild(button5);
+	wp.appendChild(button5);
+    wp.appendChild(button6);
 
     var p1 = document.createElement("p");
     wp.appendChild(p1);
@@ -126,17 +131,20 @@ function init(id) {
     button2.rect = rect;
     button3.rect = rect;
     button4.rect = rect;
-    button5.rect = rect;
+	button5.rect = rect;
+    button6.rect = rect;
     button1.setAttributeNS(null, "onclick", 'button1Click(rect);');
     button2.setAttributeNS(null, "onclick", 'button2Click(rect);');
     button3.setAttributeNS(null, "onclick", 'button3Click(rect);');
     button4.setAttributeNS(null, "onclick", 'button4Click(rect);');
-    button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
+	button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
+    button6.setAttributeNS(null, "onclick", 'button6Click(rect);');
 	button1.style.borderStyle = "outset";
 	button2.style.borderStyle = "outset";
 	button3.style.borderStyle = "outset";
 	button4.style.borderStyle = "outset";
 	button5.style.borderStyle = "outset";
+	button6.style.borderStyle = "outset";
 }
 
 function button1Click(rect) {
@@ -217,6 +225,20 @@ function button4Click(rect) {
 }
 
 function button5Click(rect) {
+	var svg = rect.parentSvg;
+	switch (svg.selectedElement.tagName)
+	{
+		case "circle":
+			deleteState(svg.selectedElement);
+			break;
+		case "path":
+			deleteTransition(svg.selectedElement);
+			break;
+	}
+	$(document).unbind("keydown");
+}
+
+function button6Click(rect) {
     var svg = rect.parentSvg;
     var finalStates = [];
     var out = "init=A ";
