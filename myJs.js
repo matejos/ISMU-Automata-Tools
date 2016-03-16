@@ -762,7 +762,14 @@ function stopTyping()
 		clearInterval(cursorTimer);
 		$(document).unbind("keypress");
 		$(document).unbind("keydown");
+		renamingTransition.setAttribute("fill", "white");
 		renameTransition(renamingTransition, renamingTransition.line.name.replace("|", ""));
+		if (renamingTransition.line.name == "")
+			renameTransition(renamingTransition, transitionPrevName);
+		/*else if (renamingTransition.line.name == "abc")
+		{
+			renamingTransition.setAttribute("fill", "red");
+		}*/
 		renamingTransition.setAttribute("stroke", "black");
 		renamingTransition.setAttribute('class', '');
 		renamingTransition = 0;
