@@ -73,6 +73,7 @@ function init(id) {
     svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
     svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
     svg.div = mydiv;
+	svg.divId = id;
 
     mydiv.appendChild(svg);
 	
@@ -272,7 +273,10 @@ function button6Click(rect) {
                 out += ",";
         }
         out +="}";
-    	alert(out);
+    	//alert(out);
+		var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
+		console.log(document.getElementsByTagName('textarea'));
+		document.getElementsByTagName('textarea')[x].value = out; 
     }
 }
 
@@ -300,7 +304,13 @@ function createState(evt)
 	shape.end = 0;
 	shape.lines1 = [];
 	shape.lines2 = [];
-	shape.name = String.fromCharCode(65 + el.states.length);
+	var names = [];
+	for (k = 65; k < 91; k++)
+		names.push(String.fromCharCode(k));
+	for (k = 0; k < el.states.length; k++)
+		names.splice(names.indexOf(el.states[k].name), 1);
+	var name = names[0];
+	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
 	shape.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
 	$(shape).dblclick(stateDblClick);
@@ -314,7 +324,7 @@ function createState(evt)
 	newText.setAttribute('dy', ".3em");							// vertical alignment
 	newText.setAttribute('text-anchor', "middle");				// horizontal alignment
 	newText.setAttribute('class', 'noselect');
-	var textNode = document.createTextNode(String.fromCharCode(65 + el.states.length));
+	var textNode = document.createTextNode(name);
 	newText.appendChild(textNode);
 
 	shape.text = newText;
@@ -800,6 +810,7 @@ function transitionDblClick(evt)
 		}
 		else if (key == 8)	// backspace
 		{
+			event.preventDefault();
 			var newname = line.name.substring(0, renamingCursor - 1) + line.name.substring(renamingCursor, line.name.length);
 			renameTransition(rect, newname);
 			if (renamingCursor > 0)
