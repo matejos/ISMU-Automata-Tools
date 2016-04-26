@@ -121,6 +121,7 @@ function init(id) {
     newText.setAttribute('class', 'noselect');
     var textNode = document.createTextNode(String.fromCharCode(65 + rect.states.length));
     newText.appendChild(textNode);
+	newText.node = textNode;
 
     initState.text = newText;
 
@@ -326,6 +327,7 @@ function createState(evt)
 	newText.setAttribute('class', 'noselect');
 	var textNode = document.createTextNode(name);
 	newText.appendChild(textNode);
+	newText.node = textNode;
 
 	shape.text = newText;
 
@@ -560,7 +562,7 @@ function selectElement(evt) {
 }
 function deleteState(state)
 {
-	console.log("deleting state " + state);
+	console.log("deleting state " + state.name);
 	var svg = state.parentSvg;
 	var target = state.lines1.length;
 	
@@ -576,10 +578,12 @@ function deleteState(state)
 	}
 	
 	var index = state.parentRect.states.indexOf(state);
-	svg.removeChild(state.text);
+	state.text.removeChild(state.text.node);
+	//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
     if (state.end !== 0) svg.removeChild(state.end);
 	svg.removeChild(state);
 	state.parentRect.states.splice(index, 1);
+	deselectElement(svg);
 }
 function deleteTransition(tr)
 {
@@ -606,8 +610,8 @@ function deselectElement(svg) {
                 svg.selectedElement.line.setAttribute('stroke',"black");
                 break;
         }
-        svg.selectedElement = 0;
     }
+	svg.selectedElement = 0;
 }
 
 function moveElement(evt) {
