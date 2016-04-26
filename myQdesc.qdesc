@@ -3,14 +3,13 @@
   <TEST_NAZEV>Lekce 1 - procvičení</TEST_NAZEV>
   <TEST_POKYNY>Zde si můžete sami vyzkoušet, jak zvládáte látku z přednášek. V případě dotazů či problémů s řešením diskutujte online s cvičícími na fóru IS pod předmětem IB000. Také své pocity a zkušenosti s odpovědníky můžete vyjádřit v diskusi na IS. S podobně stavěnými otázkami se setkáte i na semestrálních testech a na zkoušce. &lt;br&gt;Nesnažte se tipovat odpovědi, neboť záporné body (obvykle -30% hodnoty příkladu) se &lt;b&gt;udělují za každou chybu zvlášť&lt;/b&gt; a tak, aby převážily možný náhodný kladný zisk. Raději nechte prázdné ty odpovědi, kde si nejste jisti.</TEST_POKYNY>
   <REZIM>cv</REZIM>
-  <PORADI_OTAZEK>nahodne</PORADI_OTAZEK>
+  <PORADI_OTAZEK>zachovat</PORADI_OTAZEK>
   <PORADI_ODPOVEDI>nahodne</PORADI_ODPOVEDI>
   <IMPL_BODY_OK>10</IMPL_BODY_OK>
   <IMPL_BODY_NOK>-3</IMPL_BODY_NOK>
   <IMPL_BODY_NULL>0</IMPL_BODY_NULL>
   <KDY_SPRAVNE_ODPOVEDI>ihned</KDY_SPRAVNE_ODPOVEDI>
   <SKLADAT_OPAKOVANE>ano</SKLADAT_OPAKOVANE>
-  <QREFSL>/de/422476/</QREFSL>
   <SADY_OTAZEK URL="/de/422476/myQdef.qdef" POCET_OTAZEK="" BODY_VYNASOBIT="" PORADI_SADY=""/>
   <PRAVA TYP="w" UPR=""/>
   <PRAVA TYP="m" UPR="1433:IB000"/>

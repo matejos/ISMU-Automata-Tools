@@ -13,6 +13,16 @@
     cursor: move;
 }
 
+.myli {
+    cursor: pointer;
+	padding-left: 0px;
+	background: none;
+}
+
+.myTextArea {
+	border: 1px solid;
+}
+
 .canvas {
 	border: 1px solid;
 	width: 700;

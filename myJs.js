@@ -12,7 +12,23 @@ var modeEnum = Object.freeze({
 
 function init(id) {
     var wp = document.getElementById(id);
-
+  
+	var editor = document.createElement("div");
+	editor.setAttribute("id", id + "a");
+	editor.setAttribute("class", "tab-pane fade in active");
+	editor.wp = wp;
+	
+	var tableTab = document.createElement("div");
+	tableTab.setAttribute("id", id + "b");
+	tableTab.setAttribute("class", "tab-pane fade");
+	tableTab.wp = wp;
+	wp.tableTab = tableTab;
+	
+	var textTab = document.createElement("div");
+	textTab.setAttribute("id", id + "c");
+	textTab.setAttribute("class", "tab-pane fade");
+	textTab.wp = wp;
+	wp.textTab = textTab;
 
     var button1 = document.createElement("input");
     button1.type = "button";
@@ -42,16 +58,16 @@ function init(id) {
     button6.type = "button";
     button6.value = "Vygeneruj výstup";
 
-    wp.appendChild(button1);
-    wp.appendChild(button2);
-    wp.appendChild(button3);
-    wp.appendChild(button4);
-    wp.appendChild(textBox);
-	wp.appendChild(button5);
-    wp.appendChild(button6);
+    editor.appendChild(button1);
+    editor.appendChild(button2);
+    editor.appendChild(button3);
+    editor.appendChild(button4);
+    editor.appendChild(textBox);
+	editor.appendChild(button5);
+    editor.appendChild(button6);
 
     var p1 = document.createElement("p");
-    wp.appendChild(p1);
+    editor.appendChild(p1);
 
 
 	var mydiv = document.createElement("DIV");
@@ -59,7 +75,7 @@ function init(id) {
 	mydiv.setAttribute("class", "canvas");
 	mydiv.setAttributeNS(null, "id", "mydiv");
 	$(mydiv).resizable();
-	wp.appendChild(mydiv);
+	editor.appendChild(mydiv);
 	
 	
     var svg = document.createElementNS(svgns, 'svg');
@@ -74,6 +90,8 @@ function init(id) {
     svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
     svg.div = mydiv;
 	svg.divId = id;
+	wp.svg = svg;
+	svg.wp = wp;
 
     mydiv.appendChild(svg);
 	
@@ -147,9 +165,156 @@ function init(id) {
 	button4.style.borderStyle = "outset";
 	button5.style.borderStyle = "outset";
 	button6.style.borderStyle = "outset";
+	
+	wp.appendChild(editor);
+	initTable(wp);
+	wp.appendChild(tableTab);
+	initTextTab(wp);
+	wp.appendChild(textTab);
+	
+	$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
+		updateEditorTab(wp, e.relatedTarget);
+	});
+	$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
+		updateTableTab(wp, e.relatedTarget);
+	});
+	$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
+		updateTextTab(wp, e.relatedTarget);
+	});
+}
+
+function initTable(wp) {
+	var table = document.createElement("table");
+	table.setAttribute("contentEditable", "true");
+	var header = table.createTHead();
+	var row = header.insertRow(table.rows.length);
+	var cell = row.insertCell(0);
+	cell.innerHTML = "<b>X</b>";
+	
+	for (i = 0; i < wp.svg.rect.states.length; i++)
+	{
+		var row = table.insertRow(table.rows.length);
+		var cell = row.insertCell(0);
+		cell.innerHTML = wp.svg.rect.states[i].name;
+	}
+	wp.tableTab.table = table;
+	wp.tableTab.appendChild(table);
+}
+
+function initTextTab(wp) {
+	var textArea = document.createElement("input");
+	textArea.setAttribute("type", "text");
+	textArea.setAttribute("size", "50");
+	wp.textTab.appendChild(textArea);	
+	wp.textTab.textArea = textArea;
+}
+
+function updateEditorTab(wp, target)
+{
+	var t = target.getAttribute("data-target");
+	var x = t.substr(t.length - 1, 1);
+	if (x == "b")
+		updateEditorTabFromTable(wp);
+	else
+		updateEditorTabFromText(wp);
+}
+
+function updateEditorTabFromTable(wp)
+{
+	// nakodit
+}
+
+function updateEditorTabFromText(wp)
+{
+	updateTableTabFromText(wp);
+	updateEditorTabFromTable(wp);
+}
+
+function updateTableTab(wp, target)
+{
+	var t = target.getAttribute("data-target");
+	var x = t.substr(t.length - 1, 1);
+	if (x == "a")
+		updateTableTabFromEditor(wp);
+	else
+		updateTableTabFromText(wp);
+}
+
+function updateTableTabFromEditor(wp)
+{
+	updateTextTabFromEditor(wp);
+	updateTableTabFromText(wp);
+}
+
+function updateTableTabFromText(wp)
+{
+	// nakodit
+	var table = wp.tableTab.table;
+	var s = wp.textTab.textArea.value;
+	var str = s.split(" ");
+	var states = [];
+	var symbols = [];
+	
+	var l = table.rows.length;
+	for (i = 0; i < l; i++)
+		table.deleteRow(0);
+	var row = table.insertRow(table.rows.length);
+	var cell = row.insertCell(0);
+	cell.innerHTML = "-";
+	var row = table.insertRow(table.rows.length);
+	var cell = row.insertCell(0);
+	cell.innerHTML = str[0].charAt(5);
+	states.push(cell.innerHTML);
+	
+	console.log(str.length);
+	for (i = 1; i < str.length - 1; i++)
+	{
+		var state = str[i].charAt(1);
+		if (states.indexOf(state) == -1)
+		{
+			states.push(state);
+			var row = table.insertRow(table.rows.length);
+			var cell = row.insertCell(0);
+			cell.innerHTML = state;
+		}
+		var symb = str[i].charAt(3);
+		if (symbols.indexOf(symb) == -1)
+		{
+			symbols.push(symb);
+			var cell = table.rows[0].insertCell(symbols.length);
+			cell.innerHTML = symb;
+		}
+		var out = str[i].charAt(6);
+		console.log(states.indexOf(state) + 1);
+		var cell = table.rows[states.indexOf(state) + 1].insertCell(symbols.indexOf(symb) + 1);
+		cell.innerHTML = out;
+	}
+}
+
+function updateTextTab(wp, target)
+{
+	var t = target.getAttribute("data-target");
+	var x = t.substr(t.length - 1, 1);
+	if (x == "b")
+		updateTextTabFromTable(wp);
+	else
+		updateTextTabFromEditor(wp);
+}
+
+function updateTextTabFromTable(wp)
+{
+	updateEditorTabFromTable(wp);
+	updateTextTabFromEditor(wp);
+}
+
+function updateTextTabFromEditor(wp)
+{
+	var textArea = wp.textTab.textArea;
+	textArea.value = generateAnswer(wp.svg.rect);
 }
 
 function button1Click(rect) {
+	updateTableTab(rect.parentSvg.wp);
     if (rect.button1.style.borderStyle == "inset") {
         rect.button1.style.borderStyle = "outset";
         rect.mode = modeEnum.SELECT;
@@ -239,10 +404,9 @@ function button5Click(rect) {
 	}
 	$(document).unbind("keydown");
 }
-
-function button6Click(rect) {
-    var svg = rect.parentSvg;
-    var finalStates = [];
+function generateAnswer(rect)
+{
+	var finalStates = [];
     var out = "init=A ";
     for (i = 0; i < rect.states.length; i++)
     {
@@ -260,11 +424,7 @@ function button6Click(rect) {
             }
         }
     }
-    if (finalStates.length === 0)
-    {
-        alert("Žádný koncový stav!");
-    }
-    else
+    if (finalStates.length !== 0)
     {
         out += "F={";
         for (i = 0; i < finalStates.length; i++)
@@ -274,11 +434,16 @@ function button6Click(rect) {
                 out += ",";
         }
         out +="}";
-    	//alert(out);
-		var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
-		console.log(document.getElementsByTagName('textarea'));
-		document.getElementsByTagName('textarea')[x].value = out; 
-    }
+	}
+	return out;
+}
+function button6Click(rect) {
+    var svg = rect.parentSvg;
+    var out = generateAnswer(rect);
+    
+	var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
+	console.log(document.getElementsByTagName('textarea'));
+	document.getElementsByTagName('textarea')[x].value = out; 
 }
 
 function createState(evt) 

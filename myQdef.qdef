@@ -4,6 +4,8 @@
 <script>$('head').append('<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">');</script>
 <script src="//is.muni.cz/auth/de/422476/myJs.js"></script>
 <script>$('head').append('<link rel="stylesheet" href="//is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
+<script>$('head').append('<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />');</script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <!--<script>
 $(document).ready(function()
 {
@@ -24,9 +26,9 @@ d & \{b\} & \emptyset \\ \hline
 \end{array}
 </M></p>
 
-<div id="q1">
-<script>init("q1");</script>
-</div>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1c">Text</a></li></ul></ul>
+
+<div id="q1" class="tab-content"><script>init("q1");</script></div>
 
  :e
 :e="b:DFA-DFA:init=a (a,a)=b (a,b)=ac (b,a)=b (ac,a)=abc (ac,b)=ac (abc,a)=abc (abc,b)=ac F={a, b, ac, abc}" ok
@@ -35,9 +37,9 @@ d & \{b\} & \emptyset \\ \hline
 <!--________________________________________Příklad 2________________________________________-->
 <p>Napište regulární gramatiku generující jazyk <M>L=\{w\in\{a,b\}^*\mid \#_a(w) </M> je liché <M>\}</M>.</p>
 
-<div id="q2">
-<script>init("q2");</script>
-</div>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q2a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q2c">Text</a></li></ul></ul>
+
+<div id="q2" class="tab-content"><script>init("q2");</script></div>
  
   :e 
 :e="b:DFA-GRA:init=q0 (q0,a)=q1 (q0,b)=q0 (q1,a)=q0 (q1,b)=q1 F={q1}" ok
