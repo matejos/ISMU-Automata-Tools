@@ -70,22 +70,20 @@
 
 .tc {
     background-color: black;
-	border: 0px;
-	color: black;
+	cursor: default;
 }
 
-table {
+.mytable {
 	border-collapse: collapse;
 	border: solid black;
 }
 
-td {
+.cell {
 	border: 1px solid gray;
     height: 30px;
 	padding: 10px;
     text-align: center;
 	font-size: 1.5em;
-	cursor: pointer;
 }
 
 .td {

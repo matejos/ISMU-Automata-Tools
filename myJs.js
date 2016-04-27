@@ -208,12 +208,9 @@ function initTable(wp) {
 	wp.tableTab.table = table;
 	
 	table.selectedCell = 0;
+	table.setAttribute("class", "mytable");
 	
-	var tablediv = document.createElement("div");
-	tablediv.setAttribute("style", "overflow-x:auto;");
-	tablediv.appendChild(table);
-	
-	wp.tableTab.appendChild(tablediv);
+	wp.tableTab.appendChild(table);
 }
 
 function initTextTab(wp) {
@@ -284,8 +281,8 @@ function updateTableTabFromText(wp)	// not finished
 	// header row and topleft corner cell
 	var row = table.insertRow(table.rows.length);
 	var cell = row.insertCell(0);
-	cell.innerHTML = "-";
-	cell.setAttribute("class", "tc");
+	cell.innerHTML = "";
+	cell.setAttribute("class", "cell tc");
 	
 	
 	// initial and exit states
@@ -319,7 +316,7 @@ function updateTableTabFromText(wp)	// not finished
 	{
 		var cell = row.insertCell(row.cells.length);
 		cell.innerHTML = table.symbols[i];
-		cell.defaultClass = "ch";
+		cell.defaultClass = "cell ch";
 		cell.setAttribute("class", cell.defaultClass);
 		$(cell).click(tableCellClick);
 		$(cell).dblclick(tableCellDblClick);
@@ -343,7 +340,7 @@ function updateTableTabFromText(wp)	// not finished
 		
 		cell.innerHTML += state;
 		//cell.setAttribute("contentEditable", "true");
-		cell.defaultClass = "rh";
+		cell.defaultClass = "cell rh";
 		cell.setAttribute("class", cell.defaultClass);
 		$(cell).click(tableCellClick);
 		$(cell).dblclick(tableCellDblClick);
@@ -352,7 +349,7 @@ function updateTableTabFromText(wp)	// not finished
 		{
 			var cell = row.insertCell(j + 1);
 			cell.innerHTML = "";
-			cell.defaultClass = "td";
+			cell.defaultClass = "cell td";
 			cell.setAttribute("class", cell.defaultClass);
 			$(cell).click(tableCellClick);
 			$(cell).dblclick(tableCellDblClick);
