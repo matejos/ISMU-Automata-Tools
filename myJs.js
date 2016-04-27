@@ -213,9 +213,9 @@ function updateEditorTab(wp, target)
 		updateEditorTabFromText(wp);
 }
 
-function updateEditorTabFromTable(wp)
+function updateEditorTabFromTable(wp)	// not finished
 {
-	// nakodit
+
 }
 
 function updateEditorTabFromText(wp)
@@ -240,25 +240,40 @@ function updateTableTabFromEditor(wp)
 	updateTableTabFromText(wp);
 }
 
-function updateTableTabFromText(wp)
+function updateTableTabFromText(wp)	// not finished
 {
-	// nakodit
 	var table = wp.tableTab.table;
 	var s = wp.textTab.textArea.value;
 	var str = s.split(" ");
 	var states = [];
 	var symbols = [];
+	var initStatesStr = str[0].substring(str[0].indexOf('=') + 1, str[0].length);
+	var initStates = initStatesStr.split(',');
+	console.log("initstates:" + initStates);
+	var exitStatesStr = str[str.length - 1].substring(str[str.length - 1].indexOf('{') + 1, str[str.length - 1].length - 1);
+	var exitStates = exitStatesStr.split(',');
+	console.log("exitstates:" + exitStates);
 	
+	// clearing previous table
 	var l = table.rows.length;
 	for (i = 0; i < l; i++)
 		table.deleteRow(0);
+	
+	// header row and topleft corner cell
 	var row = table.insertRow(table.rows.length);
 	var cell = row.insertCell(0);
 	cell.innerHTML = "-";
 	cell.setAttribute("class", "tc");
 	
-	// initial state
-	states.push(str[0].charAt(5));
+	// initial and exit states
+	for (i = 0; i < initStates.length; i++)
+		states.push(initStates[i]);
+	for (i = 0; i < exitStates.length; i++)
+	{
+		if (states.indexOf(exitStates[i]) == -1)
+			states.push(exitStates[i]);
+	}
+	console.log("states:" + states);
 	
 	// counting needed number of rows and columns
 	for (i = 1; i < str.length - 1; i++)
@@ -287,15 +302,27 @@ function updateTableTabFromText(wp)
 	// filling out rows' headers from states
 	for (i = 0; i < states.length; i++)
 	{
+		var state = states[i];
 		var row = table.insertRow(table.rows.length);
 		var cell = row.insertCell(0);
-		cell.innerHTML = states[i];
+		console.log(i + " " + state + " " + initStates.indexOf(state));
+		if (initStates.indexOf(state) != -1)
+		{
+			if (exitStates.indexOf(state) != -1)
+				cell.innerHTML += '↔';
+			else
+				cell.innerHTML += '→';
+		}
+		else if (exitStates.indexOf(state) != -1)
+			cell.innerHTML += '←';
+		
+		cell.innerHTML += state;
 		cell.setAttribute("contentEditable", "true");
 		cell.setAttribute("class", "rh");
 		for (j = 0; j < symbols.length; j++)
 		{
 			var cell = row.insertCell(j + 1);
-			cell.innerHTML = "-";
+			cell.innerHTML = "";
 			cell.setAttribute("contentEditable", "true");
 		}
 	}
@@ -304,27 +331,23 @@ function updateTableTabFromText(wp)
 	for (i = 1; i < str.length - 1; i++)
 	{
 		var state = str[i].charAt(1);
-		if (states.indexOf(state) == -1)
-		{
-			states.push(state);
-			var row = table.insertRow(table.rows.length);
-			var cell = row.insertCell(0);
-			cell.innerHTML = state;
-			cell.setAttribute("contentEditable", "true");
-		}
 		var symb = str[i].charAt(3);
-		if (symbols.indexOf(symb) == -1)
-		{
-			symbols.push(symb);
-			var cell = table.rows[0].insertCell(symbols.length);
-			cell.innerHTML = symb;
-			cell.setAttribute("contentEditable", "true");
-		}
 		var out = str[i].charAt(6);
 		
 		var cell = table.rows[states.indexOf(state) + 1].cells[symbols.indexOf(symb) + 1];
 		cell.setAttribute("contentEditable", "true");
-		cell.innerHTML = out;
+		if (cell.innerHTML.length > 0)
+			cell.innerHTML += ',';
+		cell.innerHTML += out;
+	}
+	
+	for (i = 0; i < states.length; i++)
+	{
+		for (j = 0; j < symbols.length; j++)
+		{
+			var cell = table.rows[i + 1].cells[j + 1];
+			cell.innerHTML = '{' + cell.innerHTML + '}';
+		}
 	}
 }
 
