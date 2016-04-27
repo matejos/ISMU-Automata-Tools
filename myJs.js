@@ -185,20 +185,14 @@ function init(id) {
 
 function initTable(wp) {
 	var table = document.createElement("table");
-	table.setAttribute("contentEditable", "true");
-	var header = table.createTHead();
-	var row = header.insertRow(table.rows.length);
-	var cell = row.insertCell(0);
-	cell.innerHTML = "<b>X</b>";
-	
-	for (i = 0; i < wp.svg.rect.states.length; i++)
-	{
-		var row = table.insertRow(table.rows.length);
-		var cell = row.insertCell(0);
-		cell.innerHTML = wp.svg.rect.states[i].name;
-	}
+	//table.setAttribute("contentEditable", "true");
 	wp.tableTab.table = table;
-	wp.tableTab.appendChild(table);
+	
+	var tablediv = document.createElement("div");
+	tablediv.setAttribute("style", "overflow-x:auto;");
+	tablediv.appendChild(table);
+	
+	wp.tableTab.appendChild(tablediv);
 }
 
 function initTextTab(wp) {
@@ -261,12 +255,52 @@ function updateTableTabFromText(wp)
 	var row = table.insertRow(table.rows.length);
 	var cell = row.insertCell(0);
 	cell.innerHTML = "-";
-	var row = table.insertRow(table.rows.length);
-	var cell = row.insertCell(0);
-	cell.innerHTML = str[0].charAt(5);
-	states.push(cell.innerHTML);
+	cell.setAttribute("class", "tc");
 	
-	console.log(str.length);
+	// initial state
+	states.push(str[0].charAt(5));
+	
+	// counting needed number of rows and columns
+	for (i = 1; i < str.length - 1; i++)
+	{
+		var state = str[i].charAt(1);
+		if (states.indexOf(state) == -1)
+		{
+			states.push(state);
+		}
+		var symb = str[i].charAt(3);
+		if (symbols.indexOf(symb) == -1)
+		{
+			symbols.push(symb);
+		}
+	}
+	
+	// filling out columns' headers from symbols
+	for (i = 0; i < symbols.length; i++)
+	{
+		var cell = row.insertCell(row.length);
+		cell.innerHTML = symbols[i];
+		cell.setAttribute("contentEditable", "true");
+		cell.setAttribute("class", "ch");
+	}
+	
+	// filling out rows' headers from states
+	for (i = 0; i < states.length; i++)
+	{
+		var row = table.insertRow(table.rows.length);
+		var cell = row.insertCell(0);
+		cell.innerHTML = states[i];
+		cell.setAttribute("contentEditable", "true");
+		cell.setAttribute("class", "rh");
+		for (j = 0; j < symbols.length; j++)
+		{
+			var cell = row.insertCell(j + 1);
+			cell.innerHTML = "-";
+			cell.setAttribute("contentEditable", "true");
+		}
+	}
+	
+	// filling transitions
 	for (i = 1; i < str.length - 1; i++)
 	{
 		var state = str[i].charAt(1);
@@ -276,6 +310,7 @@ function updateTableTabFromText(wp)
 			var row = table.insertRow(table.rows.length);
 			var cell = row.insertCell(0);
 			cell.innerHTML = state;
+			cell.setAttribute("contentEditable", "true");
 		}
 		var symb = str[i].charAt(3);
 		if (symbols.indexOf(symb) == -1)
@@ -283,10 +318,12 @@ function updateTableTabFromText(wp)
 			symbols.push(symb);
 			var cell = table.rows[0].insertCell(symbols.length);
 			cell.innerHTML = symb;
+			cell.setAttribute("contentEditable", "true");
 		}
 		var out = str[i].charAt(6);
-		console.log(states.indexOf(state) + 1);
-		var cell = table.rows[states.indexOf(state) + 1].insertCell(symbols.indexOf(symb) + 1);
+		
+		var cell = table.rows[states.indexOf(state) + 1].cells[symbols.indexOf(symb) + 1];
+		cell.setAttribute("contentEditable", "true");
 		cell.innerHTML = out;
 	}
 }

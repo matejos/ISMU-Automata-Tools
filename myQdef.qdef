@@ -2,10 +2,10 @@
 <script type="text/javascript">document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");</script>
 <script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <script>$('head').append('<link rel="stylesheet" type="text/css" href="//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">');</script>
-<script src="//is.muni.cz/auth/de/422476/myJs.js"></script>
-<script>$('head').append('<link rel="stylesheet" href="//is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
 <script>$('head').append('<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />');</script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//is.muni.cz/auth/de/422476/myJs.js"></script>
+<script>$('head').append('<link rel="stylesheet" href="//is.muni.cz/auth/de/422476/myCss.css" type="text/css" />');</script>
 <!--<script>
 $(document).ready(function()
 {

@@ -28,3 +28,33 @@
 	width: 700;
 	height: 500;
 }
+
+.rh {
+	border-right: 2px solid black;
+	background-color: #cccccc;
+}
+
+.ch {
+	border-bottom: 2px solid black;
+	background-color: #cccccc;
+}
+
+.tc {
+    background-color: black;
+	border: 0px;
+	color: black;
+}
+
+table {
+	border-collapse: collapse;
+	border: solid black;
+}
+
+td {
+	border: 1px solid gray;
+    height: 30px;
+	padding: 10px;
+    text-align: center;
+	font-size: 1.5em;
+}
+
