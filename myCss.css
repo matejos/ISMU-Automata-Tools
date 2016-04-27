@@ -33,11 +33,39 @@
 	border-right: 2px solid black;
 	background-color: #cccccc;
 	text-align: right;
+	cursor: pointer;
+}
+
+.rhs {
+	border-right: 2px solid black;
+	background-color: #99ff33;
+	text-align: right;
+	cursor: pointer;
+}
+
+.rhe {
+	border-right: 2px solid black;
+	background-color: #66ffff;
+	text-align: right;
+	cursor: text;
 }
 
 .ch {
 	border-bottom: 2px solid black;
 	background-color: #cccccc;
+	cursor: pointer;
+}
+
+.chs {
+	border-bottom: 2px solid black;
+	background-color: #99ff33;
+	cursor: pointer;
+}
+
+.che {
+	border-bottom: 2px solid black;
+	background-color: #66ffff;
+	cursor: text;
 }
 
 .tc {
@@ -57,5 +85,21 @@ td {
 	padding: 10px;
     text-align: center;
 	font-size: 1.5em;
+	cursor: pointer;
+}
+
+.td {
+	background-color: #ffffff;
+	cursor: pointer;
+}
+
+.tds {
+	background-color: #99ff33;
+	cursor: pointer;
+}
+
+.tde {
+	background-color: #66ffff;
+	cursor: text;
 }
 

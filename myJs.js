@@ -167,8 +167,28 @@ function init(id) {
 	button6.style.borderStyle = "outset";
 	
 	wp.appendChild(editor);
+	
+	// TABLE TAB
+	var tableButton1 = document.createElement("input");
+    tableButton1.type = "button";
+    tableButton1.value = "Počátečný stav";
+	tableButton1.tableTab = tableTab;
+	tableButton1.setAttributeNS(null, "onclick", 'tableButton1Click(tableTab);');
+	tableButton1.style.borderStyle = "outset";
+	tableTab.appendChild(tableButton1);
+	
+	var tableButton2 = document.createElement("input");
+    tableButton2.type = "button";
+    tableButton2.value = "Koncový stav";
+	tableButton2.tableTab = tableTab;
+	tableButton2.setAttributeNS(null, "onclick", 'tableButton2Click(tableTab);');
+	tableButton2.style.borderStyle = "outset";
+	tableTab.appendChild(tableButton2);
+	
 	initTable(wp);
 	wp.appendChild(tableTab);
+	
+	// TEXT TAB
 	initTextTab(wp);
 	wp.appendChild(textTab);
 	
@@ -185,8 +205,9 @@ function init(id) {
 
 function initTable(wp) {
 	var table = document.createElement("table");
-	//table.setAttribute("contentEditable", "true");
 	wp.tableTab.table = table;
+	
+	table.selectedCell = 0;
 	
 	var tablediv = document.createElement("div");
 	tablediv.setAttribute("style", "overflow-x:auto;");
@@ -245,14 +266,15 @@ function updateTableTabFromText(wp)	// not finished
 	var table = wp.tableTab.table;
 	var s = wp.textTab.textArea.value;
 	var str = s.split(" ");
-	var states = [];
-	var symbols = [];
+	table.states = [];
+	table.symbols = [];
 	var initStatesStr = str[0].substring(str[0].indexOf('=') + 1, str[0].length);
-	var initStates = initStatesStr.split(',');
-	console.log("initstates:" + initStates);
-	var exitStatesStr = str[str.length - 1].substring(str[str.length - 1].indexOf('{') + 1, str[str.length - 1].length - 1);
-	var exitStates = exitStatesStr.split(',');
-	console.log("exitstates:" + exitStates);
+	table.initStates = initStatesStr.split(',');
+	var exitStatesStr = str[str.length - 1];
+	exitStatesStr = exitStatesStr.substring(exitStatesStr.indexOf('{') + 1, exitStatesStr.length - 1);
+	table.exitStates = [];
+	if (exitStatesStr.length != 0)
+		table.exitStates = exitStatesStr.split(',');
 	
 	// clearing previous table
 	var l = table.rows.length;
@@ -265,65 +287,75 @@ function updateTableTabFromText(wp)	// not finished
 	cell.innerHTML = "-";
 	cell.setAttribute("class", "tc");
 	
+	
 	// initial and exit states
-	for (i = 0; i < initStates.length; i++)
-		states.push(initStates[i]);
-	for (i = 0; i < exitStates.length; i++)
+	for (i = 0; i < table.initStates.length; i++)
+		table.states.push(table.initStates[i]);
+	
+	for (i = 0; i < table.exitStates.length; i++)
 	{
-		if (states.indexOf(exitStates[i]) == -1)
-			states.push(exitStates[i]);
+		if (table.states.indexOf(table.exitStates[i]) == -1)
+			table.states.push(table.exitStates[i]);
 	}
-	console.log("states:" + states);
+	
 	
 	// counting needed number of rows and columns
 	for (i = 1; i < str.length - 1; i++)
 	{
 		var state = str[i].charAt(1);
-		if (states.indexOf(state) == -1)
+		if (table.states.indexOf(state) == -1)
 		{
-			states.push(state);
+			table.states.push(state);
 		}
 		var symb = str[i].charAt(3);
-		if (symbols.indexOf(symb) == -1)
+		if (table.symbols.indexOf(symb) == -1)
 		{
-			symbols.push(symb);
+			table.symbols.push(symb);
 		}
 	}
 	
 	// filling out columns' headers from symbols
-	for (i = 0; i < symbols.length; i++)
+	for (i = 0; i < table.symbols.length; i++)
 	{
-		var cell = row.insertCell(row.length);
-		cell.innerHTML = symbols[i];
-		cell.setAttribute("contentEditable", "true");
-		cell.setAttribute("class", "ch");
+		var cell = row.insertCell(row.cells.length);
+		cell.innerHTML = table.symbols[i];
+		cell.defaultClass = "ch";
+		cell.setAttribute("class", cell.defaultClass);
+		$(cell).click(tableCellClick);
+		$(cell).dblclick(tableCellDblClick);
 	}
 	
 	// filling out rows' headers from states
-	for (i = 0; i < states.length; i++)
+	for (i = 0; i < table.states.length; i++)
 	{
-		var state = states[i];
+		var state = table.states[i];
 		var row = table.insertRow(table.rows.length);
 		var cell = row.insertCell(0);
-		console.log(i + " " + state + " " + initStates.indexOf(state));
-		if (initStates.indexOf(state) != -1)
+		if (table.initStates.indexOf(state) != -1)
 		{
-			if (exitStates.indexOf(state) != -1)
+			if (table.exitStates.indexOf(state) != -1)
 				cell.innerHTML += '↔';
 			else
 				cell.innerHTML += '→';
 		}
-		else if (exitStates.indexOf(state) != -1)
+		else if (table.exitStates.indexOf(state) != -1)
 			cell.innerHTML += '←';
 		
 		cell.innerHTML += state;
-		cell.setAttribute("contentEditable", "true");
-		cell.setAttribute("class", "rh");
-		for (j = 0; j < symbols.length; j++)
+		//cell.setAttribute("contentEditable", "true");
+		cell.defaultClass = "rh";
+		cell.setAttribute("class", cell.defaultClass);
+		$(cell).click(tableCellClick);
+		$(cell).dblclick(tableCellDblClick);
+		//cell.setAttributeNS(null, "onclick", 'tableCellClick(this);');
+		for (j = 0; j < table.symbols.length; j++)
 		{
 			var cell = row.insertCell(j + 1);
 			cell.innerHTML = "";
-			cell.setAttribute("contentEditable", "true");
+			cell.defaultClass = "td";
+			cell.setAttribute("class", cell.defaultClass);
+			$(cell).click(tableCellClick);
+			$(cell).dblclick(tableCellDblClick);
 		}
 	}
 	
@@ -334,19 +366,100 @@ function updateTableTabFromText(wp)	// not finished
 		var symb = str[i].charAt(3);
 		var out = str[i].charAt(6);
 		
-		var cell = table.rows[states.indexOf(state) + 1].cells[symbols.indexOf(symb) + 1];
-		cell.setAttribute("contentEditable", "true");
+		var cell = table.rows[table.states.indexOf(state) + 1].cells[table.symbols.indexOf(symb) + 1];
 		if (cell.innerHTML.length > 0)
 			cell.innerHTML += ',';
 		cell.innerHTML += out;
 	}
 	
-	for (i = 0; i < states.length; i++)
+	for (i = 0; i < table.states.length; i++)
 	{
-		for (j = 0; j < symbols.length; j++)
+		for (j = 0; j < table.symbols.length; j++)
 		{
 			var cell = table.rows[i + 1].cells[j + 1];
 			cell.innerHTML = '{' + cell.innerHTML + '}';
+		}
+	}
+}
+
+function tableCellClick(evt)
+{
+	var cell = evt.target;
+	var table = cell.parentElement.parentElement.parentElement;
+	if (table.selectedCell != cell)
+	{
+		if (table.selectedCell != 0)
+		{
+			console.log("disabled editing of " + table.selectedCell.innerHTML);
+			table.selectedCell.setAttribute("contentEditable", "false");
+			table.selectedCell.setAttribute("class", table.selectedCell.defaultClass);
+		}
+		cell.setAttribute("class", cell.defaultClass + "s");
+		table.selectedCell = cell;
+	}
+}
+
+function tableCellDblClick(evt)
+{
+	var cell = evt.target;
+	var table = cell.parentElement.parentElement.parentElement;
+	console.log("enabled editing of " + cell.innerHTML);
+	cell.setAttribute("class", cell.defaultClass + "e");
+	cell.setAttribute("contentEditable", "true");
+}
+
+function tableButton1Click(tableTab) {
+	var table = tableTab.table;
+	var cell = table.selectedCell;
+	if (cell.cellIndex == 0)
+	{
+		var state = cell.innerHTML.replace(/←|→|↔/g, '');
+		if (table.initStates.indexOf(state) != -1)
+		{
+			var index = table.initStates.indexOf(state);
+			table.initStates.splice(index, 1);
+			if (table.exitStates.indexOf(state) != -1)
+				cell.innerHTML = '←' + state;
+			else
+				cell.innerHTML = state;
+			console.log(state + " is now not an init state");
+		}
+		else
+		{
+			tableTab.table.initStates.push(state);
+			if (table.exitStates.indexOf(state) != -1)
+				cell.innerHTML = '↔' + state;
+			else
+				cell.innerHTML = '→' + state;
+			console.log(state + " is now an init state");
+		}
+	}
+}
+
+function tableButton2Click(tableTab) {
+	var table = tableTab.table;
+	var cell = table.selectedCell;
+	if (cell.cellIndex == 0)
+	{
+		var state = cell.innerHTML.replace(/←|→|↔/g, '');
+		if (table.exitStates.indexOf(state) != -1)
+		{
+			var index = table.exitStates.indexOf(state);
+			table.exitStates.splice(index, 1);
+			if (table.initStates.indexOf(state) != -1)
+				cell.innerHTML = '→' + state;
+			else
+				cell.innerHTML = state;
+			console.log(state + " is now not an exit state");
+		}
+		else
+		{
+			tableTab.table.exitStates.push(state);
+			if (table.initStates.indexOf(state) != -1)
+				cell.innerHTML = '↔' + state;
+			else
+				cell.innerHTML = '←' + state;
+			console.log(state + " is now an exit state");
 		}
 	}
 }
@@ -502,7 +615,6 @@ function button6Click(rect) {
     var out = generateAnswer(rect);
     
 	var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
-	console.log(document.getElementsByTagName('textarea'));
 	document.getElementsByTagName('textarea')[x].value = out; 
 }
 
@@ -727,6 +839,7 @@ function clickState(evt) {
                 console.log(debug);*/
 				
                 state.parentSvg.makingTransition = 0;
+				state.parentSvg.selectedElement = 0;
             } else {
                 selectStateForTransition(state);
             }
