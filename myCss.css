@@ -38,6 +38,7 @@
 }
 
 .rh {
+	transition: background-color 0.2s ease;
 	border-right: 2px solid black;
 	background-color: #cccccc;
 	text-align: right;
@@ -61,24 +62,11 @@
 .ch {
 	border-bottom: 2px solid black;
 	background-color: #cccccc;
-	cursor: pointer;
-}
-
-.chs {
-	border-bottom: 2px solid black;
-	background-color: #99ff33;
-	cursor: pointer;
-}
-
-.che {
-	border-bottom: 2px solid black;
-	background-color: #66ffff;
-	cursor: text;
 }
 
 .tc {
-    background-color: white;
-	border: 0px;
+    background-color: gray;
+	border: 1px solid gray;
 	cursor: default;
 }
 
@@ -87,23 +75,39 @@
 	border: solid black;
 }
 
-.td {
-	background-color: #ffffff;
+.rh:hover {
+	background-color: #e6ffe6;
 	cursor: pointer;
-}
-
-.tds {
-	background-color: #99ff33;
-	cursor: pointer;
-}
-
-.tde {
-	background-color: #66ffff;
-	cursor: text;
 }
 
 .deleteButton {
-	width: 20px;
-	height: 20px;
+	border: 1px solid gray;
+    height: 30px;
+	padding: 10px;
+    text-align: center;
+	font-size: 2em;
+	color: #c20202;
+	cursor: pointer;
+}
+
+.deleteButton:hover {
+	color: #ff0000;
+	text-decoration: none;
+}
+
+.addButton {
+	border: 1px solid gray;
+    height: 30px;
+	padding: 10px;
+    text-align: center;
+	font-size: 2em;
+	color: #10bd00;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.addButton:hover {
+	color: #15ff00;
+	text-decoration: none;
 }
 

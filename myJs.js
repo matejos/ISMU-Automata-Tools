@@ -3,7 +3,7 @@ var movingElement = 0;
 var renamingTransition = 0;
 var transitionPrevName;
 var circleSize = 25;
-var fadeTime = 200;
+var fadeTime = 100;
 var cursorTimer;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
@@ -315,6 +315,7 @@ function updateTableTabFromText(wp)	// not finished
 		}
 	}
 	
+	// header row
 	var row2 = table.insertRow(table.rows.length);
 	var cell = row2.insertCell(0);
 	cell.innerHTML = "";
@@ -322,74 +323,47 @@ function updateTableTabFromText(wp)	// not finished
 	var cell = row2.insertCell(1);
 	cell.innerHTML = "";
 	cell.setAttribute("class", "myCell noselect tc");
-	// filling out columns' headers from symbols
+	
+	// filling out columns' headers from symbols and delete buttons above them
 	for (i = 0; i < table.symbols.length; i++)
 	{
-		var cell = row2.insertCell(i + 2);
-		cell.innerHTML = table.symbols[i];
-		cell.defaultClass = "ch";
-		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
-		$(cell).click(tableCellClick);
-		$(cell).dblclick(tableCellDblClick);
-		
-		var cell = row.insertCell(i + 2);
-		var btn = document.createElement('input');
-		btn.type = "button";
-		btn.setAttribute("class", "deleteButton");
-		btn.table = table;
-		btn.cell = cell;
-		btn.setAttribute("onclick", "tableDeleteColumn(table, cell);");
-		cell.setAttribute("class", "myCell");
-		cell.appendChild(btn);
+		tableAddColumnDeleteButton(row, table);
+		tableAddColumnHeader(row2, table.symbols[i]);
 	}
+	
+	// column add button
+	tableAddColumnAddButton(row, table);
 	
 	// filling out rows' headers from states
 	for (i = 0; i < table.states.length; i++)
 	{
 		var state = table.states[i];
 		var row = table.insertRow(table.rows.length);
-		var cell = row.insertCell(0);
 		
-		var btn = document.createElement('input');
-		btn.type = "button";
-		btn.setAttribute("class", "deleteButton");
-		btn.table = table;
-		btn.cell = cell;
-		btn.setAttribute("onclick", "tableDeleteRow(table, cell);");
-		cell.setAttribute("class", "myCell");
-		cell.appendChild(btn);
+		tableAddRowDeleteButton(row, table);
 		
-		var cell = row.insertCell(1);
+		var headerval = "";
 		if (table.initStates.indexOf(state) != -1)
 		{
 			if (table.exitStates.indexOf(state) != -1)
-				cell.innerHTML += '↔';
+				headerval += '↔';
 			else
-				cell.innerHTML += '→';
+				headerval += '→';
 		}
 		else if (table.exitStates.indexOf(state) != -1)
-			cell.innerHTML += '←';
+			headerval += '←';
 		
-		cell.innerHTML += state;
-		
-		
+		headerval += state;
+		tableAddRowHeader(row, headerval);
 
-		//cell.setAttribute("contentEditable", "true");
-		cell.defaultClass = "rh";
-		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
-		$(cell).click(tableCellClick);
-		$(cell).dblclick(tableCellDblClick);
-		//cell.setAttributeNS(null, "onclick", 'tableCellClick(this);');
 		for (j = 0; j < table.symbols.length; j++)
 		{
-			var cell = row.insertCell(j + 2);
-			cell.innerHTML = "";
-			cell.defaultClass = "td";
-			cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
-			$(cell).click(tableCellClick);
-			$(cell).dblclick(tableCellDblClick);
+			tableAddCell(row);
 		}
 	}
+	
+	// row add button
+	tableAddRowAddButton(table);
 	
 	// filling transitions
 	for (i = 1; i < str.length - 1; i++)
@@ -444,17 +418,108 @@ function tableCellDblClick(evt)
 
 function tableDeleteRow(table, cell)
 {
-	console.log(cell.parentNode.rowIndex);
 	table.deleteRow(cell.parentNode.rowIndex);
 }
 
 function tableDeleteColumn(table, cell)
 {
 	var index = cell.cellIndex;
-	for (i = 0; i < table.rows.length; i++)
+	for (i = 0; i < table.rows.length - 1; i++)
 	{
 		table.rows[i].deleteCell(index);
 	}
+}
+
+function tableAddRowAddButton(table)
+{
+	var row = table.insertRow(table.rows.length);
+	var cell = row.insertCell(0);
+	cell.setAttribute("class", "addButton noselect");
+	cell.innerHTML = "+";
+	cell.table = table;
+	//cell.cell = cell;
+	cell.setAttribute("onclick", "tableAddRow(table);");
+}
+
+function tableAddRowDeleteButton(row, table)
+{
+	var cell = row.insertCell(0);
+	cell.setAttribute("class", "deleteButton noselect");
+	cell.innerHTML = "×";
+	cell.table = table;
+	//cell.cell = cell;
+	cell.setAttribute("onclick", "tableDeleteRow(table, this);");
+}
+
+function tableAddRowHeader(row, value)
+{
+	var cell = row.insertCell(row.length);
+	cell.innerHTML = value;
+	cell.defaultClass = "rh";
+	cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
+	$(cell).click(tableCellClick);
+	$(cell).dblclick(tableCellDblClick);
+}
+
+function tableAddColumnAddButton(row, table)
+{
+	var cell = row.insertCell(row.length);
+	cell.setAttribute("class", "addButton noselect");
+	cell.innerHTML = "+";
+	cell.table = table;
+	cell.setAttribute("onclick", "tableAddColumn(table);");
+}
+
+function tableAddColumnDeleteButton(row, table)
+{
+	var cell = row.insertCell(row.length);
+	cell.setAttribute("class", "deleteButton noselect");
+	cell.innerHTML = "×";
+	cell.table = table;
+	//cell.cell = cell;
+	cell.setAttribute("onclick", "tableDeleteColumn(table, this);");
+}
+
+function tableAddColumnHeader(row, value)
+{
+	var cell = row.insertCell(row.length);
+	cell.innerHTML = value;
+	cell.setAttribute("class", "myCell ch");
+	//$(cell).click(tableCellClick);
+	cell.setAttribute("contentEditable", "true");
+}
+
+function tableAddCell(row)
+{
+	var cell = row.insertCell(row.length);
+	cell.innerHTML = "";
+	//$(cell).click(tableCellClick);
+	cell.setAttribute("class", "myCell");
+	cell.setAttribute("contentEditable", "true");
+}
+
+function tableAddColumn(table)
+{
+	table.rows[0].deleteCell(table.rows[0].cells.length - 1);
+	tableAddColumnDeleteButton(table.rows[0], table);
+	tableAddColumnAddButton(table.rows[0], table);
+	tableAddColumnHeader(table.rows[1], "x");
+	for (i = 2; i < table.rows.length - 1; i++)
+	{
+		tableAddCell(table.rows[i]);
+	}
+}
+
+function tableAddRow(table)
+{
+	table.rows[table.rows.length - 1].deleteCell(0);
+	tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
+	tableAddRowHeader(table.rows[table.rows.length - 1], "Q");
+	for (i = 2; i < table.rows[0].cells.length - 1; i++)
+	{
+		tableAddCell(table.rows[table.rows.length - 1]);
+	}
+	tableAddRowAddButton(table);
 }
 
 function tableButton1Click(tableTab) {
