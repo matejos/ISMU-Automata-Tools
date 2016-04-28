@@ -3,6 +3,7 @@ var movingElement = 0;
 var renamingTransition = 0;
 var transitionPrevName;
 var circleSize = 25;
+var fadeTime = 200;
 var cursorTimer;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
@@ -282,7 +283,7 @@ function updateTableTabFromText(wp)	// not finished
 	var row = table.insertRow(table.rows.length);
 	var cell = row.insertCell(0);
 	cell.innerHTML = "";
-	cell.setAttribute("class", "cell tc");
+	cell.setAttribute("class", "myCell noselect tc");
 	
 	
 	// initial and exit states
@@ -316,8 +317,8 @@ function updateTableTabFromText(wp)	// not finished
 	{
 		var cell = row.insertCell(row.cells.length);
 		cell.innerHTML = table.symbols[i];
-		cell.defaultClass = "cell ch";
-		cell.setAttribute("class", cell.defaultClass);
+		cell.defaultClass = "ch";
+		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
 		$(cell).click(tableCellClick);
 		$(cell).dblclick(tableCellDblClick);
 	}
@@ -340,8 +341,8 @@ function updateTableTabFromText(wp)	// not finished
 		
 		cell.innerHTML += state;
 		//cell.setAttribute("contentEditable", "true");
-		cell.defaultClass = "cell rh";
-		cell.setAttribute("class", cell.defaultClass);
+		cell.defaultClass = "rh";
+		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
 		$(cell).click(tableCellClick);
 		$(cell).dblclick(tableCellDblClick);
 		//cell.setAttributeNS(null, "onclick", 'tableCellClick(this);');
@@ -349,8 +350,8 @@ function updateTableTabFromText(wp)	// not finished
 		{
 			var cell = row.insertCell(j + 1);
 			cell.innerHTML = "";
-			cell.defaultClass = "cell td";
-			cell.setAttribute("class", cell.defaultClass);
+			cell.defaultClass = "td";
+			cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
 			$(cell).click(tableCellClick);
 			$(cell).dblclick(tableCellDblClick);
 		}
@@ -389,9 +390,11 @@ function tableCellClick(evt)
 		{
 			console.log("disabled editing of " + table.selectedCell.innerHTML);
 			table.selectedCell.setAttribute("contentEditable", "false");
-			table.selectedCell.setAttribute("class", table.selectedCell.defaultClass);
+			var cl = table.selectedCell;
+			$(cl).switchClass(cl.defaultClass + "e", cl.defaultClass, fadeTime);
+			$(cl).switchClass(cl.defaultClass + "s", cl.defaultClass, fadeTime);
 		}
-		cell.setAttribute("class", cell.defaultClass + "s");
+		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
 		table.selectedCell = cell;
 	}
 }
@@ -401,7 +404,7 @@ function tableCellDblClick(evt)
 	var cell = evt.target;
 	var table = cell.parentElement.parentElement.parentElement;
 	console.log("enabled editing of " + cell.innerHTML);
-	cell.setAttribute("class", cell.defaultClass + "e");
+	$(cell).switchClass(cell.defaultClass + "s", cell.defaultClass + "e", fadeTime);
 	cell.setAttribute("contentEditable", "true");
 }
 

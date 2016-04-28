@@ -78,7 +78,7 @@
 	border: solid black;
 }
 
-.cell {
+.myCell {
 	border: 1px solid gray;
     height: 30px;
 	padding: 10px;
