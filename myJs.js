@@ -284,6 +284,9 @@ function updateTableTabFromText(wp)	// not finished
 	var cell = row.insertCell(0);
 	cell.innerHTML = "";
 	cell.setAttribute("class", "myCell noselect tc");
+	var cell = row.insertCell(1);
+	cell.innerHTML = "";
+	cell.setAttribute("class", "myCell noselect tc");
 	
 	
 	// initial and exit states
@@ -312,15 +315,32 @@ function updateTableTabFromText(wp)	// not finished
 		}
 	}
 	
+	var row2 = table.insertRow(table.rows.length);
+	var cell = row2.insertCell(0);
+	cell.innerHTML = "";
+	cell.setAttribute("class", "myCell noselect tc");
+	var cell = row2.insertCell(1);
+	cell.innerHTML = "";
+	cell.setAttribute("class", "myCell noselect tc");
 	// filling out columns' headers from symbols
 	for (i = 0; i < table.symbols.length; i++)
 	{
-		var cell = row.insertCell(row.cells.length);
+		var cell = row2.insertCell(i + 2);
 		cell.innerHTML = table.symbols[i];
 		cell.defaultClass = "ch";
 		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
 		$(cell).click(tableCellClick);
 		$(cell).dblclick(tableCellDblClick);
+		
+		var cell = row.insertCell(i + 2);
+		var btn = document.createElement('input');
+		btn.type = "button";
+		btn.setAttribute("class", "deleteButton");
+		btn.table = table;
+		btn.cell = cell;
+		btn.setAttribute("onclick", "tableDeleteColumn(table, cell);");
+		cell.setAttribute("class", "myCell");
+		cell.appendChild(btn);
 	}
 	
 	// filling out rows' headers from states
@@ -329,6 +349,17 @@ function updateTableTabFromText(wp)	// not finished
 		var state = table.states[i];
 		var row = table.insertRow(table.rows.length);
 		var cell = row.insertCell(0);
+		
+		var btn = document.createElement('input');
+		btn.type = "button";
+		btn.setAttribute("class", "deleteButton");
+		btn.table = table;
+		btn.cell = cell;
+		btn.setAttribute("onclick", "tableDeleteRow(table, cell);");
+		cell.setAttribute("class", "myCell");
+		cell.appendChild(btn);
+		
+		var cell = row.insertCell(1);
 		if (table.initStates.indexOf(state) != -1)
 		{
 			if (table.exitStates.indexOf(state) != -1)
@@ -340,6 +371,9 @@ function updateTableTabFromText(wp)	// not finished
 			cell.innerHTML += '←';
 		
 		cell.innerHTML += state;
+		
+		
+
 		//cell.setAttribute("contentEditable", "true");
 		cell.defaultClass = "rh";
 		cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
@@ -348,7 +382,7 @@ function updateTableTabFromText(wp)	// not finished
 		//cell.setAttributeNS(null, "onclick", 'tableCellClick(this);');
 		for (j = 0; j < table.symbols.length; j++)
 		{
-			var cell = row.insertCell(j + 1);
+			var cell = row.insertCell(j + 2);
 			cell.innerHTML = "";
 			cell.defaultClass = "td";
 			cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
@@ -364,7 +398,7 @@ function updateTableTabFromText(wp)	// not finished
 		var symb = str[i].charAt(3);
 		var out = str[i].charAt(6);
 		
-		var cell = table.rows[table.states.indexOf(state) + 1].cells[table.symbols.indexOf(symb) + 1];
+		var cell = table.rows[table.states.indexOf(state) + 2].cells[table.symbols.indexOf(symb) + 2];
 		if (cell.innerHTML.length > 0)
 			cell.innerHTML += ',';
 		cell.innerHTML += out;
@@ -374,7 +408,7 @@ function updateTableTabFromText(wp)	// not finished
 	{
 		for (j = 0; j < table.symbols.length; j++)
 		{
-			var cell = table.rows[i + 1].cells[j + 1];
+			var cell = table.rows[i + 2].cells[j + 2];
 			cell.innerHTML = '{' + cell.innerHTML + '}';
 		}
 	}
@@ -408,10 +442,25 @@ function tableCellDblClick(evt)
 	cell.setAttribute("contentEditable", "true");
 }
 
+function tableDeleteRow(table, cell)
+{
+	console.log(cell.parentNode.rowIndex);
+	table.deleteRow(cell.parentNode.rowIndex);
+}
+
+function tableDeleteColumn(table, cell)
+{
+	var index = cell.cellIndex;
+	for (i = 0; i < table.rows.length; i++)
+	{
+		table.rows[i].deleteCell(index);
+	}
+}
+
 function tableButton1Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.cellIndex == 0)
+	if (cell.cellIndex == 1)
 	{
 		var state = cell.innerHTML.replace(/←|→|↔/g, '');
 		if (table.initStates.indexOf(state) != -1)
@@ -439,7 +488,7 @@ function tableButton1Click(tableTab) {
 function tableButton2Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.cellIndex == 0)
+	if (cell.cellIndex == 1)
 	{
 		var state = cell.innerHTML.replace(/←|→|↔/g, '');
 		if (table.exitStates.indexOf(state) != -1)

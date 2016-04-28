@@ -29,6 +29,14 @@
 	height: 500;
 }
 
+.myCell {
+	border: 1px solid gray;
+    height: 30px;
+	padding: 10px;
+    text-align: center;
+	font-size: 1.5em;
+}
+
 .rh {
 	border-right: 2px solid black;
 	background-color: #cccccc;
@@ -69,21 +77,14 @@
 }
 
 .tc {
-    background-color: black;
+    background-color: white;
+	border: 0px;
 	cursor: default;
 }
 
 .mytable {
 	border-collapse: collapse;
 	border: solid black;
-}
-
-.myCell {
-	border: 1px solid gray;
-    height: 30px;
-	padding: 10px;
-    text-align: center;
-	font-size: 1.5em;
 }
 
 .td {
@@ -99,5 +100,10 @@
 .tde {
 	background-color: #66ffff;
 	cursor: text;
+}
+
+.deleteButton {
+	width: 20px;
+	height: 20px;
 }
 
