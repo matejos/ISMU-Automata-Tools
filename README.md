@@ -1,1 +1,1 @@
-d
+1. musia byt prechody v tabulke v zlozenych zatvorkach?
