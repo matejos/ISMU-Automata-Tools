@@ -207,10 +207,7 @@ function init(id) {
 function initTable(wp) {
 	var table = document.createElement("table");
 	wp.tableTab.table = table;
-	
 	table.selectedCell = 0;
-	table.setAttribute("class", "mytable");
-	
 	wp.tableTab.appendChild(table);
 }
 
@@ -308,6 +305,11 @@ function updateTableTabFromText(wp)	// not finished
 		{
 			table.states.push(state);
 		}
+		var state = str[i].charAt(6);
+		if (table.states.indexOf(state) == -1)
+		{
+			table.states.push(state);
+		}
 		var symb = str[i].charAt(3);
 		if (table.symbols.indexOf(symb) == -1)
 		{
@@ -378,6 +380,8 @@ function updateTableTabFromText(wp)	// not finished
 		cell.innerHTML += out;
 	}
 	
+	/*
+	// adding braces to start and end
 	for (i = 0; i < table.states.length; i++)
 	{
 		for (j = 0; j < table.symbols.length; j++)
@@ -385,6 +389,21 @@ function updateTableTabFromText(wp)	// not finished
 			var cell = table.rows[i + 2].cells[j + 2];
 			cell.innerHTML = '{' + cell.innerHTML + '}';
 		}
+	}
+	*/
+}
+
+function tableEditCellClick(evt)
+{
+	var cell = evt.target;
+	var table = cell.parentElement.parentElement.parentElement;
+	if (table.selectedCell != 0)
+	{
+		var cl = table.selectedCell;
+		cl.contentEditable = "false";
+		$(cl).switchClass(cl.defaultClass + "e", cl.defaultClass, fadeTime);
+		$(cl).switchClass(cl.defaultClass + "s", cl.defaultClass, fadeTime);
+		table.selectedCell = 0;
 	}
 }
 
@@ -397,8 +416,8 @@ function tableCellClick(evt)
 		if (table.selectedCell != 0)
 		{
 			console.log("disabled editing of " + table.selectedCell.innerHTML);
-			table.selectedCell.setAttribute("contentEditable", "false");
 			var cl = table.selectedCell;
+			cl.contentEditable = "false";
 			$(cl).switchClass(cl.defaultClass + "e", cl.defaultClass, fadeTime);
 			$(cl).switchClass(cl.defaultClass + "s", cl.defaultClass, fadeTime);
 		}
@@ -413,12 +432,14 @@ function tableCellDblClick(evt)
 	var table = cell.parentElement.parentElement.parentElement;
 	console.log("enabled editing of " + cell.innerHTML);
 	$(cell).switchClass(cell.defaultClass + "s", cell.defaultClass + "e", fadeTime);
-	cell.setAttribute("contentEditable", "true");
+	cell.contentEditable = "true";
 }
 
 function tableDeleteRow(table, cell)
 {
 	table.deleteRow(cell.parentNode.rowIndex);
+	if (cell.parentNode.cells[1] == table.selectedCell)
+		table.selectedCell = 0;
 }
 
 function tableDeleteColumn(table, cell)
@@ -437,7 +458,6 @@ function tableAddRowAddButton(table)
 	cell.setAttribute("class", "addButton noselect");
 	cell.innerHTML = "+";
 	cell.table = table;
-	//cell.cell = cell;
 	cell.setAttribute("onclick", "tableAddRow(table);");
 }
 
@@ -447,7 +467,6 @@ function tableAddRowDeleteButton(row, table)
 	cell.setAttribute("class", "deleteButton noselect");
 	cell.innerHTML = "×";
 	cell.table = table;
-	//cell.cell = cell;
 	cell.setAttribute("onclick", "tableDeleteRow(table, this);");
 }
 
@@ -456,7 +475,7 @@ function tableAddRowHeader(row, value)
 	var cell = row.insertCell(row.length);
 	cell.innerHTML = value;
 	cell.defaultClass = "rh";
-	cell.setAttribute("class", "myCell noselect " + cell.defaultClass);
+	cell.setAttribute("class", "myCell " + cell.defaultClass);
 	$(cell).click(tableCellClick);
 	$(cell).dblclick(tableCellDblClick);
 }
@@ -476,7 +495,6 @@ function tableAddColumnDeleteButton(row, table)
 	cell.setAttribute("class", "deleteButton noselect");
 	cell.innerHTML = "×";
 	cell.table = table;
-	//cell.cell = cell;
 	cell.setAttribute("onclick", "tableDeleteColumn(table, this);");
 }
 
@@ -485,17 +503,17 @@ function tableAddColumnHeader(row, value)
 	var cell = row.insertCell(row.length);
 	cell.innerHTML = value;
 	cell.setAttribute("class", "myCell ch");
-	//$(cell).click(tableCellClick);
-	cell.setAttribute("contentEditable", "true");
+	$(cell).click(tableEditCellClick);
+	cell.contentEditable = "true";
 }
 
 function tableAddCell(row)
 {
 	var cell = row.insertCell(row.length);
 	cell.innerHTML = "";
-	//$(cell).click(tableCellClick);
+	$(cell).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
-	cell.setAttribute("contentEditable", "true");
+	cell.contentEditable = "true";
 }
 
 function tableAddColumn(table)
@@ -503,7 +521,16 @@ function tableAddColumn(table)
 	table.rows[0].deleteCell(table.rows[0].cells.length - 1);
 	tableAddColumnDeleteButton(table.rows[0], table);
 	tableAddColumnAddButton(table.rows[0], table);
-	tableAddColumnHeader(table.rows[1], "x");
+	
+	var names = [];
+	for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
+		names.push(String.fromCharCode(k));
+	for (k = 0; k < table.symbols.length; k++)
+		names.splice(names.indexOf(table.symbols[k]), 1);
+	var name = names[0];
+	table.symbols.push(name);
+	
+	tableAddColumnHeader(table.rows[1], name);
 	for (i = 2; i < table.rows.length - 1; i++)
 	{
 		tableAddCell(table.rows[i]);
@@ -514,7 +541,16 @@ function tableAddRow(table)
 {
 	table.rows[table.rows.length - 1].deleteCell(0);
 	tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
-	tableAddRowHeader(table.rows[table.rows.length - 1], "Q");
+	
+	var names = [];
+	for (k = 65; k < 91; k++)
+		names.push(String.fromCharCode(k));
+	for (k = 0; k < table.states.length; k++)
+		names.splice(names.indexOf(table.states[k]), 1);
+	var name = names[0];
+	table.states.push(name);
+	
+	tableAddRowHeader(table.rows[table.rows.length - 1], name);
 	for (i = 2; i < table.rows[0].cells.length - 1; i++)
 	{
 		tableAddCell(table.rows[table.rows.length - 1]);
@@ -1338,4 +1374,13 @@ function stopMovingElement(evt) {
 			movingElement.rect.setAttribute('class', 'none');
         movingElement = 0;
     }
+}
+
+function incorrectStateSyntax(val)
+{
+	if (/[^a-z,]/.test(val))
+	{
+		return true;
+	}
+	return false;
 }
