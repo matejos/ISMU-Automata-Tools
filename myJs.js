@@ -472,17 +472,58 @@ function tableAddRowDeleteButton(row, table)
 
 function tableAddRowHeader(row, value)
 {
-	var cell = row.insertCell(row.length);
+	var cell = row.insertCell(row.cells.length);
 	cell.innerHTML = value;
 	cell.defaultClass = "rh";
 	cell.setAttribute("class", "myCell " + cell.defaultClass);
 	$(cell).click(tableCellClick);
 	$(cell).dblclick(tableCellDblClick);
+	
+	$(cell).on('focus', function() {
+		var $this = $(this);
+		$this.data('before', $this.html());
+		return $this;
+	}).on('blur keyup paste', function() {
+		var $this = $(this);
+		if ($this.data('before') !== $this.html()) {
+			$this.data('before', $this.html());
+			$this.trigger('change');
+		}
+    return $this;
+	});
+	
+	$(cell).change(tableRhChanged);
+	
+	cell.addEventListener("paste", function(e) {
+		e.preventDefault();
+		var text = e.clipboardData.getData("text/plain");
+		document.execCommand("insertHTML", false, text);
+	});
+}
+
+function tableChChanged()
+{
+	if (incorrectTransitionSyntax(this.innerHTML))
+		$(this).addClass("incorrect", fadeTime);
+	else
+		$(this).removeClass("incorrect", fadeTime);
+}
+
+function tableRhChanged()
+{
+	var state = this.innerHTML;
+	var first = state.charAt(0);
+	if (first == '→' || first == '←' || first == '↔')
+		state = state.substring(1, state.length);
+	if (incorrectStateSyntax(state))
+		$(this).addClass("incorrect", fadeTime);
+	else
+		$(this).removeClass("incorrect", fadeTime);
 }
 
 function tableAddColumnAddButton(row, table)
 {
-	var cell = row.insertCell(row.length);
+	var cell = row.insertCell(row.cells.length);
 	cell.setAttribute("class", "addButton noselect");
 	cell.innerHTML = "+";
 	cell.table = table;
@@ -491,7 +532,7 @@ function tableAddColumnAddButton(row, table)
 
 function tableAddColumnDeleteButton(row, table)
 {
-	var cell = row.insertCell(row.length);
+	var cell = row.insertCell(row.cells.length);
 	cell.setAttribute("class", "deleteButton noselect");
 	cell.innerHTML = "×";
 	cell.table = table;
@@ -500,20 +541,41 @@ function tableAddColumnDeleteButton(row, table)
 
 function tableAddColumnHeader(row, value)
 {
-	var cell = row.insertCell(row.length);
+	var cell = row.insertCell(row.cells.length);
 	cell.innerHTML = value;
 	cell.setAttribute("class", "myCell ch");
 	$(cell).click(tableEditCellClick);
 	cell.contentEditable = "true";
+	
+	$(cell).on('focus', function() {
+		var $this = $(this);
+		$this.data('before', $this.html());
+		return $this;
+	}).on('blur keyup paste', function() {
+		var $this = $(this);
+		if ($this.data('before') !== $this.html()) {
+			$this.data('before', $this.html());
+			$this.trigger('change');
+		}
+    return $this;
+	});
+	
+	$(cell).change(tableChChanged);
 }
 
 function tableAddCell(row)
 {
-	var cell = row.insertCell(row.length);
+	var cell = row.insertCell(row.cells.length);
 	cell.innerHTML = "";
 	$(cell).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	cell.contentEditable = "true";
+	
+	cell.addEventListener("paste", function(e) {
+		e.preventDefault();
+		var text = e.clipboardData.getData("text/plain");
+		document.execCommand("insertHTML", false, text);
+	});
 }
 
 function tableAddColumn(table)
@@ -564,11 +626,11 @@ function tableButton1Click(tableTab) {
 	if (cell.cellIndex == 1)
 	{
 		var state = cell.innerHTML.replace(/←|→|↔/g, '');
-		if (table.initStates.indexOf(state) != -1)
+		if (/[→|↔]/.test(cell.innerHTML)) 
 		{
 			var index = table.initStates.indexOf(state);
 			table.initStates.splice(index, 1);
-			if (table.exitStates.indexOf(state) != -1)
+			if (/[↔]/.test(cell.innerHTML))
 				cell.innerHTML = '←' + state;
 			else
 				cell.innerHTML = state;
@@ -577,12 +639,13 @@ function tableButton1Click(tableTab) {
 		else
 		{
 			tableTab.table.initStates.push(state);
-			if (table.exitStates.indexOf(state) != -1)
+			if (/[←]/.test(cell.innerHTML))
 				cell.innerHTML = '↔' + state;
 			else
 				cell.innerHTML = '→' + state;
 			console.log(state + " is now an init state");
 		}
+		$(cell).trigger("change");
 	}
 }
 
@@ -592,11 +655,11 @@ function tableButton2Click(tableTab) {
 	if (cell.cellIndex == 1)
 	{
 		var state = cell.innerHTML.replace(/←|→|↔/g, '');
-		if (table.exitStates.indexOf(state) != -1)
+		if (/[←|↔]/.test(cell.innerHTML))
 		{
 			var index = table.exitStates.indexOf(state);
 			table.exitStates.splice(index, 1);
-			if (table.initStates.indexOf(state) != -1)
+			if (/[↔]/.test(cell.innerHTML))
 				cell.innerHTML = '→' + state;
 			else
 				cell.innerHTML = state;
@@ -605,12 +668,13 @@ function tableButton2Click(tableTab) {
 		else
 		{
 			tableTab.table.exitStates.push(state);
-			if (table.initStates.indexOf(state) != -1)
+			if (/[→]/.test(cell.innerHTML))
 				cell.innerHTML = '↔' + state;
 			else
 				cell.innerHTML = '←' + state;
 			console.log(state + " is now an exit state");
 		}
+		$(cell).trigger("change");
 	}
 }
 
@@ -1287,7 +1351,7 @@ function transitionDblClick(evt)
 		
 		var key = event.keyCode || event.which || event.charCode;
 		var s_key = String.fromCharCode(key);
-		if (/[a-z,]/.test(s_key))
+		if (!incorrectTransitionsSyntax(s_key))
 		{
 			var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
 			renameTransition(rect, newname);
@@ -1376,11 +1440,29 @@ function stopMovingElement(evt) {
     }
 }
 
-function incorrectStateSyntax(val)
+function incorrectTransitionsSyntax(val)
 {
 	if (/[^a-z,]/.test(val))
 	{
 		return true;
 	}
 	return false;
+}
+
+function incorrectTransitionSyntax(val)
+{
+	if (/^[a-z]$/.test(val))
+	{
+		return false;
+	}
+	return true;
+}
+
+function incorrectStateSyntax(val)
+{
+	if (/^[A-Z]$/.test(val))
+	{
+		return false;
+	}
+	return true;
 }

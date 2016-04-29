@@ -74,6 +74,10 @@
 	cursor: pointer;
 }
 
+.incorrect {
+	background-color: #ff6666;
+}
+
 .deleteButton {
 	border: 1px solid gray;
 	padding: 0px 10px 0px 10px;
