@@ -43,28 +43,18 @@
 
 .rh {
 	transition: background-color 0.2s ease;
-	border-right: 2px solid black;
 	background-color: #cccccc;
 	text-align: right;
 	cursor: pointer;
 }
 
 .rhs {
-	border-right: 2px solid black;
 	background-color: lightgreen;
-	text-align: right;
-	cursor: pointer;
-}
-
-.rhe {
-	border-right: 2px solid black;
-	background-color: lightblue;
 	text-align: right;
 	cursor: text;
 }
 
 .ch {
-	border-bottom: 2px solid black;
 	background-color: #cccccc;
 }
 
