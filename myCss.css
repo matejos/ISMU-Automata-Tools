@@ -31,9 +31,14 @@
 
 .myCell {
 	border: 1px solid gray;
-	padding: 5px 10px 5px 10px;
-    text-align: center;
+}
+
+.myCellDiv {
 	font-size: 1.5em;
+	text-align: center;
+	width: 100%;
+	border: 0px;
+	padding: 5px 10px 5px 10px;
 }
 
 .rh {

@@ -209,6 +209,7 @@ function initTable(wp) {
 	wp.tableTab.table = table;
 	table.selectedCell = 0;
 	wp.tableTab.appendChild(table);
+	console.log(table);
 }
 
 function initTextTab(wp) {
@@ -375,10 +376,12 @@ function updateTableTabFromText(wp)	// not finished
 		var out = str[i].charAt(6);
 		
 		var cell = table.rows[table.states.indexOf(state) + 2].cells[table.symbols.indexOf(symb) + 2];
-		if (cell.innerHTML.length > 0)
-			cell.innerHTML += ',';
-		cell.innerHTML += out;
+		cell.myDiv.innerHTML = cell.myDiv.innerHTML.substring(0, cell.myDiv.innerHTML.length - 1);
+		if (cell.myDiv.innerHTML.length > 1)
+			cell.myDiv.innerHTML += ',';
+		cell.myDiv.innerHTML += out + '}';
 	}
+	
 	
 	/*
 	// adding braces to start and end
@@ -387,7 +390,7 @@ function updateTableTabFromText(wp)	// not finished
 		for (j = 0; j < table.symbols.length; j++)
 		{
 			var cell = table.rows[i + 2].cells[j + 2];
-			cell.innerHTML = '{' + cell.innerHTML + '}';
+			cell.myDiv.innerHTML = '{' + cell.myDiv.innerHTML + '}';
 		}
 	}
 	*/
@@ -396,13 +399,13 @@ function updateTableTabFromText(wp)	// not finished
 function tableEditCellClick(evt)
 {
 	var cell = evt.target;
-	var table = cell.parentElement.parentElement.parentElement;
+	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	if (table.selectedCell != 0)
 	{
-		var cl = table.selectedCell;
-		cl.contentEditable = "false";
-		$(cl).switchClass(cl.defaultClass + "e", cl.defaultClass, fadeTime);
-		$(cl).switchClass(cl.defaultClass + "s", cl.defaultClass, fadeTime);
+		var div = table.selectedCell;
+		$(div).prop("readonly", true);
+		$(div).switchClass(div.defaultClass + "e", div.defaultClass, fadeTime);
+		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
 	}
 }
@@ -410,16 +413,16 @@ function tableEditCellClick(evt)
 function tableCellClick(evt)
 {
 	var cell = evt.target;
-	var table = cell.parentElement.parentElement.parentElement;
+	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	if (table.selectedCell != cell)
 	{
+		var div = table.selectedCell;
 		if (table.selectedCell != 0)
 		{
-			console.log("disabled editing of " + table.selectedCell.innerHTML);
-			var cl = table.selectedCell;
-			cl.contentEditable = "false";
-			$(cl).switchClass(cl.defaultClass + "e", cl.defaultClass, fadeTime);
-			$(cl).switchClass(cl.defaultClass + "s", cl.defaultClass, fadeTime);
+			console.log("disabled editing of " + div.value);
+			$(div).prop("readonly", true);
+			$(div).switchClass(div.defaultClass + "e", div.defaultClass, fadeTime);
+			$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		}
 		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
 		table.selectedCell = cell;
@@ -428,15 +431,17 @@ function tableCellClick(evt)
 
 function tableCellDblClick(evt)
 {
-	var cell = evt.target;
-	var table = cell.parentElement.parentElement.parentElement;
-	console.log("enabled editing of " + cell.innerHTML);
-	$(cell).switchClass(cell.defaultClass + "s", cell.defaultClass + "e", fadeTime);
-	cell.contentEditable = "true";
+	var div = evt.target;
+	console.log(div);
+	var table = div.parentElement.parentElement.parentElement.parentElement;
+	console.log("enabled editing of " + div.value);
+	$(div).switchClass(div.defaultClass + "s", div.defaultClass + "e", fadeTime);
+	$(div).prop("readonly", false);
 }
 
 function tableDeleteRow(table, cell)
 {
+	//table.states.splice(table.states.indexOf(cell.parentNode.cells[1].myDiv.innerHTML), 1);
 	table.deleteRow(cell.parentNode.rowIndex);
 	if (cell.parentNode.cells[1] == table.selectedCell)
 		table.selectedCell = 0;
@@ -455,63 +460,72 @@ function tableAddRowAddButton(table)
 {
 	var row = table.insertRow(table.rows.length);
 	var cell = row.insertCell(0);
+	
+	var div = document.createElement("div");
 	cell.setAttribute("class", "addButton noselect");
-	cell.innerHTML = "+";
+	div.innerHTML = "+";
 	cell.table = table;
 	cell.setAttribute("onclick", "tableAddRow(table);");
+	
+	cell.appendChild(div);
 }
 
 function tableAddRowDeleteButton(row, table)
 {
 	var cell = row.insertCell(0);
+	
+	var div = document.createElement("div");
 	cell.setAttribute("class", "deleteButton noselect");
-	cell.innerHTML = "×";
+	div.innerHTML = "×";
 	cell.table = table;
 	cell.setAttribute("onclick", "tableDeleteRow(table, this);");
+	
+	cell.appendChild(div);
 }
 
 function tableAddRowHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
-	cell.innerHTML = value;
-	cell.defaultClass = "rh";
-	cell.setAttribute("class", "myCell " + cell.defaultClass);
-	$(cell).click(tableCellClick);
-	$(cell).dblclick(tableCellDblClick);
 	
-	$(cell).on('focus', function() {
-		var $this = $(this);
-		$this.data('before', $this.html());
-		return $this;
-	}).on('blur keyup paste', function() {
-		var $this = $(this);
-		if ($this.data('before') !== $this.html()) {
-			$this.data('before', $this.html());
-			$this.trigger('change');
+	var div = document.createElement("input");
+	div.value = value;
+	div.setAttribute("size", 1);
+	$(div).prop("readonly", true);
+	div.defaultClass = "rh";
+	cell.setAttribute("class", "myCell");
+	div.setAttribute("class", "myCellDiv " + div.defaultClass);
+	$(div).click(tableCellClick);
+	$(div).dblclick(tableCellDblClick);
+
+	$(div).on('input',tableRhChanged);
+
+	$(div).keypress(function (e) {
+		var kc = e.charCode;
+		if (kc == 0)
+			return true;
+		var txt = String.fromCharCode(kc);
+		if (!txt.match(/[A-Z]/)) {
+			return false;
 		}
-    return $this;
 	});
 	
-	$(cell).change(tableRhChanged);
-	
-	cell.addEventListener("paste", function(e) {
-		e.preventDefault();
-		var text = e.clipboardData.getData("text/plain");
-		document.execCommand("insertHTML", false, text);
-	});
+	cell.myDiv = div;
+	div.myCell = cell;
+	cell.appendChild(div);
 }
 
 function tableChChanged()
 {
-	if (incorrectTransitionSyntax(this.innerHTML))
+	if (incorrectTransitionSyntax(this.value))
 		$(this).addClass("incorrect", fadeTime);
 	else
 		$(this).removeClass("incorrect", fadeTime);
+	console.log("CH: " + this.value);
 }
 
 function tableRhChanged()
 {
-	var state = this.innerHTML;
+	var state = this.value;
 	var first = state.charAt(0);
 	if (first == '→' || first == '←' || first == '↔')
 		state = state.substring(1, state.length);
@@ -519,63 +533,76 @@ function tableRhChanged()
 		$(this).addClass("incorrect", fadeTime);
 	else
 		$(this).removeClass("incorrect", fadeTime);
+	console.log("RH: " + this.value);
 }
 
 function tableAddColumnAddButton(row, table)
 {
 	var cell = row.insertCell(row.cells.length);
+	
+	var div = document.createElement("div");
 	cell.setAttribute("class", "addButton noselect");
-	cell.innerHTML = "+";
+	div.innerHTML = "+";
 	cell.table = table;
 	cell.setAttribute("onclick", "tableAddColumn(table);");
+	
+	cell.appendChild(div);
 }
 
 function tableAddColumnDeleteButton(row, table)
 {
 	var cell = row.insertCell(row.cells.length);
+	
+	var div = document.createElement("div");
 	cell.setAttribute("class", "deleteButton noselect");
-	cell.innerHTML = "×";
+	div.innerHTML = "×";
 	cell.table = table;
 	cell.setAttribute("onclick", "tableDeleteColumn(table, this);");
+	div.myCell = cell;
+	
+	cell.appendChild(div);
 }
 
 function tableAddColumnHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
-	cell.innerHTML = value;
-	cell.setAttribute("class", "myCell ch");
-	$(cell).click(tableEditCellClick);
-	cell.contentEditable = "true";
 	
-	$(cell).on('focus', function() {
-		var $this = $(this);
-		$this.data('before', $this.html());
-		return $this;
-	}).on('blur keyup paste', function() {
-		var $this = $(this);
-		if ($this.data('before') !== $this.html()) {
-			$this.data('before', $this.html());
-			$this.trigger('change');
+	var div = document.createElement("input");
+	div.value = value;
+	div.setAttribute("size", 1);
+	cell.setAttribute("class", "myCell ch");
+	div.setAttribute("class", "myCellDiv");
+	$(div).click(tableEditCellClick);
+	
+	$(div).on('input',tableChChanged);
+	
+	$(div).keypress(function (e) {
+		var kc = e.charCode;
+		if (kc == 0)
+			return true;
+		var txt = String.fromCharCode(kc);
+		if (!txt.match(/[a-z]/)) {
+			return false;
 		}
-    return $this;
 	});
 	
-	$(cell).change(tableChChanged);
+	cell.myDiv = div;
+	cell.appendChild(div);
 }
 
 function tableAddCell(row)
 {
 	var cell = row.insertCell(row.cells.length);
-	cell.innerHTML = "";
-	$(cell).click(tableEditCellClick);
-	cell.setAttribute("class", "myCell");
-	cell.contentEditable = "true";
 	
-	cell.addEventListener("paste", function(e) {
-		e.preventDefault();
-		var text = e.clipboardData.getData("text/plain");
-		document.execCommand("insertHTML", false, text);
-	});
+	var div = document.createElement("input");
+	div.value = "{}";
+	div.setAttribute("size", 1);
+	$(div).click(tableEditCellClick);
+	cell.setAttribute("class", "myCell");
+	div.setAttribute("class", "myCellDiv");
+	
+	cell.myDiv = div;
+	cell.appendChild(div);
 }
 
 function tableAddColumn(table)
@@ -601,6 +628,7 @@ function tableAddColumn(table)
 
 function tableAddRow(table)
 {
+	console.log("adding row");
 	table.rows[table.rows.length - 1].deleteCell(0);
 	tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
 	
@@ -623,58 +651,58 @@ function tableAddRow(table)
 function tableButton1Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.cellIndex == 1)
+	if (cell.myCell.cellIndex == 1)
 	{
-		var state = cell.innerHTML.replace(/←|→|↔/g, '');
-		if (/[→|↔]/.test(cell.innerHTML)) 
+		var state = cell.value.replace(/←|→|↔/g, '');
+		if (/[→|↔]/.test(cell.value)) 
 		{
 			var index = table.initStates.indexOf(state);
 			table.initStates.splice(index, 1);
-			if (/[↔]/.test(cell.innerHTML))
-				cell.innerHTML = '←' + state;
+			if (/[↔]/.test(cell.value))
+				cell.value = '←' + state;
 			else
-				cell.innerHTML = state;
+				cell.value = state;
 			console.log(state + " is now not an init state");
 		}
 		else
 		{
 			tableTab.table.initStates.push(state);
-			if (/[←]/.test(cell.innerHTML))
-				cell.innerHTML = '↔' + state;
+			if (/[←]/.test(cell.value))
+				cell.value = '↔' + state;
 			else
-				cell.innerHTML = '→' + state;
+				cell.value = '→' + state;
 			console.log(state + " is now an init state");
 		}
-		$(cell).trigger("change");
+		$(cell).trigger("input");
 	}
 }
 
 function tableButton2Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.cellIndex == 1)
+	if (cell.myCell.cellIndex == 1)
 	{
-		var state = cell.innerHTML.replace(/←|→|↔/g, '');
-		if (/[←|↔]/.test(cell.innerHTML))
+		var state = cell.value.replace(/←|→|↔/g, '');
+		if (/[←|↔]/.test(cell.value))
 		{
 			var index = table.exitStates.indexOf(state);
 			table.exitStates.splice(index, 1);
-			if (/[↔]/.test(cell.innerHTML))
-				cell.innerHTML = '→' + state;
+			if (/[↔]/.test(cell.value))
+				cell.value = '→' + state;
 			else
-				cell.innerHTML = state;
+				cell.value = state;
 			console.log(state + " is now not an exit state");
 		}
 		else
 		{
 			tableTab.table.exitStates.push(state);
-			if (/[→]/.test(cell.innerHTML))
-				cell.innerHTML = '↔' + state;
+			if (/[→]/.test(cell.value))
+				cell.value = '↔' + state;
 			else
-				cell.innerHTML = '←' + state;
+				cell.value = '←' + state;
 			console.log(state + " is now an exit state");
 		}
-		$(cell).trigger("change");
+		$(cell).trigger("input");
 	}
 }
 
