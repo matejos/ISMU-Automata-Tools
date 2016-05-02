@@ -34,12 +34,14 @@ d & \{b\} & \emptyset \\ \hline
 :e="b:DFA-DFA:init=a (a,a)=b (a,b)=ac (b,a)=b (ac,a)=abc (ac,b)=ac (abc,a)=abc (abc,b)=ac F={a, b, ac, abc}" ok
 
 --
-<!--________________________________________Příklad 2________________________________________-->
-<p>Napište regulární gramatiku generující jazyk <M>L=\{w\in\{a,b\}^*\mid \#_a(w) </M> je liché <M>\}</M>.</p>
-
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q2a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q2c">Text</a></li></ul></ul>
-
-<div id="q2" class="tab-content"><script>init("q2");</script></div>
- 
-  :e 
-:e="b:DFA-GRA:init=q0 (q0,a)=q1 (q0,b)=q0 (q1,a)=q0 (q1,b)=q1 F={q1}" ok
+::Převod NFA na RE::<p>Najděte RE pro nedeterministický automat zadaný tabulkou:
+<br><M> \begin{tabular}{|r|c|c|c|c|} \hline& $a$ & $b$ & $c$ & $d$ 
+\\ \hline $\leftrightarrow$ 1 & $\emptyset$ & $\{2, 4\}$  & $\{3\}$  & $\emptyset$
+\\ \hline  2 & $\emptyset$ & $\{3\}$  & $\emptyset$ & $\{4\}$ 
+\\ \hline $\leftarrow$ 3 & $\{1, 4\}$  & $\emptyset$ & $\{1\}$  & $\emptyset$
+\\ \hline $\leftarrow$ 4 & $\emptyset$ & $\{1\}$  & $\emptyset$ & $\emptyset$
+\\ \hline \end{tabular}
+</M></p>
+<!-- init=1 (1,a)={1,2,5,6} (1,b)={2,3,5,6} (2,a)={2,5,6} (2,b)={2,3,5,6} (3,b)={2,6} (4,a)={1,2,5,6} (4,b)={1,2,3,4,5,6} (4,c)={2,3,6} (5,a)={2,5,6} (5,b)={2,3,5,6} (5,c)={2,3,6} (6,a)={2,5,6} (6,b)={2,3,5,6} (6,c)={2,3,6} F={6}-- >
+ :e
+:e="b:EFA-NFA:init=1 (1,a)={1,2} (1,\e)={2} (2,a)={5} (2,b)={3,5} (3,b)={6} (4,b)={4} (4,\e)={1,5} (5,a)={5} (5,c)={3} (5,\e)={6} (6,c)={3,6} (6,\e)={2} F={6}" ok

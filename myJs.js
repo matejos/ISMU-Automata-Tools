@@ -446,17 +446,16 @@ function tableCellClick(evt)
 	}
 }
 
-function tableDeleteRow(table, cell)
+function tableDeleteRow(table, index)
 {
 	//table.states.splice(table.states.indexOf(cell.parentNode.cells[1].myDiv.innerHTML), 1);
-	table.deleteRow(cell.parentNode.rowIndex);
-	if (cell.parentNode.cells[1] == table.selectedCell)
+	if (index == table.selectedCell.rowIndex)
 		table.selectedCell = 0;
+	table.deleteRow(index);
 }
 
-function tableDeleteColumn(table, cell)
+function tableDeleteColumn(table, index)
 {
-	var index = cell.cellIndex;
 	for (i = 0; i < table.rows.length - 1; i++)
 	{
 		table.rows[i].deleteCell(index);
@@ -485,7 +484,7 @@ function tableAddRowDeleteButton(row, table)
 	cell.setAttribute("class", "deleteButton noselect");
 	div.innerHTML = "×";
 	cell.table = table;
-	cell.setAttribute("onclick", "tableDeleteRow(table, this);");
+	cell.setAttribute("onclick", "tableDeleteRow(table, this.parentNode.rowIndex);");
 	
 	cell.appendChild(div);
 }
@@ -504,6 +503,8 @@ function tableAddRowHeader(row, value)
 	$(div).click(tableCellClick);
 
 	$(div).on('input',tableRhChanged);
+	
+	$(div).focusout(tableRhChangedFinal);
 
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
@@ -518,6 +519,11 @@ function tableAddRowHeader(row, value)
 	cell.myDiv = div;
 	div.myCell = cell;
 	cell.appendChild(div);
+}
+
+function tableRhChangedFinal()
+{
+	console.log("RH incorrect: " + $(this).hasClass("incorrect"));
 }
 
 function tableChChanged()
@@ -572,7 +578,7 @@ function tableAddColumnDeleteButton(row, table)
 	cell.setAttribute("class", "deleteButton noselect");
 	div.innerHTML = "×";
 	cell.table = table;
-	cell.setAttribute("onclick", "tableDeleteColumn(table, this);");
+	cell.setAttribute("onclick", "tableDeleteColumn(table, this.cellIndex);");
 	div.myCell = cell;
 	
 	cell.appendChild(div);
@@ -756,7 +762,6 @@ function updateTextTabFromEditor(wp)
 }
 
 function button1Click(rect) {
-	updateTableTab(rect.parentSvg.wp);
     if (rect.button1.style.borderStyle == "inset") {
         rect.button1.style.borderStyle = "outset";
         rect.mode = modeEnum.SELECT;
@@ -997,6 +1002,98 @@ function stateDblClick(evt)
 	rect.mode = modeEnum.ADD_TRANSITION;
 	selectStateForTransition(state);
 }
+function createTransition(state1, state2, symbols)
+{
+	var x1 = state1.getAttribute("cx");
+	var y1 = state1.getAttribute("cy");
+	var x2 = state2.getAttribute("cx");
+	var y2 = state2.getAttribute("cy");
+	var aLine = document.createElementNS(svgns, 'path');
+	var att = "M "+x1+" "+y1+" Q ";
+	att += controlPoint(x1, y1, x2, y2);
+	att += " "+x2+" "+y2;
+	aLine.setAttribute('d', att);
+	aLine.setAttribute('stroke', 'black');
+	aLine.setAttribute('stroke-width', 3);
+	aLine.setAttribute('fill', 'none');
+	aLine.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
+	aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
+	aLine.parentSvg = state2.parentSvg;
+	aLine.name = symbols;
+	aLine.start = state1;
+	aLine.end = state2;
+	
+	var defs = document.createElementNS(svgns, 'defs');
+	var marker = document.createElementNS(svgns, 'marker');
+	marker.setAttribute('id', 'Triangle');
+	marker.setAttribute('viewBox', '0 0 10 10');
+	marker.setAttribute('refX', '22');
+	marker.setAttribute('refY', '5');
+	marker.setAttribute('markerUnits', 'strokeWidth');
+	marker.setAttribute('markerWidth', '6');
+	marker.setAttribute('markerHeight', '6');
+	marker.setAttribute('orient', 'auto');
+	var markerpath = document.createElementNS(svgns, 'path');
+	markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+	markerpath.setAttribute('fill', 'black');
+	marker.appendChild(markerpath);
+	
+	state2.parentSvg.appendChild(defs);
+	defs.appendChild(marker);
+	aLine.setAttribute('marker-end', 'url(#Triangle)');
+	
+	var str = aLine.getAttribute('d').split(' ');
+	var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+	var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+	
+	var newText = document.createElementNS(svgns, 'text');
+	newText.setAttributeNS(null, "x", tx);
+	newText.setAttributeNS(null, "y", ty);
+	newText.setAttribute('pointer-events', 'none');
+	newText.setAttribute('cursor', 'default');
+	newText.setAttribute('font-size', 20);
+	newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
+	newText.setAttribute('dy', ".3em");							// vertical alignment
+	newText.setAttribute('text-anchor', "middle");				// horizontal alignment
+	newText.setAttribute('class', 'noselect');
+	newText.parentSvg = state2.parentSvg;
+	var textNode = document.createTextNode(aLine.name);
+	newText.appendChild(textNode);
+	newText.node = textNode;
+	
+	var newRect = document.createElementNS(svgns, 'rect');
+	newRect.setAttribute("fill", "#ffffff");
+	newRect.setAttribute("width", 30);
+	newRect.setAttribute("height", 30);
+	moveTextRect(newRect, tx, ty);
+	newRect.setAttributeNS(null, "stroke", "black");
+	newRect.setAttributeNS(null, "stroke-width", 1);
+	newRect.parentSvg = state2.parentSvg;
+	newRect.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
+	newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
+	newRect.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
+	newRect.line = aLine;
+	$(newRect).dblclick(transitionDblClick);
+
+	aLine.text = newText;
+	aLine.rect = newRect;
+	newText.line = aLine;
+	
+	state2.parentSvg.appendChild(aLine);
+	state2.parentSvg.appendChild(newRect);
+	state2.parentSvg.appendChild(aLine.text);
+	putOnTop(state2);
+	putOnTop(state1);
+	whitenState(state1);
+	state1.lines1.push(aLine);
+	state2.lines2.push(aLine);
+	state2.parentRect.mode = modeEnum.SELECT;
+	state2.parentRect.button2.style.borderStyle = "outset";
+	
+	state2.parentSvg.makingTransition = 0;
+	state2.parentSvg.selectedElement = 0;
+}
+
 function clickState(evt) {
 	evt.preventDefault();
     var state = evt.target;
@@ -1016,99 +1113,7 @@ function clickState(evt) {
 						deselectElement(state.parentRect.parentSvg);
 						return;
 					}
-                var x1 = state.parentSvg.makingTransition.getAttribute("cx");
-                var y1 = state.parentSvg.makingTransition.getAttribute("cy");
-                var x2 = state.getAttribute("cx");
-                var y2 = state.getAttribute("cy");
-                var aLine = document.createElementNS(svgns, 'path');
-                var att = "M "+x1+" "+y1+" Q ";
-                att += controlPoint(x1, y1, x2, y2);
-                att += " "+x2+" "+y2;
-                aLine.setAttribute('d', att);
-                aLine.setAttribute('stroke', 'black');
-                aLine.setAttribute('stroke-width', 3);
-                aLine.setAttribute('fill', 'none');
-                aLine.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
-                aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
-                aLine.parentSvg = state.parentSvg;
-                aLine.name = 'a';
-                aLine.start = state.parentSvg.makingTransition;
-                aLine.end = state;
-                
-                var defs = document.createElementNS(svgns, 'defs');
-                var marker = document.createElementNS(svgns, 'marker');
-                marker.setAttribute('id', 'Triangle');
-                marker.setAttribute('viewBox', '0 0 10 10');
-                marker.setAttribute('refX', '22');
-                marker.setAttribute('refY', '5');
-               	marker.setAttribute('markerUnits', 'strokeWidth');
-                marker.setAttribute('markerWidth', '6');
-                marker.setAttribute('markerHeight', '6');
-                marker.setAttribute('orient', 'auto');
-                var markerpath = document.createElementNS(svgns, 'path');
-                markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-                markerpath.setAttribute('fill', 'black');
-    			marker.appendChild(markerpath);
-    			
-                state.parentSvg.appendChild(defs);
-   				defs.appendChild(marker);
-                aLine.setAttribute('marker-end', 'url(#Triangle)');
-				
-                var str = aLine.getAttribute('d').split(' ');
-                var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-                var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-				
-                var newText = document.createElementNS(svgns, 'text');
-                newText.setAttributeNS(null, "x", tx);
-                newText.setAttributeNS(null, "y", ty);
-                newText.setAttribute('pointer-events', 'none');
-                newText.setAttribute('cursor', 'default');
-                newText.setAttribute('font-size', 20);
-                newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
-                newText.setAttribute('dy', ".3em");							// vertical alignment
-				newText.setAttribute('text-anchor', "middle");				// horizontal alignment
-                newText.setAttribute('class', 'noselect');
-                newText.parentSvg = state.parentSvg;
-                var textNode = document.createTextNode(aLine.name);
-                newText.appendChild(textNode);
-                newText.node = textNode;
-				
-				var newRect = document.createElementNS(svgns, 'rect');
-				newRect.setAttribute("fill", "#ffffff");
-				newRect.setAttribute("width", 30);
-				newRect.setAttribute("height", 30);
-				moveTextRect(newRect, tx, ty);
-				newRect.setAttributeNS(null, "stroke", "black");
-				newRect.setAttributeNS(null, "stroke-width", 1);
-				newRect.parentSvg = state.parentSvg;
-				newRect.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
-                newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
-                newRect.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
-				newRect.line = aLine;
-				$(newRect).dblclick(transitionDblClick);
-
-                aLine.text = newText;
-				aLine.rect = newRect;
-                newText.line = aLine;
-                
-                state.parentSvg.appendChild(aLine);
-				state.parentSvg.appendChild(newRect);
-                state.parentSvg.appendChild(aLine.text);
-                putOnTop(state);
-                putOnTop(state.parentSvg.makingTransition);
-                whitenState(state.parentSvg.makingTransition);
-                state.parentSvg.makingTransition.lines1.push(aLine);
-                state.lines2.push(aLine);
-                state.parentRect.mode = modeEnum.SELECT;
-                state.parentRect.button2.style.borderStyle = "outset";
-                
-                /*var debug = state.parentSvg.makingTransition.name + " -> ";
-                for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
-                    debug += state.parentSvg.makingTransition.lines1[i].end.name + ",";
-                console.log(debug);*/
-				
-                state.parentSvg.makingTransition = 0;
-				state.parentSvg.selectedElement = 0;
+                createTransition(state.parentSvg.makingTransition, state, "a");
             } else {
                 selectStateForTransition(state);
             }
