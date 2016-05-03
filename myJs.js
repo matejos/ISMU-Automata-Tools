@@ -314,14 +314,14 @@ function updateTableTabFromText(wp)	// not finished
 	
 	for (i = 0; i < str.length; i++)
 	{
-		if (/^init=[A-Z]+$/.test(str[i]))
+		if (/^init=[^ ]+$/.test(str[i]))
 		{
 			str[i] = str[i].substring(5, str[i].length);
 			initStates.push(str[i]);
 			if (table.states.indexOf(str[i]) == -1)
 				table.states.push(str[i]);
 		}
-		else if (/^F={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))
+		else if (/^F={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))
 		{
 			str[i] = str[i].substring(3, str[i].length - 1);
 			var exits = str[i].split(",");
@@ -332,7 +332,7 @@ function updateTableTabFromText(wp)	// not finished
 					table.states.push(exits[j]);
 			}
 		}
-		else if (/^\([A-Z]+,[a-z]+\)=[A-Z]+$/.test(str[i]))	// DFA
+		else if (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i]))	// DFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -344,7 +344,7 @@ function updateTableTabFromText(wp)	// not finished
 			if (table.symbols.indexOf(symb) == -1)
 				table.symbols.push(symb);
 		}
-		else if (/^\([A-Z]+,[a-z]+\)={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))	// NFA
+		else if (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))	// NFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -423,7 +423,7 @@ function updateTableTabFromText(wp)	// not finished
 	// filling transitions
 	for (i = 0; i < str.length; i++)
 	{
-		if (/^\([A-Z]+,[a-z]+\)=[A-Z]+$/.test(str[i]))	// DFA
+		if (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i]))	// DFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -433,8 +433,9 @@ function updateTableTabFromText(wp)	// not finished
 			if (cell.myDiv.value.length > 1)
 				cell.myDiv.value += ',';
 			cell.myDiv.value += state2 + '}';
+			cell.myDiv.prevValue = cell.myDiv.value;
 		}
-		else if (/^\([A-Z]+,[a-z]+\)={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))	// NFA
+		else if (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))	// NFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -448,6 +449,7 @@ function updateTableTabFromText(wp)	// not finished
 				cell.myDiv.value += states2[j];
 			}
 			cell.myDiv.value += '}';
+			cell.myDiv.prevValue = cell.myDiv.value;
 		}
 	}
 }
@@ -492,11 +494,7 @@ function tableDeleteRow(table, index)
 	// Delete state in editor
 	var state = table.rows[index].cells[1].myDiv.value;
 	state = removePrefixFromState(state);
-	for (i = 0; i < table.wp.svg.rect.states.length; i++)
-	{
-		if (table.wp.svg.rect.states[i].name == state)
-			deleteState(table.wp.svg.rect.states[i]);
-	}
+	deleteState(findState(table.wp.svg.rect, state));
 	
 	// Delete table row
 	table.deleteRow(index);
@@ -597,7 +595,6 @@ function tableRhChangedFinal()
 		// Rename the state in editor
 		var table = $(this).parent().parent().parent().parent().get(0);
 		var div = $(this).get(0);
-		console.log(table);
 		var prevName = div.prevValue;
 		prevName = removePrefixFromState(prevName);
 		var newName = div.value;
@@ -650,7 +647,6 @@ function tableChChangedFinal()
 	{
 		var table = $(this).parent().parent().parent().parent().get(0);
 		var div = $(this).get(0);
-		console.log(table);
 		var prevName = div.prevValue;
 		var newName = div.value;
 		
@@ -683,6 +679,107 @@ function tableCellChanged()
 		$(this).removeClass("incorrect", fadeTime);
 	console.log("Cell: " + this.value);
 }
+
+function tableCellChangedFinal()
+{
+	if ($(this).hasClass("incorrect") == false)
+	{
+		var table = $(this).parent().parent().parent().parent().get(0);
+		var div = $(this).get(0);
+		var prevName = div.prevValue;
+		var newName = div.value;
+		prevName = prevName.substring(1, prevName.length - 1);
+		newName = newName.substring(1, newName.length - 1);
+		
+		var stateName = table.rows[div.myCell.parentElement.rowIndex].cells[1].myDiv.value;
+		stateName = removePrefixFromState(stateName);
+		var state = findState(table.wp.svg.rect, stateName);
+		var symbol = table.rows[1].cells[div.myCell.cellIndex].myDiv.value;
+		
+		var prevStates = prevName.split(",");
+		var newStates = newName.split(",");
+		/*
+		console.log(prevName);
+		console.log(newName);
+		console.log(stateName);
+		console.log(symbol);
+		*/
+		
+		// Delete the transitions in editor
+		console.log(prevStates);
+		for (var i = 0; i < prevStates.length; i++)
+		{
+			if (newStates.indexOf(prevStates[i]) == -1)
+			{
+				var state2Name = prevStates[i];
+				var state2 = findState(table.wp.svg.rect, state2Name);
+				for (var j = 0; j < state.lines1.length; j++)
+				{
+					if (state.lines1[j].end == state2)
+					{
+						var trs = state.lines1[j].name.split(",");
+						if (trs.length <= 1)
+						{
+							deleteTransition(state.lines1[j]);
+						}
+						else
+						{
+							console.log("renaming " + state.name + " from " + state.lines1[j].name);
+							trs.splice(trs.indexOf(symbol), 1);
+							renameTransition(state.lines1[j], trs.toString());
+							console.log("to " + state.lines1[j].name);
+						}
+						break;
+					}
+				}
+			}
+		}
+		
+		//Add the transitions in editor
+		if (newStates.length == 1 && newStates[0] == "")
+		{
+			newStates = [];
+		}
+		console.log(newStates);
+		for (var i = 0; i < newStates.length; i++)
+		{
+			if (prevStates.indexOf(newStates[i]) == -1)
+			{
+				var state2Name = newStates[i];
+				console.log("searching for " + state2Name);
+				var state2 = findState(table.wp.svg.rect, state2Name);
+				if (state2 == -1)
+				{
+					console.log("adding state " + state2Name + " and transition " + symbol);
+					state2 = createStateAbs(table.wp.svg.rect, 100, 100, state2Name);
+					createTransition(state, state2, symbol);
+				}
+				else
+				{
+					var found = false;
+					for (var j = 0; j < state.lines1.length; j++)
+					{
+						if (state.lines1[j].end == state2)
+						{
+							var trs = state.lines1[j].name + "," + symbol;
+							renameTransition(state.lines1[j], trs.toString());
+							found = true;
+							break;
+						}
+					}
+					if (!found)
+					{
+						createTransition(state, state2, symbol);
+					}
+				}
+			}
+		}
+		
+		div.prevValue = div.value;
+	}
+}
+
+
 
 function removePrefixFromState(state)
 {
@@ -765,23 +862,26 @@ function tableAddCell(row)
 	
 	var div = document.createElement("input");
 	div.value = "{}";
+	div.prevValue = div.value;
 	div.setAttribute("size", 1);
 	$(div).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv");
 	
 	$(div).on('input',tableCellChanged);
+	$(div).focusout(tableCellChangedFinal);
 
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
 		var txt = String.fromCharCode(kc);
-		if (!txt.match(/[A-Z,\{\}]/)) {
+		if (!txt.match(/[^ =()]/)) {
 			return false;
 		}
 	});
 	
+	div.myCell = cell;
 	cell.myDiv = div;
 	cell.appendChild(div);
 }
@@ -839,24 +939,24 @@ function tableButton1Click(tableTab) {
 	if (cell != 0 && cell.myCell.cellIndex == 1)
 	{
 		var state = cell.value.replace(/←|→|↔/g, '');
+		var on;
 		if (/[→|↔]/.test(cell.value)) 
 		{
-			var index = table.initStates.indexOf(state);
-			table.initStates.splice(index, 1);
 			if (/[↔]/.test(cell.value))
 				cell.value = '←' + state;
 			else
 				cell.value = state;
 			console.log(state + " is now not an init state");
+			on = false;
 		}
 		else
 		{
-			tableTab.table.initStates.push(state);
 			if (/[←]/.test(cell.value))
 				cell.value = '↔' + state;
 			else
 				cell.value = '→' + state;
 			console.log(state + " is now an init state");
+			on = true;
 		}
 		
 		// Edit init state in editor
@@ -864,7 +964,10 @@ function tableButton1Click(tableTab) {
 		{
 			if (table.wp.svg.rect.states[i].name == state)
 			{
-				toggleInitState(table.wp.svg.rect.states[i]);
+				if (on)
+					toggleInitStateOn(table.wp.svg.rect.states[i]);
+				else
+					toggleInitStateOff(table.wp.svg.rect.states[i]);
 				break;
 			}
 		}
@@ -879,24 +982,24 @@ function tableButton2Click(tableTab) {
 	if (cell != 0 && cell.myCell.cellIndex == 1)
 	{
 		var state = cell.value.replace(/←|→|↔/g, '');
+		var on;
 		if (/[←|↔]/.test(cell.value))
 		{
-			var index = table.exitStates.indexOf(state);
-			table.exitStates.splice(index, 1);
 			if (/[↔]/.test(cell.value))
 				cell.value = '→' + state;
 			else
 				cell.value = state;
 			console.log(state + " is now not an exit state");
+			on = false;
 		}
 		else
 		{
-			tableTab.table.exitStates.push(state);
 			if (/[→]/.test(cell.value))
 				cell.value = '↔' + state;
 			else
 				cell.value = '←' + state;
 			console.log(state + " is now an exit state");
+			on = true;
 		}
 		
 		// Edit exit state in editor
@@ -904,7 +1007,10 @@ function tableButton2Click(tableTab) {
 		{
 			if (table.wp.svg.rect.states[i].name == state)
 			{
-				toggleEndState(table.wp.svg.rect.states[i]);
+				if (on)
+					toggleEndStateOn(table.wp.svg.rect.states[i]);
+				else
+					toggleEndStateOff(table.wp.svg.rect.states[i]);
 				break;
 			}
 		}
@@ -968,70 +1074,90 @@ function button2Click(rect) {
     }
 }
 
+function toggleInitStateOn(state)
+{
+	var x2 = state.getAttribute("cx");
+	var x1 = x2 - circleSize * 2.5;
+	var y = state.getAttribute("cy");
+	var aLine = document.createElementNS(svgns, 'path');
+	var att = "M "+x1+" "+y+" L ";
+	att += x2+" "+y;
+	aLine.setAttribute('d', att);
+	aLine.setAttribute('stroke', 'black');
+	aLine.setAttribute('stroke-width', 3);
+	aLine.setAttribute('fill', 'none');
+	aLine.parentSvg = state.parentSvg;
+	
+	var defs = document.createElementNS(svgns, 'defs');
+	var marker = document.createElementNS(svgns, 'marker');
+	marker.setAttribute('id', 'Triangle');
+	marker.setAttribute('viewBox', '0 0 10 10');
+	marker.setAttribute('refX', '22');
+	marker.setAttribute('refY', '5');
+	marker.setAttribute('markerUnits', 'strokeWidth');
+	marker.setAttribute('markerWidth', '6');
+	marker.setAttribute('markerHeight', '6');
+	marker.setAttribute('orient', 'auto');
+	var markerpath = document.createElementNS(svgns, 'path');
+	markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+	markerpath.setAttribute('fill', 'black');
+	marker.appendChild(markerpath);
+	
+	state.parentSvg.appendChild(defs);
+	defs.appendChild(marker);
+	aLine.setAttribute('marker-end', 'url(#Triangle)');
+	
+	state.parentSvg.appendChild(aLine);
+	putOnTop(state);
+	state.init = aLine;
+}
+
+function toggleInitStateOff(state)
+{
+	state.parentSvg.removeChild(state.init);
+	state.init = 0;
+}
+
 function toggleInitState(state)
 {
 	if (state.init === 0) {
-		var x2 = state.getAttribute("cx");
-		var x1 = x2 - circleSize * 2.5;
-		var y = state.getAttribute("cy");
-		var aLine = document.createElementNS(svgns, 'path');
-		var att = "M "+x1+" "+y+" L ";
-		att += x2+" "+y;
-		aLine.setAttribute('d', att);
-		aLine.setAttribute('stroke', 'black');
-		aLine.setAttribute('stroke-width', 3);
-		aLine.setAttribute('fill', 'none');
-		aLine.parentSvg = state.parentSvg;
-		
-		var defs = document.createElementNS(svgns, 'defs');
-		var marker = document.createElementNS(svgns, 'marker');
-		marker.setAttribute('id', 'Triangle');
-		marker.setAttribute('viewBox', '0 0 10 10');
-		marker.setAttribute('refX', '22');
-		marker.setAttribute('refY', '5');
-		marker.setAttribute('markerUnits', 'strokeWidth');
-		marker.setAttribute('markerWidth', '6');
-		marker.setAttribute('markerHeight', '6');
-		marker.setAttribute('orient', 'auto');
-		var markerpath = document.createElementNS(svgns, 'path');
-		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-		markerpath.setAttribute('fill', 'black');
-		marker.appendChild(markerpath);
-		
-		state.parentSvg.appendChild(defs);
-		defs.appendChild(marker);
-		aLine.setAttribute('marker-end', 'url(#Triangle)');
-		
-		state.parentSvg.appendChild(aLine);
-		putOnTop(state);
-		state.init = aLine;
+		toggleInitStateOn(state)
 	} else {
-		state.parentSvg.removeChild(state.init);
-		state.init = 0;
+		toggleInitStateOff(state)
 	}
+}
+
+function toggleEndStateOn(state)
+{
+	var shape = document.createElementNS(svgns, "circle");
+	shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
+	shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
+	shape.setAttributeNS(null, "r", circleSize - 5);
+	if (state.parentSvg.selectedElement == state)
+		shape.setAttributeNS(null, "fill", "lightgreen");
+	else
+		shape.setAttributeNS(null, "fill", "white");
+	shape.setAttributeNS(null, "stroke", "black");
+	shape.setAttributeNS(null, "stroke-width", 1);
+	shape.parentSvg = state.parentSvg;
+	shape.parentRect = state.parentRect;
+	shape.setAttribute('pointer-events', 'none');
+	state.end = shape;
+	putOnTop(state);
+}
+
+function toggleEndStateOff(state)
+{
+	state.parentSvg.removeChild(state.end);
+	state.end = 0;
 }
 
 function toggleEndState(state)
 {
 	if (state.end === 0) {
-		var shape = document.createElementNS(svgns, "circle");
-		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
-		shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
-		shape.setAttributeNS(null, "r", circleSize - 5);
-		if (state.parentSvg.selectedElement == state)
-			shape.setAttributeNS(null, "fill", "lightgreen");
-		else
-			shape.setAttributeNS(null, "fill", "white");
-		shape.setAttributeNS(null, "stroke", "black");
-		shape.setAttributeNS(null, "stroke-width", 1);
-		shape.parentSvg = state.parentSvg;
-		shape.parentRect = state.parentRect;
-		shape.setAttribute('pointer-events', 'none');
-		state.end = shape;
-		putOnTop(state);
+		toggleEndStateOn(state)
 	} else {
-		state.parentSvg.removeChild(state.end);
-		state.end = 0;
+		toggleEndStateOff(state)
 	}
 }
 
@@ -1127,7 +1253,7 @@ function button6Click(rect) {
 	document.getElementsByTagName('textarea')[x].value = out; 
 }
 
-function createStateAbs(rect, x, y)
+function createStateAbs(rect, x, y, name)
 {
 	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
 	var shape = document.createElementNS(svgns, "circle");
@@ -1153,12 +1279,15 @@ function createStateAbs(rect, x, y)
 	shape.end = 0;
 	shape.lines1 = [];
 	shape.lines2 = [];
-	var names = [];
-	for (k = 65; k < 91; k++)
-		names.push(String.fromCharCode(k));
-	for (k = 0; k < rect.states.length; k++)
-		names.splice(names.indexOf(rect.states[k].name), 1);
-	var name = names[0];
+	if (!name)
+	{
+		var names = [];
+		for (k = 65; k < 91; k++)
+			names.push(String.fromCharCode(k));
+		for (k = 0; k < rect.states.length; k++)
+			names.splice(names.indexOf(rect.states[k].name), 1);
+		name = names[0];
+	}
 	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
 	shape.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
@@ -1183,6 +1312,7 @@ function createStateAbs(rect, x, y)
 	putOnTop(shape);
 	rect.button1.style.borderStyle = "outset";
 	rect.mode = modeEnum.SELECT;
+	return shape;
 }
 
 function createState(evt) 
@@ -1419,6 +1549,17 @@ function selectElement(evt) {
 		}
 	});
 }
+
+function findState(rect, state)
+{
+	for (var i = 0; i < rect.states.length; i++)
+	{
+		if (rect.states[i].name == state)
+			return rect.states[i];
+	}
+	return -1;
+}
+
 function deleteState(state)
 {
 	console.log("deleting state " + state.name);
@@ -1464,6 +1605,7 @@ function adjustTransitionWidth(line)
 
 function renameTransition(line, str)
 {
+	console.log("renaming transition '"+line.name+"' to '"+str+"'");
 	line.name = str;
 	line.text.node.nodeValue = str;
 	adjustTransitionWidth(line);
@@ -1773,7 +1915,7 @@ function stopMovingElement(evt) {
 
 function editorTransitionsCharsSyntax()
 {
-	return /[a-z,]/;
+	return /[^ =()]/;
 }
 
 function incorrectEditorTransitionsCharsSyntax(val)
@@ -1783,7 +1925,7 @@ function incorrectEditorTransitionsCharsSyntax(val)
 
 function editorTransitionsSyntax()
 {
-	return /^[a-z](,[a-z])*$/;
+	return /^[^ ,]+(,[^ ,]+)*$/;
 }
 
 function incorrectEditorTransitionsSyntax(val)
@@ -1793,7 +1935,7 @@ function incorrectEditorTransitionsSyntax(val)
 
 function tableTransitionsSyntax()
 {
-	return /^\{\}$|^\{[A-Z](,[A-Z])*\}$/;
+	return /^\{\}$|^\{[^ ,]+(,[^ ,]+)*\}$/;
 }
 
 function incorrectTableTransitionsSyntax(val)
@@ -1803,7 +1945,7 @@ function incorrectTableTransitionsSyntax(val)
 
 function transitionSyntax()
 {
-	return /^[a-z]$/;
+	return /^[^ =(),]+$/;
 }
 
 function incorrectTransitionSyntax(val)
@@ -1812,7 +1954,7 @@ function incorrectTransitionSyntax(val)
 }
 function stateSyntax()
 {
-	return /^[A-Z]+$/;
+	return /^[^ =(),]+$/;
 }
 function incorrectStateSyntax(val)
 {
