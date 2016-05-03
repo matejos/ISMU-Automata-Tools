@@ -112,7 +112,7 @@ function init(id) {
 	
     
     var initState = document.createElementNS(svgns, "circle");
-    initState.setAttributeNS(null, "cx", 50);
+    initState.setAttributeNS(null, "cx", 70);
     initState.setAttributeNS(null, "cy", 50);
     initState.setAttributeNS(null, "r", circleSize);
     initState.setAttributeNS(null, "fill", "white");
@@ -120,7 +120,7 @@ function init(id) {
     initState.setAttributeNS(null, "stroke-width", 1);
     initState.parentSvg = svg;
     initState.parentRect = rect;
-	initState.init = 1;
+	initState.init = 0;
     initState.end = 0;
     initState.lines1 = [];
     initState.lines2 = [];
@@ -145,6 +145,7 @@ function init(id) {
 
     initState.text = newText;
 
+	toggleInitState(initState);
     rect.states.push(initState);
     putOnTop(initState);
     rect.initState = initState;
@@ -376,6 +377,7 @@ function updateTableTabFromText(wp)	// not finished
 	// column add button
 	tableAddColumnAddButton(row, table);
 	
+	console.log(table.states.length);
 	// filling out rows' headers from states
 	for (i = 0; i < table.states.length; i++)
 	{
@@ -842,6 +844,17 @@ function tableButton1Click(tableTab) {
 				cell.value = '→' + state;
 			console.log(state + " is now an init state");
 		}
+		
+		// Edit init state in editor
+		for (i = 0; i < table.wp.svg.rect.states.length; i++)
+		{
+			if (table.wp.svg.rect.states[i].name == state)
+			{
+				toggleInitState(table.wp.svg.rect.states[i]);
+				break;
+			}
+		}
+		
 		$(cell).trigger("input");
 	}
 }
@@ -871,6 +884,17 @@ function tableButton2Click(tableTab) {
 				cell.value = '←' + state;
 			console.log(state + " is now an exit state");
 		}
+		
+		// Edit exit state in editor
+		for (i = 0; i < table.wp.svg.rect.states.length; i++)
+		{
+			if (table.wp.svg.rect.states[i].name == state)
+			{
+				toggleEndState(table.wp.svg.rect.states[i]);
+				break;
+			}
+		}
+		
 		$(cell).trigger("input");
 	}
 }
@@ -930,26 +954,77 @@ function button2Click(rect) {
     }
 }
 
+function toggleInitState(state)
+{
+	if (state.init === 0) {
+		var x2 = state.getAttribute("cx");
+		var x1 = x2 - circleSize * 2.5;
+		var y = state.getAttribute("cy");
+		var aLine = document.createElementNS(svgns, 'path');
+		var att = "M "+x1+" "+y+" L ";
+		att += x2+" "+y;
+		aLine.setAttribute('d', att);
+		aLine.setAttribute('stroke', 'black');
+		aLine.setAttribute('stroke-width', 3);
+		aLine.setAttribute('fill', 'none');
+		aLine.parentSvg = state.parentSvg;
+		
+		var defs = document.createElementNS(svgns, 'defs');
+		var marker = document.createElementNS(svgns, 'marker');
+		marker.setAttribute('id', 'Triangle');
+		marker.setAttribute('viewBox', '0 0 10 10');
+		marker.setAttribute('refX', '22');
+		marker.setAttribute('refY', '5');
+		marker.setAttribute('markerUnits', 'strokeWidth');
+		marker.setAttribute('markerWidth', '6');
+		marker.setAttribute('markerHeight', '6');
+		marker.setAttribute('orient', 'auto');
+		var markerpath = document.createElementNS(svgns, 'path');
+		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+		markerpath.setAttribute('fill', 'black');
+		marker.appendChild(markerpath);
+		
+		state.parentSvg.appendChild(defs);
+		defs.appendChild(marker);
+		aLine.setAttribute('marker-end', 'url(#Triangle)');
+		
+		state.parentSvg.appendChild(aLine);
+		putOnTop(state);
+		state.init = aLine;
+	} else {
+		state.parentSvg.removeChild(state.init);
+		state.init = 0;
+	}
+}
+
+function toggleEndState(state)
+{
+	if (state.end === 0) {
+		var shape = document.createElementNS(svgns, "circle");
+		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
+		shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
+		shape.setAttributeNS(null, "r", circleSize - 5);
+		if (state.parentSvg.selectedElement == state)
+			shape.setAttributeNS(null, "fill", "lightgreen");
+		else
+			shape.setAttributeNS(null, "fill", "white");
+		shape.setAttributeNS(null, "stroke", "black");
+		shape.setAttributeNS(null, "stroke-width", 1);
+		shape.parentSvg = state.parentSvg;
+		shape.parentRect = state.parentRect;
+		shape.setAttribute('pointer-events', 'none');
+		state.end = shape;
+		putOnTop(state);
+	} else {
+		state.parentSvg.removeChild(state.end);
+		state.end = 0;
+	}
+}
+
 function button3Click(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
-        if (svg.selectedElement.end === 0) {
-            var shape = document.createElementNS(svgns, "circle");
-            shape.setAttributeNS(null, "cx", svg.selectedElement.getAttribute("cx"));
-            shape.setAttributeNS(null, "cy", svg.selectedElement.getAttribute("cy"));
-            shape.setAttributeNS(null, "r", circleSize - 5);
-            shape.setAttributeNS(null, "fill", "lightgreen");
-            shape.setAttributeNS(null, "stroke", "black");
-            shape.setAttributeNS(null, "stroke-width", 1);
-            shape.parentSvg = rect.parentSvg;
-            shape.parentRect = rect;
-            shape.setAttribute('pointer-events', 'none');
-            svg.selectedElement.end = shape;
-            putOnTop(svg.selectedElement);
-        } else {
-            rect.parentSvg.removeChild(svg.selectedElement.end);
-            svg.selectedElement.end = 0;
-        }
+		toggleEndState(svg.selectedElement);
     }
 }
 
@@ -990,13 +1065,15 @@ function button5Click(rect) {
 function generateAnswer(rect)
 {
 	var finalStates = [];
-    var out = "init=";
+    var out = "";
 	for (i = 0; i < rect.states.length; i++)
     {
 		if (rect.states[i].init !== 0)
 		{
+			if (out == "")
+				out += "init=";
             out += rect.states[i].name + " ";
-			break;
+			break; // replace break with adding more init states, if they can be
 		}
 	}
     for (i = 0; i < rect.states.length; i++)
@@ -1427,6 +1504,15 @@ function moveElement(evt) {
                     svg.selectedElement.setAttribute("cx", mouseX);
                     svg.selectedElement.text.setAttribute("x", mouseX);
                     if (svg.selectedElement.end !== 0) svg.selectedElement.end.setAttribute("cx", mouseX);
+					if (svg.selectedElement.init !== 0) 
+					{
+						var x2 = mouseX;
+						var x1 = x2 - circleSize * 2.5;
+						var y = mouseY;
+						var att = "M "+x1+" "+y+" L ";
+						att += x2+" "+y;
+						svg.selectedElement.init.setAttribute("d", att);
+					}
                     for (i = 0; i < svg.selectedElement.lines1.length; i++)
                     {
                         str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
