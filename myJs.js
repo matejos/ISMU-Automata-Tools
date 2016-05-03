@@ -288,13 +288,8 @@ function updateTableTabFromText(wp)	// not finished
 	var str = s.split(" ");
 	table.states = [];
 	table.symbols = [];
-	var initStatesStr = str[0].substring(str[0].indexOf('=') + 1, str[0].length);
-	table.initStates = initStatesStr.split(',');
-	var exitStatesStr = str[str.length - 1];
-	exitStatesStr = exitStatesStr.substring(exitStatesStr.indexOf('{') + 1, exitStatesStr.length - 1);
-	table.exitStates = [];
-	if (exitStatesStr.length != 0)
-		table.exitStates = exitStatesStr.split(',');
+	initStates = [];
+	exitStates = [];
 	
 	// clearing previous table
 	var l = table.rows.length;
@@ -317,37 +312,52 @@ function updateTableTabFromText(wp)	// not finished
 	div.setAttribute("class", "tc");
 	cell.appendChild(div);
 	
-	
-	
-	
-	// initial and exit states
-	for (i = 0; i < table.initStates.length; i++)
-		table.states.push(table.initStates[i]);
-	
-	for (i = 0; i < table.exitStates.length; i++)
+	for (i = 0; i < str.length; i++)
 	{
-		if (table.states.indexOf(table.exitStates[i]) == -1)
-			table.states.push(table.exitStates[i]);
-	}
-	
-	
-	// counting needed number of rows and columns
-	for (i = 1; i < str.length - 1; i++)
-	{
-		var state = str[i].charAt(1);
-		if (table.states.indexOf(state) == -1)
+		if (/^init=[A-Z]+$/.test(str[i]))
 		{
-			table.states.push(state);
+			str[i] = str[i].substring(5, str[i].length);
+			initStates.push(str[i]);
+			if (table.states.indexOf(str[i]) == -1)
+				table.states.push(str[i]);
 		}
-		var state = str[i].charAt(6);
-		if (table.states.indexOf(state) == -1)
+		else if (/^F={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))
 		{
-			table.states.push(state);
+			str[i] = str[i].substring(3, str[i].length - 1);
+			var exits = str[i].split(",");
+			for (j =  0; j < exits.length; j++)
+			{
+				exitStates.push(exits[j]);
+				if (table.states.indexOf(exits[j]) == -1)
+					table.states.push(exits[j]);
+			}
 		}
-		var symb = str[i].charAt(3);
-		if (table.symbols.indexOf(symb) == -1)
+		else if (/^\([A-Z]+,[a-z]+\)=[A-Z]+$/.test(str[i]))	// DFA
 		{
-			table.symbols.push(symb);
+			var state1 = str[i].substring(1, str[i].indexOf(","));
+			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+			var state2 = str[i].substring(str[i].indexOf("=") + 1, str[i].length);
+			if (table.states.indexOf(state1) == -1)
+				table.states.push(state1);
+			if (table.states.indexOf(state2) == -1)
+				table.states.push(state2);
+			if (table.symbols.indexOf(symb) == -1)
+				table.symbols.push(symb);
+		}
+		else if (/^\([A-Z]+,[a-z]+\)={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))	// NFA
+		{
+			var state1 = str[i].substring(1, str[i].indexOf(","));
+			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+			var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
+			if (table.states.indexOf(state1) == -1)
+				table.states.push(state1);
+			if (table.symbols.indexOf(symb) == -1)
+				table.symbols.push(symb);
+			for (j = 0; j < states2.length; j++)
+			{
+				if (table.states.indexOf(states2[j]) == -1)
+					table.states.push(states2[j]);
+			}
 		}
 	}
 	
@@ -382,19 +392,20 @@ function updateTableTabFromText(wp)	// not finished
 	for (i = 0; i < table.states.length; i++)
 	{
 		var state = table.states[i];
+		console.log(state);
 		var row = table.insertRow(table.rows.length);
 		
 		tableAddRowDeleteButton(row, table);
 		
 		var headerval = "";
-		if (table.initStates.indexOf(state) != -1)
+		if (initStates.indexOf(state) != -1)
 		{
-			if (table.exitStates.indexOf(state) != -1)
+			if (exitStates.indexOf(state) != -1)
 				headerval += '↔';
 			else
 				headerval += '→';
 		}
-		else if (table.exitStates.indexOf(state) != -1)
+		else if (exitStates.indexOf(state) != -1)
 			headerval += '←';
 		
 		headerval += state;
@@ -410,31 +421,35 @@ function updateTableTabFromText(wp)	// not finished
 	tableAddRowAddButton(table);
 	
 	// filling transitions
-	for (i = 1; i < str.length - 1; i++)
+	for (i = 0; i < str.length; i++)
 	{
-		var state = str[i].charAt(1);
-		var symb = str[i].charAt(3);
-		var out = str[i].charAt(6);
-		
-		var cell = table.rows[table.states.indexOf(state) + 2].cells[table.symbols.indexOf(symb) + 2];
-		cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
-		if (cell.myDiv.value.length > 1)
-			cell.myDiv.value += ',';
-		cell.myDiv.value += out + '}';
-	}
-	
-	
-	/*
-	// adding braces to start and end
-	for (i = 0; i < table.states.length; i++)
-	{
-		for (j = 0; j < table.symbols.length; j++)
+		if (/^\([A-Z]+,[a-z]+\)=[A-Z]+$/.test(str[i]))	// DFA
 		{
-			var cell = table.rows[i + 2].cells[j + 2];
-			cell.myDiv.value = '{' + cell.myDiv.value + '}';
+			var state1 = str[i].substring(1, str[i].indexOf(","));
+			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+			var state2 = str[i].substring(str[i].indexOf("=") + 1, str[i].length);
+			var cell = table.rows[table.states.indexOf(state1) + 2].cells[table.symbols.indexOf(symb) + 2];
+			cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
+			if (cell.myDiv.value.length > 1)
+				cell.myDiv.value += ',';
+			cell.myDiv.value += state2 + '}';
+		}
+		else if (/^\([A-Z]+,[a-z]+\)={[A-Z]+(,[A-Z]+)*}$/.test(str[i]))	// NFA
+		{
+			var state1 = str[i].substring(1, str[i].indexOf(","));
+			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+			var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
+			var cell = table.rows[table.states.indexOf(state1) + 2].cells[table.symbols.indexOf(symb) + 2];
+			cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
+			for (j = 0; j < states2.length; j++)
+			{
+				if (cell.myDiv.value.length > 1)
+					cell.myDiv.value += ',';
+				cell.myDiv.value += states2[j];
+			}
+			cell.myDiv.value += '}';
 		}
 	}
-	*/
 }
 
 function tableEditCellClick(evt)
@@ -547,7 +562,6 @@ function tableAddRowDeleteButton(row, table)
 function tableAddRowHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
-	
 	var div = document.createElement("input");
 	div.value = value;
 	div.prevValue = value;
@@ -736,7 +750,7 @@ function tableAddColumnHeader(row, value)
 		if (kc == 0)
 			return true;
 		var txt = String.fromCharCode(kc);
-		if (!txt.match(transitionSyntax())) {
+		if (incorrectTransitionSyntax(txt)) {
 			return false;
 		}
 	});
