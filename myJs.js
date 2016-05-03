@@ -120,6 +120,7 @@ function init(id) {
     initState.setAttributeNS(null, "stroke-width", 1);
     initState.parentSvg = svg;
     initState.parentRect = rect;
+	initState.init = 1;
     initState.end = 0;
     initState.lines1 = [];
     initState.lines2 = [];
@@ -206,6 +207,14 @@ function init(id) {
 	$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
 		wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
 		wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
+	});
+	
+	$('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
+		for (i = 0; i < rect.states.length; i++)
+		{
+			if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
+				deleteState(rect.states[i]);
+		}
 	});
 }
 
@@ -433,8 +442,6 @@ function tableEditCellClick(evt)
 	if (table.selectedCell != 0)
 	{
 		var div = table.selectedCell;
-		$(div).prop("readonly", true);
-		$(div).switchClass(div.defaultClass + "e", div.defaultClass, fadeTime);
 		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
 	}
@@ -443,19 +450,16 @@ function tableEditCellClick(evt)
 function tableCellClick(evt)
 {
 	var cell = evt.target;
+	console.log(cell);
 	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	if (table.selectedCell != cell)
 	{
 		var div = table.selectedCell;
 		if (table.selectedCell != 0)
 		{
-			console.log("disabled editing of " + div.value);
-			$(div).prop("readonly", true);
 			$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		}
 		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
-		$(cell).prop("readonly", false);
-		console.log("enabled editing of " + cell.value);
 		table.selectedCell = cell;
 	}
 }
@@ -470,9 +474,7 @@ function tableDeleteRow(table, index)
 	
 	// Delete state in editor
 	var state = table.rows[index].cells[1].myDiv.value;
-	var first = state.charAt(0);
-	if (first == '→' || first == '←' || first == '↔')
-		state = state.substring(1, state.length);
+	state = removePrefixFromState(state);
 	for (i = 0; i < table.wp.svg.rect.states.length; i++)
 	{
 		if (table.wp.svg.rect.states[i].name == state)
@@ -546,8 +548,8 @@ function tableAddRowHeader(row, value)
 	
 	var div = document.createElement("input");
 	div.value = value;
+	div.prevValue = value;
 	div.setAttribute("size", 1);
-	$(div).prop("readonly", true);
 	div.defaultClass = "rh";
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv " + div.defaultClass);
@@ -574,7 +576,47 @@ function tableAddRowHeader(row, value)
 
 function tableRhChangedFinal()
 {
-	console.log("RH incorrect: " + $(this).hasClass("incorrect"));
+	if ($(this).hasClass("incorrect") == false)
+	{
+		// Rename the state in editor
+		var table = $(this).parent().parent().parent().parent().get(0);
+		var div = $(this).get(0);
+		console.log(table);
+		var prevName = div.prevValue;
+		prevName = removePrefixFromState(prevName);
+		var newName = div.value;
+		newName = removePrefixFromState(newName);
+		for (i = 0; i < table.wp.svg.rect.states.length; i++)
+		{
+			if (table.wp.svg.rect.states[i].name == prevName)
+			{
+				renameState(table.wp.svg.rect.states[i], newName);
+				break;
+			}
+		}
+		
+		// Traverse all transitions cells in table and change the name
+		
+		for (i = 2; i < table.rows.length - 1; i++)
+		{
+			for (j = 2; j < table.rows[i].cells.length; j++)
+			{
+				var val = table.rows[i].cells[j].myDiv.value;
+				val = val.replace(/{|}/g, "");
+				var vals = val.split(",");
+				var index = vals.indexOf(prevName);
+				if (index != -1)
+				{
+					vals[index] = newName;
+					val = vals.toString();
+					table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					//table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+				}
+			}
+		}
+		
+		div.prevValue = div.value;
+	}
 }
 
 function tableChChanged()
@@ -586,6 +628,37 @@ function tableChChanged()
 	console.log("CH: " + this.value);
 }
 
+function tableChChangedFinal()
+{
+	if ($(this).hasClass("incorrect") == false)
+	{
+		var table = $(this).parent().parent().parent().parent().get(0);
+		var div = $(this).get(0);
+		console.log(table);
+		var prevName = div.prevValue;
+		var newName = div.value;
+		
+		// Rename the symbol in editor
+		for (i = 0; i < table.wp.svg.rect.states.length; i++)
+		{
+			for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
+			{
+				var val = table.wp.svg.rect.states[i].lines1[j].name;
+				var vals = val.split(",");
+				var index = vals.indexOf(prevName);
+				if (index != -1)
+				{
+					vals[index] = newName;
+					val = vals.toString();
+					renameTransition(table.wp.svg.rect.states[i].lines1[j], val);
+				}
+			}
+		}
+		
+		div.prevValue = div.value;
+	}
+}
+
 function tableCellChanged()
 {
 	if (incorrectTableTransitionsSyntax(this.value))
@@ -595,12 +668,18 @@ function tableCellChanged()
 	console.log("Cell: " + this.value);
 }
 
-function tableRhChanged()
+function removePrefixFromState(state)
 {
-	var state = this.value;
 	var first = state.charAt(0);
 	if (first == '→' || first == '←' || first == '↔')
 		state = state.substring(1, state.length);
+	return state;
+}
+
+function tableRhChanged()
+{
+	var state = this.value;
+	state = removePrefixFromState(state);
 	if (incorrectStateSyntax(state))
 		$(this).addClass("incorrect", fadeTime);
 	else
@@ -641,12 +720,14 @@ function tableAddColumnHeader(row, value)
 	
 	var div = document.createElement("input");
 	div.value = value;
+	div.prevValue = value;
 	div.setAttribute("size", 1);
 	cell.setAttribute("class", "myCell ch");
 	div.setAttribute("class", "myCellDiv");
 	$(div).click(tableEditCellClick);
 	
 	$(div).on('input',tableChChanged);
+	$(div).focusout(tableChChangedFinal);
 	
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
@@ -719,8 +800,8 @@ function tableAddRow(table)
 	var names = [];
 	for (k = 65; k < 91; k++)
 		names.push(String.fromCharCode(k));
-	for (k = 0; k < table.states.length; k++)
-		names.splice(names.indexOf(table.states[k]), 1);
+	for (k = 0; k < table.wp.svg.rect.states.length; k++)
+		names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
 	var name = names[0];
 	table.states.push(name);
 	
@@ -909,7 +990,15 @@ function button5Click(rect) {
 function generateAnswer(rect)
 {
 	var finalStates = [];
-    var out = "init=A ";
+    var out = "init=";
+	for (i = 0; i < rect.states.length; i++)
+    {
+		if (rect.states[i].init !== 0)
+		{
+            out += rect.states[i].name + " ";
+			break;
+		}
+	}
     for (i = 0; i < rect.states.length; i++)
     {
         if (rect.states[i].end !== 0)
@@ -969,6 +1058,7 @@ function createStateAbs(rect, x, y)
 	shape.setAttributeNS(null, "stroke-width", 1);
 	shape.parentSvg = rect.parentSvg;
 	shape.parentRect = rect;
+	shape.init = 0;
 	shape.end = 0;
 	shape.lines1 = [];
 	shape.lines2 = [];
@@ -1286,6 +1376,13 @@ function renameTransition(line, str)
 	line.name = str;
 	line.text.node.nodeValue = str;
 	adjustTransitionWidth(line);
+}
+
+function renameState(state, str)
+{
+	state.name = str;
+	state.text.node.nodeValue = str;
+	//adjustTransitionWidth(state);
 }
 
 function deselectElement(svg) {
@@ -1615,7 +1712,7 @@ function incorrectTransitionSyntax(val)
 }
 function stateSyntax()
 {
-	return /^[A-Z]$/;
+	return /^[A-Z]+$/;
 }
 function incorrectStateSyntax(val)
 {
