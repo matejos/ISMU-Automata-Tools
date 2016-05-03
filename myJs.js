@@ -75,7 +75,7 @@ function init(id) {
 	mydiv.setAttribute("style", "background-color: pink;");
 	mydiv.setAttribute("class", "canvas");
 	mydiv.setAttributeNS(null, "id", "mydiv");
-	$(mydiv).resizable();
+	$(mydiv).resizable({minHeight: 400, minWidth: 400});
 	editor.appendChild(mydiv);
 	
 	
@@ -202,12 +202,18 @@ function init(id) {
 	$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
 		updateTextTab(wp, e.relatedTarget);
 	});
+	
+	$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
+		wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
+		wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
+	});
 }
 
 function initTable(wp) {
 	var table = document.createElement("table");
 	wp.tableTab.table = table;
 	table.selectedCell = 0;
+	table.wp = wp;
 	wp.tableTab.appendChild(table);
 	console.log(table);
 }
@@ -228,6 +234,14 @@ function updateEditorTab(wp, target)
 		updateEditorTabFromTable(wp);
 	else
 		updateEditorTabFromText(wp);
+	
+	for (i = 0; i < wp.svg.rect.states.length; i++)
+	{
+		for (j = 0; j < wp.svg.rect.states[i].lines1.length; j++)
+		{
+			adjustTransitionWidth(wp.svg.rect.states[i].lines1[j]);
+		}
+	}
 }
 
 function updateEditorTabFromTable(wp)	// not finished
@@ -449,13 +463,50 @@ function tableCellClick(evt)
 function tableDeleteRow(table, index)
 {
 	//table.states.splice(table.states.indexOf(cell.parentNode.cells[1].myDiv.innerHTML), 1);
-	if (index == table.selectedCell.rowIndex)
+	
+	// Deselect this row's header, if it was selected
+	if (table.selectedCell != 0 && index == table.selectedCell.myCell.parentNode.rowIndex)
 		table.selectedCell = 0;
+	
+	// Delete state in editor
+	var state = table.rows[index].cells[1].myDiv.value;
+	var first = state.charAt(0);
+	if (first == '→' || first == '←' || first == '↔')
+		state = state.substring(1, state.length);
+	for (i = 0; i < table.wp.svg.rect.states.length; i++)
+	{
+		if (table.wp.svg.rect.states[i].name == state)
+			deleteState(table.wp.svg.rect.states[i]);
+	}
+	
+	// Delete table row
 	table.deleteRow(index);
 }
 
 function tableDeleteColumn(table, index)
 {
+	var symbol = table.rows[1].cells[index].myDiv.value;
+	console.log(symbol);
+	
+	// Delete transitions of this symbol in editor
+	for (i = 0; i < table.wp.svg.rect.states.length; i++)
+	{
+		for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
+		{
+			var tr = table.wp.svg.rect.states[i].lines1[j].name;
+			if (tr == symbol)
+				deleteTransition(table.wp.svg.rect.states[i].lines1[j]);
+			else
+			{
+				var trs = tr.split(",");
+				trs.splice(trs.indexOf(symbol), 1);
+				tr = trs.toString();
+				renameTransition(table.wp.svg.rect.states[i].lines1[j], tr);
+			}
+		}
+	}
+	
+	// Delete table column
 	for (i = 0; i < table.rows.length - 1; i++)
 	{
 		table.rows[i].deleteCell(index);
@@ -679,12 +730,16 @@ function tableAddRow(table)
 		tableAddCell(table.rows[table.rows.length - 1]);
 	}
 	tableAddRowAddButton(table);
+	
+	// Add state to editor
+	console.log(table.wp.svg.rect);
+	createStateAbs(table.wp.svg.rect, 200, 100);
 }
 
 function tableButton1Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.myCell.cellIndex == 1)
+	if (cell != 0 && cell.myCell.cellIndex == 1)
 	{
 		var state = cell.value.replace(/←|→|↔/g, '');
 		if (/[→|↔]/.test(cell.value)) 
@@ -713,7 +768,7 @@ function tableButton1Click(tableTab) {
 function tableButton2Click(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
-	if (cell.myCell.cellIndex == 1)
+	if (cell != 0 && cell.myCell.cellIndex == 1)
 	{
 		var state = cell.value.replace(/←|→|↔/g, '');
 		if (/[←|↔]/.test(cell.value))
@@ -892,15 +947,16 @@ function button6Click(rect) {
 	document.getElementsByTagName('textarea')[x].value = out; 
 }
 
-function createState(evt) 
+function createStateAbs(rect, x, y)
 {
-	var el = evt.target;
-	if (el.parentSvg.selectedElement !== 0) deselectElement(el.parentSvg);
+	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
 	var shape = document.createElementNS(svgns, "circle");
-	var x = evt.offsetX;
-	var y = evt.offsetY;
-	var width = el.parentSvg.div.offsetWidth;
-	var height = el.parentSvg.div.offsetHeight;
+	var width = rect.parentSvg.div.offsetWidth;
+	var height = rect.parentSvg.div.offsetHeight;
+	if (width == 0)
+		width = rect.parentSvg.div.lastWidth;
+	if (height == 0)
+		height = rect.parentSvg.div.lastHeight;
 	if (x < circleSize) x = circleSize;
 	if (x > width - circleSize) x = width - circleSize;
 	if (y < circleSize) y = circleSize;
@@ -911,16 +967,16 @@ function createState(evt)
 	shape.setAttributeNS(null, "fill", "white");
 	shape.setAttributeNS(null, "stroke", "black");
 	shape.setAttributeNS(null, "stroke-width", 1);
-	shape.parentSvg = el.parentSvg;
-	shape.parentRect = el;
+	shape.parentSvg = rect.parentSvg;
+	shape.parentRect = rect;
 	shape.end = 0;
 	shape.lines1 = [];
 	shape.lines2 = [];
 	var names = [];
 	for (k = 65; k < 91; k++)
 		names.push(String.fromCharCode(k));
-	for (k = 0; k < el.states.length; k++)
-		names.splice(names.indexOf(el.states[k].name), 1);
+	for (k = 0; k < rect.states.length; k++)
+		names.splice(names.indexOf(rect.states[k].name), 1);
 	var name = names[0];
 	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
@@ -942,10 +998,20 @@ function createState(evt)
 
 	shape.text = newText;
 
-	el.states.push(shape);
+	rect.states.push(shape);
 	putOnTop(shape);
-	el.button1.style.borderStyle = "outset";
-	el.mode = modeEnum.SELECT;
+	rect.button1.style.borderStyle = "outset";
+	rect.mode = modeEnum.SELECT;
+}
+
+function createState(evt) 
+{
+	var rect = evt.target;
+	var x = evt.offsetX;
+	var y = evt.offsetY;
+	console.log(rect);
+	console.log(x + " " + y);
+	createStateAbs(rect, x, y);
 }
 function rectDblClick(evt) {
 	evt.preventDefault();
@@ -1197,6 +1263,7 @@ function deleteState(state)
 	state.parentRect.states.splice(index, 1);
 	deselectElement(svg);
 }
+
 function deleteTransition(tr)
 {
 	console.log("deleting tr " + tr);
@@ -1207,6 +1274,20 @@ function deleteTransition(tr)
 	svg.removeChild(tr.rect);
 	svg.removeChild(tr);
 }
+
+function adjustTransitionWidth(line)
+{
+	line.rect.setAttribute("width", line.text.getComputedTextLength() + 8);
+	moveTextRect(line.rect, line.text.getAttribute('x'), line.text.getAttribute('y'));
+}
+
+function renameTransition(line, str)
+{
+	line.name = str;
+	line.text.node.nodeValue = str;
+	adjustTransitionWidth(line);
+}
+
 function deselectElement(svg) {
 	//stopTyping();
     if (svg.selectedElement !== 0) {
@@ -1351,14 +1432,7 @@ function movePath(line, mouseX, mouseY) {
     str = str.join(" ");
     line.setAttribute("d", str);
 }
-function renameTransition(rect, str)
-{
-	var line = rect.line;
-	line.name = str;
-	line.text.node.nodeValue = str;
-	rect.setAttribute("width", line.text.getComputedTextLength() + 8);
-	moveTextRect(rect, line.text.getAttribute('x'), line.text.getAttribute('y'));
-}
+
 function toggleCursor()
 {
 	var str = renamingTransition.line.name;
@@ -1379,9 +1453,9 @@ function stopTyping()
 		$(document).unbind("keypress");
 		$(document).unbind("keydown");
 		renamingTransition.setAttribute("fill", "white");
-		renameTransition(renamingTransition, renamingTransition.line.name.replace("|", ""));
+		renameTransition(renamingTransition.line, renamingTransition.line.name.replace("|", ""));
 		if (renamingTransition.line.name == "")
-			renameTransition(renamingTransition, transitionPrevName);
+			renameTransition(renamingTransition.line, transitionPrevName);
 		/*else if (renamingTransition.line.name == "abc")
 		{
 			renamingTransition.setAttribute("fill", "red");
@@ -1404,7 +1478,7 @@ function transitionDblClick(evt)
 	renamingTransition = rect;
 	renamingCursor = line.name.length;
 	var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-	renameTransition(rect, newname);
+	renameTransition(rect.line, newname);
 	cursorTimer = setInterval(toggleCursor, 500);
 	rect.setAttribute('class', 'editable');
 	$(document).keypress(function( event ) {
@@ -1414,7 +1488,7 @@ function transitionDblClick(evt)
 		if (!incorrectEditorTransitionsCharsSyntax(s_key))
 		{
 			var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
-			renameTransition(rect, newname);
+			renameTransition(rect.line, newname);
 			renamingCursor++;
 		}
 		event.preventDefault();
@@ -1428,31 +1502,31 @@ function transitionDblClick(evt)
 		}
 		else if (key == 27)
 		{
-			renameTransition(rect, transitionPrevName);
+			renameTransition(rect.line, transitionPrevName);
 			stopTyping();
 		}
 		else if (key == 8)	// backspace
 		{
 			event.preventDefault();
 			var newname = line.name.substring(0, renamingCursor - 1) + line.name.substring(renamingCursor, line.name.length);
-			renameTransition(rect, newname);
+			renameTransition(rect.line, newname);
 			if (renamingCursor > 0)
 				renamingCursor--;
 		}
 		else if (key == 46)	// delete
 		{
 			var newname = line.name.substring(0, renamingCursor + 1) + line.name.substring(renamingCursor + 2, line.name.length);
-			renameTransition(rect, newname);
+			renameTransition(rect.line, newname);
 		}
 		else if (key == 35)	// end
 		{
 			event.preventDefault();
 			if (renamingCursor < line.name.length - 1)
 			{
-				renameTransition(rect, line.name.replace("|", ""));
+				renameTransition(rect.line, line.name.replace("|", ""));
 				renamingCursor = line.name.length;
 				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect, newname);
+				renameTransition(rect.line, newname);
 			}
 		}
 		else if (key == 36)	// home
@@ -1460,30 +1534,30 @@ function transitionDblClick(evt)
 			event.preventDefault();
 			if (renamingCursor > 0)
 			{
-				renameTransition(rect, line.name.replace("|", ""));
+				renameTransition(rect.line, line.name.replace("|", ""));
 				renamingCursor = 0;
 				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect, newname);
+				renameTransition(rect.line, newname);
 			}
 		}
 		else if (key == 37)	// left arrow
 		{
 			if (renamingCursor > 0)
 			{
-				renameTransition(rect, line.name.replace("|", ""));
+				renameTransition(rect.line, line.name.replace("|", ""));
 				renamingCursor--;
 				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect, newname);
+				renameTransition(rect.line, newname);
 			}
 		}
 		else if (key == 39)	// right arrow
 		{
 			if (renamingCursor < line.name.length - 1)
 			{
-				renameTransition(rect, line.name.replace("|", ""));
+				renameTransition(rect.line, line.name.replace("|", ""));
 				renamingCursor++;
 				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect, newname);
+				renameTransition(rect.line, newname);
 			}
 		}
 	});
