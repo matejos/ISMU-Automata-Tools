@@ -459,7 +459,7 @@ function tableEditCellClick(evt)
 {
 	var cell = evt.target;
 	var table = cell.parentElement.parentElement.parentElement.parentElement;
-	if (table.selectedCell != 0)
+	if (!table.statesLocked && table.selectedCell != 0)
 	{
 		var div = table.selectedCell;
 		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
@@ -472,7 +472,7 @@ function tableCellClick(evt)
 	var cell = evt.target;
 	console.log(cell);
 	var table = cell.parentElement.parentElement.parentElement.parentElement;
-	if (table.selectedCell != cell)
+	if (!table.statesLocked && table.selectedCell != cell)
 	{
 		var div = table.selectedCell;
 		if (table.selectedCell != 0)
@@ -511,6 +511,7 @@ function tableDeleteRow(table, index)
 				vals.splice(q, 1);
 				val = vals.toString();
 				table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+				table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
 			}
 		}
 	}
@@ -611,6 +612,59 @@ function tableAddRowHeader(row, value)
 	cell.appendChild(div);
 }
 
+function tableStateExists(div, state)
+{
+	var table = div.parentElement.parentElement.parentElement.parentElement;
+	var ri = div.parentElement.parentElement.rowIndex;
+	for (var i = 2; i < table.rows.length - 1; i++)
+	{
+		if (i == ri)
+			continue;
+		var val = table.rows[i].cells[1].myDiv.value;
+		val = removePrefixFromState(val);
+		if (val == state)
+			return table.rows[i].cells[1].myDiv;
+	}
+	return -1;
+}
+
+function tableRhChanged()
+{
+	var state = this.value;
+	var table = this.parentElement.parentElement.parentElement.parentElement;
+	var ri = this.parentElement.parentElement.rowIndex;
+	state = removePrefixFromState(state);
+	console.log(state);
+	if (incorrectStateSyntax(state))
+		$(this).addClass("incorrect", fadeTime);
+	else if (tableStateExists(this, state) != -1)
+	{
+		$(this).addClass("incorrect", fadeTime);
+		for (var i = 2; i < table.rows.length - 1; i++)
+		{
+			if (i == ri)
+				continue;
+			$(table.rows[i].cells[1].myDiv).prop('readonly', true);
+		}
+		table.statesLocked = true;
+	}
+	else
+	{
+		$(this).removeClass("incorrect", fadeTime);
+		if (table.statesLocked)
+		{
+			for (var i = 2; i < table.rows.length - 1; i++)
+			{
+				if (i == ri)
+					continue;
+				$(table.rows[i].cells[1].myDiv).prop('readonly', false);
+			}
+			table.statesLocked = false;
+		}
+	}
+	
+}
+
 function tableRhChangedFinal()
 {
 	if ($(this).hasClass("incorrect") == false)
@@ -622,6 +676,9 @@ function tableRhChangedFinal()
 		prevName = removePrefixFromState(prevName);
 		var newName = div.value;
 		newName = removePrefixFromState(newName);
+		
+		console.log(prevName + "   " + newName);
+		// Rename state in editor
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
 			if (table.wp.svg.rect.states[i].name == prevName)
@@ -646,7 +703,7 @@ function tableRhChangedFinal()
 					vals[index] = newName;
 					val = vals.toString();
 					table.rows[i].cells[j].myDiv.value = "{" + val + "}";
-					//table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+					table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
 				}
 			}
 		}
@@ -683,9 +740,11 @@ function tableChChangedFinal()
 				var index = vals.indexOf(prevName);
 				if (index != -1)
 				{
-					vals[index] = newName;
-					val = vals.toString();
-					renameTransition(table.wp.svg.rect.states[i].lines1[j], val);
+					if (vals.indexOf(newName) == -1)
+						vals[index] = newName;
+					else
+						vals.splice(index, 1);
+					renameTransition(table.wp.svg.rect.states[i].lines1[j], vals.toString());
 				}
 			}
 		}
@@ -784,8 +843,12 @@ function tableCellChangedFinal()
 					{
 						if (state.lines1[j].end == state2)
 						{
-							var trs = state.lines1[j].name + "," + symbol;
-							renameTransition(state.lines1[j], trs.toString());
+							var trs = state.lines1[j].name.split(",");
+							if (trs.indexOf(symbol) == -1)
+							{
+								trs.push(symbol);
+								renameTransition(state.lines1[j], trs.toString());
+							}
 							found = true;
 							break;
 						}
@@ -810,17 +873,6 @@ function removePrefixFromState(state)
 	if (first == '→' || first == '←' || first == '↔')
 		state = state.substring(1, state.length);
 	return state;
-}
-
-function tableRhChanged()
-{
-	var state = this.value;
-	state = removePrefixFromState(state);
-	if (incorrectStateSyntax(state))
-		$(this).addClass("incorrect", fadeTime);
-	else
-		$(this).removeClass("incorrect", fadeTime);
-	console.log("RH: " + this.value);
 }
 
 function tableAddColumnAddButton(row, table)
