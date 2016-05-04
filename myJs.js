@@ -211,6 +211,7 @@ function init(id) {
 	});
 	
 	$('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
+		deselectElement(svg);
 		for (i = 0; i < rect.states.length; i++)
 		{
 			if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
@@ -496,6 +497,24 @@ function tableDeleteRow(table, index)
 	state = removePrefixFromState(state);
 	deleteState(findState(table.wp.svg.rect, state));
 	
+	// Traverse all transitions cells in table and change the name
+	for (i = 2; i < table.rows.length - 1; i++)
+	{
+		for (j = 2; j < table.rows[i].cells.length; j++)
+		{
+			var val = table.rows[i].cells[j].myDiv.value;
+			val = val.replace(/{|}/g, "");
+			var vals = val.split(",");
+			var q = vals.indexOf(state);
+			if (q != -1)
+			{
+				vals.splice(q, 1);
+				val = vals.toString();
+				table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+			}
+		}
+	}
+	
 	// Delete table row
 	table.deleteRow(index);
 }
@@ -508,7 +527,7 @@ function tableDeleteColumn(table, index)
 	// Delete transitions of this symbol in editor
 	for (i = 0; i < table.wp.svg.rect.states.length; i++)
 	{
-		for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
+		for (j = table.wp.svg.rect.states[i].lines1.length - 1; j >= 0 ; j--)
 		{
 			var tr = table.wp.svg.rect.states[i].lines1[j].name;
 			if (tr == symbol)
@@ -516,9 +535,13 @@ function tableDeleteColumn(table, index)
 			else
 			{
 				var trs = tr.split(",");
-				trs.splice(trs.indexOf(symbol), 1);
-				tr = trs.toString();
-				renameTransition(table.wp.svg.rect.states[i].lines1[j], tr);
+				var q = trs.indexOf(symbol);
+				if (q != -1)
+				{
+					trs.splice(q, 1);
+					tr = trs.toString();
+					renameTransition(table.wp.svg.rect.states[i].lines1[j], tr);
+				}
 			}
 		}
 	}
@@ -1581,6 +1604,7 @@ function deleteState(state)
 	state.text.removeChild(state.text.node);
 	//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
     if (state.end !== 0) svg.removeChild(state.end);
+	if (state.init !== 0) svg.removeChild(state.init);
 	svg.removeChild(state);
 	state.parentRect.states.splice(index, 1);
 	deselectElement(svg);
