@@ -123,6 +123,7 @@ function init(id, type) {
 		rect.states = [];
 		rect.mode = modeEnum.SELECT;
 		rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
+		rect.setAttributeNS(null, "onmouseup", "stopMovingElement(evt);");
 		rect.button1 = button1;
 		rect.button2 = button2;
 		$(rect).dblclick(rectDblClick);
@@ -1473,8 +1474,6 @@ function createState(evt)
 	var rect = evt.target;
 	var x = evt.offsetX;
 	var y = evt.offsetY;
-	console.log(rect);
-	console.log(x + " " + y);
 	createStateAbs(rect, x, y);
 }
 function rectDblClick(evt) {
@@ -1509,11 +1508,19 @@ function putOnTop(state) {
     if (state.end !== 0) state.parentSvg.appendChild(state.end);
     state.parentSvg.appendChild(state.text);
 }
+function cubicControlPoints(x, y, d){
+	var mult = 120;
+    var x1 = +x + (Math.cos(d + Math.PI / 4) * mult);
+	var y1 = +y - (Math.sin(d + Math.PI / 4) * mult);
+	var x2 = +x + (Math.cos(d - Math.PI / 4) * mult);
+	var y2 = +y - (Math.sin(d - Math.PI / 4) * mult);
+    var str = x1 + " " + y1 + " " + x2 + " " + y2;
+    return str;
+}
 function controlPoint(x1, y1, x2, y2){
-    var str;
     var x = ((+x2 + (+x1))/2) + ((+y2 - +y1)/5);
     var y = ((+y2 + (+y1))/2) - ((+x2 - +x1)/5);
-    str = x + " " + y;
+    var str = x + " " + y;
     return str;
 }
 function selectStateForTransition(state)
@@ -1536,12 +1543,30 @@ function createTransition(state1, state2, symbols)
 {
 	var x1 = state1.getAttribute("cx");
 	var y1 = state1.getAttribute("cy");
-	var x2 = state2.getAttribute("cx");
-	var y2 = state2.getAttribute("cy");
 	var aLine = document.createElementNS(svgns, 'path');
-	var att = "M "+x1+" "+y1+" Q ";
-	att += controlPoint(x1, y1, x2, y2);
-	att += " "+x2+" "+y2;
+	var att;
+	if (state1 == state2)
+	{
+		aLine.angle = 0;
+		att = "M " + x1 + " " + y1 + " C "
+			+ cubicControlPoints(x1, y1, aLine.angle)
+			+ " " + x1 +" " + y1;
+			
+		var atts = att.split(" ");
+		var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
+		var ty = (+atts[5] + +atts[7] + +atts[2]) / 3;
+	}
+	else
+	{
+		var x2 = state2.getAttribute("cx");
+		var y2 = state2.getAttribute("cy");
+		att = "M "+x1+" "+y1+" Q "
+			+ controlPoint(x1, y1, x2, y2)
+			+ " " + x2 + " " + y2;
+		var str = att.split(' ');
+		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+		var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+	}
 	aLine.setAttribute('d', att);
 	aLine.setAttribute('stroke', 'black');
 	aLine.setAttribute('stroke-width', 3);
@@ -1572,9 +1597,6 @@ function createTransition(state1, state2, symbols)
 	defs.appendChild(marker);
 	aLine.setAttribute('marker-end', 'url(#Triangle)');
 	
-	var str = aLine.getAttribute('d').split(' ');
-	var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-	var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
 	
 	var newText = document.createElementNS(svgns, 'text');
 	newText.setAttributeNS(null, "x", tx);
@@ -1810,85 +1832,89 @@ function moveElement(evt) {
                 var str, temp, tx;
 				var width = svg.div.offsetWidth;
 				var height = svg.div.offsetHeight;
-                if ((mouseX > circleSize) && (mouseX < width - circleSize)) {
-                    svg.selectedElement.setAttribute("cx", mouseX);
-                    svg.selectedElement.text.setAttribute("x", mouseX);
-                    if (svg.selectedElement.end !== 0) svg.selectedElement.end.setAttribute("cx", mouseX);
-					if (svg.selectedElement.init !== 0) 
+				if (mouseX < circleSize)
+					mouseX = circleSize;
+				else if (mouseX > width - circleSize)
+					mouseX = width - circleSize;
+				if (mouseY < circleSize)
+					mouseY = circleSize;
+				else if (mouseY > height - circleSize)
+					mouseY = height - circleSize;
+				svg.selectedElement.setAttribute("cx", mouseX);
+				svg.selectedElement.text.setAttribute("x", mouseX);
+				svg.selectedElement.setAttribute("cy", mouseY);
+				svg.selectedElement.text.setAttribute("y", mouseY);
+				if (svg.selectedElement.end !== 0) 
+				{
+					svg.selectedElement.end.setAttribute("cx", mouseX);
+					svg.selectedElement.end.setAttribute("cy", mouseY);
+				}
+				if (svg.selectedElement.init !== 0) 
+				{
+					var x2 = mouseX;
+					var x1 = x2 - circleSize * 2.5;
+					var y = mouseY;
+					var att = "M "+x1+" "+y+" L ";
+					att += x2+" "+y;
+					svg.selectedElement.init.setAttribute("d", att);
+				}
+				for (i = 0; i < svg.selectedElement.lines1.length; i++)
+				{
+					str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
+					if (svg.selectedElement.lines1[i].start == svg.selectedElement.lines1[i].end)
 					{
-						var x2 = mouseX;
-						var x1 = x2 - circleSize * 2.5;
-						var y = mouseY;
-						var att = "M "+x1+" "+y+" L ";
-						att += x2+" "+y;
-						svg.selectedElement.init.setAttribute("d", att);
+						var att = "M " + mouseX + " " + mouseY + " C "
+							+ cubicControlPoints(mouseX, mouseY, svg.selectedElement.lines1[i].angle)
+							+ " " + mouseX +" " + mouseY;
+						var atts = att.split(" ");
+						var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
+						var ty = (+atts[5] + +atts[7] + +atts[2]) / 3;
+						svg.selectedElement.lines1[i].text.setAttributeNS(null, "x", tx);
+						svg.selectedElement.lines1[i].text.setAttributeNS(null, "y", ty);
+						moveTextRect(svg.selectedElement.lines1[i].rect, tx, ty);
+						str = att;
 					}
-                    for (i = 0; i < svg.selectedElement.lines1.length; i++)
-                    {
-                        str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
-                        str[1] = mouseX;
-                        
-                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        //temp = temp.split(' ');
-                        //str[4] = temp[0];
-                        
-                        tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-                        svg.selectedElement.lines1[i].text.setAttributeNS(null, "x", tx);
-						moveTextRect(svg.selectedElement.lines1[i].rect, tx, -1);
-                        str = str.join(" ");
-                        svg.selectedElement.lines1[i].setAttribute("d", str);
-                    }
-                    for (i = 0; i < svg.selectedElement.lines2.length; i++)
-                    {
-                        str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
-                        str[6] = mouseX;
-                        
-                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        //temp = temp.split(' ');
-                        //str[4] = temp[0];
-                        
-                        tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-                        svg.selectedElement.lines2[i].text.setAttributeNS(null, "x", tx);
-						moveTextRect(svg.selectedElement.lines2[i].rect, tx, -1);
-                        str = str.join(" ");
-                        svg.selectedElement.lines2[i].setAttribute("d", str);
-                    }
-                }
-                if ((mouseY > circleSize) && (mouseY < height - circleSize)) {
-                    svg.selectedElement.setAttribute("cy", mouseY);
-                    svg.selectedElement.text.setAttribute("y", mouseY);
-                    if (svg.selectedElement.end !== 0) svg.selectedElement.end.setAttribute("cy", mouseY);
-                    for (i = 0; i < svg.selectedElement.lines1.length; i++)
-                    {
-                        str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
-                        str[2] = mouseY;
-                        
-                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        //temp = temp.split(' ');
-                        //str[5] = temp[1];
-                        
-                        ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-                        svg.selectedElement.lines1[i].text.setAttributeNS(null, "y", ty);
-						moveTextRect(svg.selectedElement.lines1[i].rect, -1, ty);
-                        str = str.join(" ");
-                        svg.selectedElement.lines1[i].setAttribute("d", str);
-                    }
-                    for (i = 0; i < svg.selectedElement.lines2.length; i++)
-                    {
-                        str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
-                        str[7] = mouseY;
-                        
-                        //temp = controlPoint(str[1], str[2], str[6], str[7]);
-                        //temp = temp.split(' ');
-                        //str[5] = temp[1];
-                        
-                        ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-                        svg.selectedElement.lines2[i].text.setAttributeNS(null, "y", ty);
-						moveTextRect(svg.selectedElement.lines2[i].rect, -1, ty);
-                        str = str.join(" ");
-                        svg.selectedElement.lines2[i].setAttribute("d", str);
-                    }
-                }
+					else
+					{
+						str[1] = mouseX;
+						str[2] = mouseY;
+						
+						//temp = controlPoint(str[1], str[2], str[6], str[7]);
+						//temp = temp.split(' ');
+						//str[4] = temp[0];
+						//str[5] = temp[1];
+						
+						tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+						ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+						svg.selectedElement.lines1[i].text.setAttributeNS(null, "x", tx);
+						svg.selectedElement.lines1[i].text.setAttributeNS(null, "y", ty);
+						moveTextRect(svg.selectedElement.lines1[i].rect, tx, ty);
+						str = str.join(" ");
+					}
+					svg.selectedElement.lines1[i].setAttribute("d", str);
+				}
+				for (i = 0; i < svg.selectedElement.lines2.length; i++)
+				{
+					if (svg.selectedElement.lines2[i].start != svg.selectedElement.lines2[i].end)
+					{
+					str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
+					str[6] = mouseX;
+					str[7] = mouseY;
+					
+					//temp = controlPoint(str[1], str[2], str[6], str[7]);
+					//temp = temp.split(' ');
+					//str[4] = temp[0];
+					//str[5] = temp[1];
+					
+					tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+					ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+					svg.selectedElement.lines2[i].text.setAttributeNS(null, "x", tx);
+					svg.selectedElement.lines2[i].text.setAttributeNS(null, "y", ty);
+					moveTextRect(svg.selectedElement.lines2[i].rect, tx, ty);
+					str = str.join(" ");
+					svg.selectedElement.lines2[i].setAttribute("d", str);
+					}
+				}
                 break;
             case "path":
 				svg.selectedElement.rect.setAttribute('class', 'movable');
@@ -1910,19 +1936,46 @@ function moveTextRect(rect, x, y) {
 		rect.setAttributeNS(null, "y", y-(h / 2));
 	}
 }
-
+function sqr(x)
+{
+	return (x * x);
+}
 function movePath(line, mouseX, mouseY) {
-    var str = line.getAttribute("d").split(" ");
-    str[4] = ((+str[1] + (+str[6]))/2)+(2*(mouseX-((+str[1] + (+str[6]))/2)));
-    str[5] = ((+str[2] + (+str[7]))/2)+(2*(mouseY-((+str[2] + (+str[7]))/2)));
+	var str = line.getAttribute("d").split(" ");
+	if (line.start == line.end)
+	{
+		var dx = mouseX - str[1];
+		var dy = mouseY - str[2];
+		var angle = Math.acos( dx / Math.sqrt( sqr(dx) + sqr(dy) ) );
+		if (mouseY > str[2])
+			angle = -angle;
+		
+		var att = "M " + str[1] + " " + str[2] + " C "
+			+ cubicControlPoints(str[1], str[2], angle)
+			+ " " + str[1] +" " + str[2];
+		
+		var atts = att.split(" ");
+		var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
+		var ty = (+atts[5] + +atts[7] + +atts[2]) / 3;
+		line.text.setAttributeNS(null, "x", tx);
+		line.text.setAttributeNS(null, "y", ty);
+		moveTextRect(line.rect, tx, ty);
+		str = att;
+		line.angle = angle;
+	}
+	else
+	{
+		str[4] = ((+str[1] + (+str[6]))/2)+(2*(mouseX-((+str[1] + (+str[6]))/2)));
+		str[5] = ((+str[2] + (+str[7]))/2)+(2*(mouseY-((+str[2] + (+str[7]))/2)));
 
-    var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-    var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-    line.text.setAttributeNS(null, "x", tx);
-    line.text.setAttributeNS(null, "y", ty);
-	moveTextRect(line.rect, tx, ty);
+		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+		var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+		line.text.setAttributeNS(null, "x", tx);
+		line.text.setAttributeNS(null, "y", ty);
+		moveTextRect(line.rect, tx, ty);
 
-    str = str.join(" ");
+		str = str.join(" ");
+	}
     line.setAttribute("d", str);
 }
 
