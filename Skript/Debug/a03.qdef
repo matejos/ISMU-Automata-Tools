@@ -1,0 +1,104 @@
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $z$ & $x$ & $y$ \\ \hline $o$ & $q$ & $u$ & $r$ \\ \hline $\leftrightarrow$ $p$ & $r$ & $s$ & $o$ \\ \hline $q$ & $r$ & $p$ & $t$ \\ \hline $\leftarrow$ $r$ & $p$ & $s$ & $u$ \\ \hline $s$ & $o$ & $t$ & $q$ \\ \hline $\leftarrow$ $t$ & $o$ & $s$ & $p$ \\ \hline $u$ & $q$ & $o$ & $p$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,x)=B(A,y)=C(A,z)=A(B,x)=D(B,y)=E(B,z)=C(C,x)=C(C,y)=A(C,z)=E(D,x)=B(D,y)=A(D,z)=C(E,x)=A(E,y)=D(E,z)= A F={A,D}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $a$ & $c$ & $b$ \\ \hline $\rightarrow$ $i$ & $n$ & $m$ & $k$ \\ \hline $j$ & $l$ & $n$ & $j$ \\ \hline $\leftarrow$ $k$ & $j$ & $i$ & $o$ \\ \hline $\leftarrow$ $l$ & $l$ & $j$ & $i$ \\ \hline $\leftarrow$ $m$ & $m$ & $j$ & $n$ \\ \hline $n$ & $i$ & $l$ & $k$ \\ \hline $o$ & $k$ & $o$ & $m$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,a)=A(A,b)=B(A,c)=C(B,a)=D(B,b)=E(B,c)=A(C,a)=C(C,b)=A(C,c)=D(D,a)=C(D,b)=D(D,c)=A(E,a)=B(E,b)=C(E,c)=E F={B,C}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $2$ & $1$ & $3$ \\ \hline $\leftarrow$ $o$ & $q$ & $o$ & $p$ \\ \hline $p$ & $r$ & $s$ & $u$ \\ \hline $q$ & $o$ & $r$ & $u$ \\ \hline $\rightarrow$ $r$ & $o$ & $q$ & $s$ \\ \hline $\leftarrow$ $s$ & $q$ & $t$ & $r$ \\ \hline $\leftarrow$ $t$ & $q$ & $p$ & $u$ \\ \hline $u$ & $r$ & $t$ & $r$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,1)=B (A,2)=C (A,3)=D (B,1)=A (B,2)=C (B,3)=E (C,1)=C (C,2)=B (C,3)=F (D,1)=G (D,2)=B (D,3)=A (E,1)=G (E,2)=A (E,3)=A (F,1)=D (F,2)=A (F,3)=E (G,1)=F (G,2)=B (G,3)=E F={C,D,G}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $3$ & $1$ & $2$ \\ \hline $O$ & $S$ & $R$ & $P$ \\ \hline $\leftarrow$ $P$ & $Q$ & $T$ & $S$ \\ \hline $\rightarrow$ $Q$ & $T$ & $O$ & $R$ \\ \hline $\leftarrow$ $R$ & $U$ & $S$ & $P$ \\ \hline $S$ & $O$ & $R$ & $T$ \\ \hline $\leftarrow$ $T$ & $Q$ & $P$ & $O$ \\ \hline $U$ & $R$ & $U$ & $Q$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,1)=B (A,2)=C (A,3)=D (B,1)=C (B,2)=D (B,3)=B (C,1)=B (C,2)=D (C,3)=E (D,1)=D (D,2)=B (D,3)=A (E,1)=E (E,2)=A (E,3)=C F={C,D}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $z$ & $y$ & $x$ \\ \hline $\leftrightarrow$ $001$ & $101$ & $011$ & $111$ \\ \hline $\leftarrow$ $010$ & $011$ & $010$ & $100$ \\ \hline $\leftarrow$ $011$ & $101$ & $001$ & $100$ \\ \hline $100$ & $100$ & $001$ & $010$ \\ \hline $101$ & $111$ & $010$ & $110$ \\ \hline $110$ & $001$ & $111$ & $101$ \\ \hline $111$ & $111$ & $011$ & $010$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,x)=B(A,y)=A(A,z)=C(B,x)=D(B,y)=A(B,z)=B(C,x)=E(C,y)=D(C,z)=B(D,x)=B(D,y)=D(D,z)=A(E,x)=C(E,y)=B(E,z)=A F={A,D}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $2$ & $0$ & $1$ \\ \hline $\leftarrow$ $i$ & $i$ & $j$ & $k$ \\ \hline $j$ & $i$ & $j$ & $k$ \\ \hline $k$ & $l$ & $o$ & $m$ \\ \hline $l$ & $o$ & $n$ & $l$ \\ \hline $\leftarrow$ $m$ & $m$ & $j$ & $o$ \\ \hline $\leftarrow$ $n$ & $n$ & $m$ & $l$ \\ \hline $\rightarrow$ $o$ & $l$ & $k$ & $i$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,0)=A (A,1)=B (A,2)=C (B,0)=D (B,1)=A (B,2)=B (C,0)=E (C,1)=C (C,2)=A (D,0)=D (D,1)=A (D,2)=B (E,0)=B (E,1)=C (E,2)=E F={B,E}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $2$ & $1$ & $3$ \\ \hline $\leftarrow$ $a$ & $c$ & $g$ & $a$ \\ \hline $b$ & $e$ & $d$ & $c$ \\ \hline $\leftarrow$ $c$ & $g$ & $c$ & $e$ \\ \hline $d$ & $e$ & $f$ & $f$ \\ \hline $\rightarrow$ $e$ & $b$ & $a$ & $c$ \\ \hline $f$ & $e$ & $b$ & $b$ \\ \hline $g$ & $a$ & $e$ & $g$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,1)=B (A,2)=C (A,3)=D (B,1)=E (B,2)=D (B,3)=B (C,1)=F (C,2)=A (C,3)=D (D,1)=D (D,2)=E (D,3)=A (E,1)=A (E,2)=B (E,3)=E (F,1)=G (F,2)=A (F,3)=G (G,1)=C (G,2)=A (G,3)=C F={B,D}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $1$ & $3$ & $2$ \\ \hline $\leftrightarrow$ $a$ & $b$ & $d$ & $c$ \\ \hline $\leftarrow$ $b$ & $d$ & $f$ & $g$ \\ \hline $\leftarrow$ $c$ & $b$ & $e$ & $c$ \\ \hline $\leftarrow$ $d$ & $b$ & $f$ & $e$ \\ \hline $e$ & $a$ & $b$ & $g$ \\ \hline $f$ & $c$ & $g$ & $d$ \\ \hline $g$ & $a$ & $d$ & $e$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,1)=B(A,2)=C(A,3)=B(B,1)=B(B,2)=D(B,3)=E(C,1)=B(C,2)=C(C,3)=D(D,1)=A(D,2)=D(D,3)=B(E,1)=C(E,2)=B(E,3)=D F={A,B,C}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $2$ & $3$ & $1$ \\ \hline $\leftarrow$ $a$ & $e$ & $b$ & $b$ \\ \hline $b$ & $b$ & $a$ & $d$ \\ \hline $\leftarrow$ $c$ & $f$ & $c$ & $g$ \\ \hline $d$ & $g$ & $e$ & $c$ \\ \hline $\leftarrow$ $e$ & $a$ & $f$ & $b$ \\ \hline $f$ & $f$ & $e$ & $d$ \\ \hline $\rightarrow$ $g$ & $c$ & $d$ & $a$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,1)=B(A,2)=C(A,3)=D(B,1)=E(B,2)=B(B,3)=E(C,1)=A(C,2)=E(C,3)=C(D,1)=C(D,2)=A(D,3)=B(E,1)=D(E,2)=E(E,3)=B F={B,C}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|} \ & $b$ & $c$ & $a$ \\ \hline $\leftarrow$ $i$ & $m$ & $n$ & $j$ \\ \hline $\rightarrow$ $j$ & $k$ & $n$ & $l$ \\ \hline $\leftarrow$ $k$ & $n$ & $i$ & $k$ \\ \hline $l$ & $k$ & $l$ & $o$ \\ \hline $\leftarrow$ $m$ & $i$ & $n$ & $m$ \\ \hline $n$ & $o$ & $j$ & $l$ \\ \hline $\leftarrow$ $o$ & $j$ & $i$ & $o$ \\ \hline \end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,a)=B (A,b)=C (A,c)=A (B,a)=C (B,b)=C (B,c)=B (C,a)=C (C,b)=A (C,c)=D (D,a)=A (D,b)=E (D,c)=A (E,a)=E (E,b)=D (E,c)=A F={C,D,E}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|} \ & $1$ & $0$ \\ \hline
+$\alpha$ & $\rho$ & $\gamma$ \\ \hline
+$\rightarrow$ $\beta$ & $\alpha$ & $\beta$ \\ \hline
+$\gamma$ & $\psi$ & $\delta$ \\ \hline
+$\leftarrow$ $\delta$ & $\sigma$ & $\rho$ \\ \hline
+$\rho$ & $\alpha$ & $\pi$ \\ \hline
+$\leftarrow$ $\psi$ & $\sigma$ & $\alpha$ \\ \hline
+$\leftarrow$ $\pi$ & $\beta$ & $\delta$ \\ \hline
+$\sigma$ & $\pi$ & $\rho$ \\ \hline
+\end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,0)=A(A,1)=B(B,0)=C(B,1)=D(C,0)=E(C,1)=F(D,0)=G(D,1)=B(E,0)=D(E,1)=H(F,0)=B(F,1)=H(G,0)=E(G,1)=A(H,0)=D(H,1)=G F={E,F,G}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|} \ & $x$ & $y$ \\ \hline 
+$0$ & $0$ & $4$ \\ \hline 
+$1$ & $3$ & $1$ \\ \hline 
+$\rightarrow$ $2$ & $0$ & $2$ \\ \hline 
+$3$ & $3$ & $6$ \\ \hline 
+$4$ & $4$ & $5$ \\ \hline 
+$5$ & $1$ & $5$ \\ \hline 
+$\leftarrow$ $6$ & $0$ & $2$ \\ \hline 
+\end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,x)=B(A,y)=A(B,x)=B(B,y)=C(C,x)=C(C,y)=D(D,x)=E(D,y)=D(E,x)=F(E,y)=E(F,x)=F(F,y)=G(G,x)=B(G,y)=A F={G}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|c|c|} \ & $l$ & $j$ & $k$ & $i$ \\ \hline 
+$\leftarrow$ $1$ & $8$ & $7$ & $3$ & $2$ \\ \hline
+$2$ & $1$ & $8$ & $7$ & $3$ \\ \hline
+$3$ & $7$ & $5$ & $1$ & $6$ \\ \hline
+$\rightarrow$ $4$ & $5$ & $1$ & $8$ & $2$ \\ \hline
+$\leftarrow$ $5$ & $7$ & $5$ & $6$ & $4$ \\ \hline
+$6$ & $8$ & $7$ & $5$ & $4$ \\ \hline
+$\leftarrow$ $7$ & $1$ & $1$ & $2$ & $6$ \\ \hline
+$\leftarrow$ $8$ & $5$ & $8$ & $4$ & $3$ \\ \hline
+\end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,i)=A(A,j)=B(A,k)=B(A,l)=B(B,i)=A(B,j)=B(B,k)=A(B,l)=B F={B}" ok
+--
+<p>Najděte jazykově ekvivalentní minimální automat v kanonickém tvaru pro totální DFA bez nedosažitelných stavů zadaný tabulkou:</p>
+<p><M>\begin{tabular}{r|c|c|} \ & $b$ & $a$ \\ \hline
+$\rightarrow$ $1$ & $1$ & $3$ \\ \hline
+$2$ & $8$ & $4$ \\ \hline
+$\leftarrow$ $3$ & $5$ & $7$ \\ \hline
+$4$ & $6$ & $8$ \\ \hline
+$\leftarrow$ $5$ & $2$ & $1$ \\ \hline
+$6$ & $6$ & $3$ \\ \hline
+$7$ & $2$ & $8$ \\ \hline
+$8$ & $1$ & $8$ \\ \hline
+\end{tabular}</M></p>
+ :e____________________________________________________________________________________________________________________________
+:e="b:DFA-MIC:(A,a)=B(A,b)=A(B,a)=C(B,b)=D(C,a)=E(C,b)=F(D,a)=A(D,b)=F(E,a)=E(E,b)=A(F,a)=E(F,b)=E F={B,D}" ok
