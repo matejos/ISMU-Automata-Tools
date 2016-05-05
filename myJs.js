@@ -222,6 +222,7 @@ function init(id) {
 
 function initTable(wp) {
 	var table = document.createElement("table");
+	table.setAttribute("class", "myTable");
 	wp.tableTab.table = table;
 	table.selectedCell = 0;
 	table.wp = wp;

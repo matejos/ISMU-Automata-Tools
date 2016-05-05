@@ -3,21 +3,23 @@
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css">
 <script src="myJs.js"></script>
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
 <link rel="stylesheet" href="myCss.css" type="text/css" />
 
 <!--________________________________________Příklad 1________________________________________-->
-<p>TEST:</p>
+<p>TEST NFA:</p>
 
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1c">Text</a></li></ul></ul>
-<div id="q1" class="tab-content"><script>init("q1");</script></div>
+<div id="q1" class="tab-content"><script>init("q1", "NFA");</script></div>
 
 
 
 <!--________________________________________Příklad 2________________________________________-->
-<p>TEST 2:</p>
+<p>TEST DFA:</p>
 
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q2a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q2c">Text</a></li></ul></ul>
-<div id="q2" class="tab-content"><script>init("q2");</script></div>
+<div id="q2" class="tab-content"><script>init("q2", "DFA");</script></div>
+
+<!--________________________________________Příklad 2________________________________________-->
+<p>TEST REG:</p>
+<div id="q3"><script>init("q3", "REG");</script></div>
