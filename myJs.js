@@ -11,213 +11,245 @@ var modeEnum = Object.freeze({
     SELECT: 3
 });
 
-function init(id) {
+function init(id, type) {
     var wp = document.getElementById(id);
-  
-	var editor = document.createElement("div");
-	editor.setAttribute("id", id + "a");
-	editor.setAttribute("class", "tab-pane fade in active");
-	editor.wp = wp;
+	wp.realtype = type;
+	switch (type) 
+	{
+		case "NFA":
+		case "EFA":
+			wp.type = "NFA";
+			break;
+		case "TOT":
+		case "MIN":
+		case "CAN":
+		case "TOC":
+		case "MIC":
+			wp.type = "DFA";
+			break;
+		default:
+			wp.type = type;
+	}
 	
-	var tableTab = document.createElement("div");
-	tableTab.setAttribute("id", id + "b");
-	tableTab.setAttribute("class", "tab-pane fade");
-	tableTab.wp = wp;
-	wp.tableTab = tableTab;
-	
-	var textTab = document.createElement("div");
-	textTab.setAttribute("id", id + "c");
-	textTab.setAttribute("class", "tab-pane fade");
-	textTab.wp = wp;
-	wp.textTab = textTab;
+	if (wp.type == "NFA" || wp.type == "DFA")
+	{
+		var editor = document.createElement("div");
+		editor.setAttribute("id", id + "a");
+		editor.setAttribute("class", "tab-pane fade in active");
+		editor.wp = wp;
+		
+		var tableTab = document.createElement("div");
+		tableTab.setAttribute("id", id + "b");
+		tableTab.setAttribute("class", "tab-pane fade");
+		tableTab.wp = wp;
+		wp.tableTab = tableTab;
+		
+		var textTab = document.createElement("div");
+		textTab.setAttribute("id", id + "c");
+		textTab.setAttribute("class", "tab-pane fade");
+		textTab.wp = wp;
+		wp.textTab = textTab;
 
-    var button1 = document.createElement("input");
-    button1.type = "button";
-    button1.value = "Přidat stav";
+		var button1 = document.createElement("input");
+		button1.type = "button";
+		button1.value = "Přidat stav";
 
-    var button2 = document.createElement("input");
-    button2.type = "button";
-    button2.value = "Přidat přechod";
+		var button2 = document.createElement("input");
+		button2.type = "button";
+		button2.value = "Přidat přechod";
 
-    var button3 = document.createElement("input");
-    button3.type = "button";
-    button3.value = "Koncový stav";
-    
-    var button4 = document.createElement("input");
-    button4.type = "button";
-    button4.value = "Změnit znaky přechodu";
-    
-    var textBox = document.createElement("input");
-    textBox.type = "text";
-    textBox.value = "a";
-    
-	var button5 = document.createElement("input");
-    button5.type = "button";
-    button5.value = "Smaž zvolené";
-	
-    var button6 = document.createElement("input");
-    button6.type = "button";
-    button6.value = "Vygeneruj výstup";
+		var button3 = document.createElement("input");
+		button3.type = "button";
+		button3.value = "Koncový stav";
+		
+		var button4 = document.createElement("input");
+		button4.type = "button";
+		button4.value = "Změnit znaky přechodu";
+		
+		var textBox = document.createElement("input");
+		textBox.type = "text";
+		textBox.value = "a";
+		
+		var button5 = document.createElement("input");
+		button5.type = "button";
+		button5.value = "Smaž zvolené";
+		
+		var button6 = document.createElement("input");
+		button6.type = "button";
+		button6.value = "Vygeneruj výstup";
 
-    editor.appendChild(button1);
-    editor.appendChild(button2);
-    editor.appendChild(button3);
-    editor.appendChild(button4);
-    editor.appendChild(textBox);
-	editor.appendChild(button5);
-    editor.appendChild(button6);
+		editor.appendChild(button1);
+		editor.appendChild(button2);
+		editor.appendChild(button3);
+		editor.appendChild(button4);
+		editor.appendChild(textBox);
+		editor.appendChild(button5);
+		editor.appendChild(button6);
 
-    var p1 = document.createElement("p");
-    editor.appendChild(p1);
+		var p1 = document.createElement("p");
+		editor.appendChild(p1);
 
 
-	var mydiv = document.createElement("DIV");
-	mydiv.setAttribute("style", "background-color: pink;");
-	mydiv.setAttribute("class", "canvas");
-	mydiv.setAttributeNS(null, "id", "mydiv");
-	$(mydiv).resizable({minHeight: 400, minWidth: 400});
-	editor.appendChild(mydiv);
-	
-	
-    var svg = document.createElementNS(svgns, 'svg');
-    svg.setAttribute('width', '100%');
-	svg.setAttribute('height', '100%');
-    svg.selectedElement = 0;
-    svg.makingTransition = 0;
-	renamingCursor = 0;
-    svg.inputBox = textBox;
-	svg.parentSvg = svg;
-    svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
-    svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
-    svg.div = mydiv;
-	svg.divId = id;
-	wp.svg = svg;
-	svg.wp = wp;
+		var mydiv = document.createElement("DIV");
+		mydiv.setAttribute("style", "background-color: pink;");
+		mydiv.setAttribute("class", "canvas");
+		mydiv.setAttributeNS(null, "id", "mydiv");
+		$(mydiv).resizable({minHeight: 400, minWidth: 400});
+		editor.appendChild(mydiv);
+		
+		
+		var svg = document.createElementNS(svgns, 'svg');
+		svg.setAttribute('width', '100%');
+		svg.setAttribute('height', '100%');
+		svg.selectedElement = 0;
+		svg.makingTransition = 0;
+		renamingCursor = 0;
+		svg.inputBox = textBox;
+		svg.parentSvg = svg;
+		svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
+		svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
+		svg.div = mydiv;
+		svg.divId = id;
+		wp.svg = svg;
+		svg.wp = wp;
 
-    mydiv.appendChild(svg);
-	
-    var rect = document.createElementNS(svgns, "rect");
-    rect.setAttribute("fill", "#eeeeee");
-    rect.setAttribute("width", '100%');
-    rect.setAttribute("height", '100%');
-    rect.parentSvg = svg;
-    rect.states = [];
-    rect.mode = modeEnum.SELECT;
-    rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
-    rect.button1 = button1;
-    rect.button2 = button2;
-	$(rect).dblclick(rectDblClick);
-	svg.rect = rect;
-    svg.appendChild(rect);
-	
-    
-    var initState = document.createElementNS(svgns, "circle");
-    initState.setAttributeNS(null, "cx", 70);
-    initState.setAttributeNS(null, "cy", 50);
-    initState.setAttributeNS(null, "r", circleSize);
-    initState.setAttributeNS(null, "fill", "white");
-    initState.setAttributeNS(null, "stroke", "black");
-    initState.setAttributeNS(null, "stroke-width", 1);
-    initState.parentSvg = svg;
-    initState.parentRect = rect;
-	initState.init = 0;
-    initState.end = 0;
-    initState.lines1 = [];
-    initState.lines2 = [];
-    initState.name = String.fromCharCode(65 + rect.states.length);
-    initState.setAttributeNS(null, "onmousedown", "clickState(evt)");
-    initState.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
-	initState.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
-	$(initState).dblclick(stateDblClick);
+		mydiv.appendChild(svg);
+		
+		var rect = document.createElementNS(svgns, "rect");
+		rect.setAttribute("fill", "#eeeeee");
+		rect.setAttribute("width", '100%');
+		rect.setAttribute("height", '100%');
+		rect.parentSvg = svg;
+		rect.states = [];
+		rect.mode = modeEnum.SELECT;
+		rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
+		rect.button1 = button1;
+		rect.button2 = button2;
+		$(rect).dblclick(rectDblClick);
+		svg.rect = rect;
+		svg.appendChild(rect);
+		
+		
+		var initState = document.createElementNS(svgns, "circle");
+		initState.setAttributeNS(null, "cx", 70);
+		initState.setAttributeNS(null, "cy", 50);
+		initState.setAttributeNS(null, "r", circleSize);
+		initState.setAttributeNS(null, "fill", "white");
+		initState.setAttributeNS(null, "stroke", "black");
+		initState.setAttributeNS(null, "stroke-width", 1);
+		initState.parentSvg = svg;
+		initState.parentRect = rect;
+		initState.init = 0;
+		initState.end = 0;
+		initState.lines1 = [];
+		initState.lines2 = [];
+		initState.name = String.fromCharCode(65 + rect.states.length);
+		initState.setAttributeNS(null, "onmousedown", "clickState(evt)");
+		initState.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
+		initState.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
+		$(initState).dblclick(stateDblClick);
 
-    var newText = document.createElementNS(svgns, "text");
-    newText.setAttributeNS(null, "x", initState.getAttribute("cx"));
-    newText.setAttributeNS(null, "y", initState.getAttribute("cy"));
-    newText.setAttribute('pointer-events', 'none');
-    newText.setAttribute('font-size', 20);
-	newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
-    newText.setAttribute('dy', ".3em");							// vertical alignment
-    newText.setAttribute('text-anchor', "middle");				// horizontal alignment
-    newText.setAttribute('class', 'noselect');
-    var textNode = document.createTextNode(String.fromCharCode(65 + rect.states.length));
-    newText.appendChild(textNode);
-	newText.node = textNode;
+		var newText = document.createElementNS(svgns, "text");
+		newText.setAttributeNS(null, "x", initState.getAttribute("cx"));
+		newText.setAttributeNS(null, "y", initState.getAttribute("cy"));
+		newText.setAttribute('pointer-events', 'none');
+		newText.setAttribute('font-size', 20);
+		newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
+		newText.setAttribute('dy', ".3em");							// vertical alignment
+		newText.setAttribute('text-anchor', "middle");				// horizontal alignment
+		newText.setAttribute('class', 'noselect');
+		var textNode = document.createTextNode(String.fromCharCode(65 + rect.states.length));
+		newText.appendChild(textNode);
+		newText.node = textNode;
 
-    initState.text = newText;
+		initState.text = newText;
 
-	toggleInitState(initState);
-    rect.states.push(initState);
-    putOnTop(initState);
-    rect.initState = initState;
+		toggleInitState(initState);
+		rect.states.push(initState);
+		putOnTop(initState);
+		rect.initState = initState;
 
-    button1.rect = rect;
-    button2.rect = rect;
-    button3.rect = rect;
-    button4.rect = rect;
-	button5.rect = rect;
-    button6.rect = rect;
-    button1.setAttributeNS(null, "onclick", 'button1Click(rect);');
-    button2.setAttributeNS(null, "onclick", 'button2Click(rect);');
-    button3.setAttributeNS(null, "onclick", 'button3Click(rect);');
-    button4.setAttributeNS(null, "onclick", 'button4Click(rect);');
-	button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
-    button6.setAttributeNS(null, "onclick", 'button6Click(rect);');
-	button1.style.borderStyle = "outset";
-	button2.style.borderStyle = "outset";
-	button3.style.borderStyle = "outset";
-	button4.style.borderStyle = "outset";
-	button5.style.borderStyle = "outset";
-	button6.style.borderStyle = "outset";
-	
-	wp.appendChild(editor);
-	
-	// TABLE TAB
-	var tableButton1 = document.createElement("input");
-    tableButton1.type = "button";
-    tableButton1.value = "Počátečný stav";
-	tableButton1.tableTab = tableTab;
-	tableButton1.setAttributeNS(null, "onclick", 'tableButton1Click(tableTab);');
-	tableButton1.style.borderStyle = "outset";
-	tableTab.appendChild(tableButton1);
-	
-	var tableButton2 = document.createElement("input");
-    tableButton2.type = "button";
-    tableButton2.value = "Koncový stav";
-	tableButton2.tableTab = tableTab;
-	tableButton2.setAttributeNS(null, "onclick", 'tableButton2Click(tableTab);');
-	tableButton2.style.borderStyle = "outset";
-	tableTab.appendChild(tableButton2);
-	
-	initTable(wp);
-	wp.appendChild(tableTab);
-	
-	// TEXT TAB
-	initTextTab(wp);
-	wp.appendChild(textTab);
-	
-	$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
-		updateEditorTab(wp, e.relatedTarget);
-	});
-	$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
-		updateTableTab(wp, e.relatedTarget);
-	});
-	$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
-		updateTextTab(wp, e.relatedTarget);
-	});
-	
-	$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
-		wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
-		wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
-	});
-	
-	$('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
-		deselectElement(svg);
-		for (i = 0; i < rect.states.length; i++)
-		{
-			if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
-				deleteState(rect.states[i]);
-		}
-	});
+		button1.rect = rect;
+		button2.rect = rect;
+		button3.rect = rect;
+		button4.rect = rect;
+		button5.rect = rect;
+		button6.rect = rect;
+		button1.setAttributeNS(null, "onclick", 'button1Click(rect);');
+		button2.setAttributeNS(null, "onclick", 'button2Click(rect);');
+		button3.setAttributeNS(null, "onclick", 'button3Click(rect);');
+		button4.setAttributeNS(null, "onclick", 'button4Click(rect);');
+		button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
+		button6.setAttributeNS(null, "onclick", 'button6Click(rect);');
+		button1.style.borderStyle = "outset";
+		button2.style.borderStyle = "outset";
+		button3.style.borderStyle = "outset";
+		button4.style.borderStyle = "outset";
+		button5.style.borderStyle = "outset";
+		button6.style.borderStyle = "outset";
+		
+		wp.appendChild(editor);
+		
+		// TABLE TAB
+		var tableButton1 = document.createElement("input");
+		tableButton1.type = "button";
+		tableButton1.value = "Počátečný stav";
+		tableButton1.tableTab = tableTab;
+		tableButton1.setAttributeNS(null, "onclick", 'tableButton1Click(tableTab);');
+		tableButton1.style.borderStyle = "outset";
+		tableTab.appendChild(tableButton1);
+		
+		var tableButton2 = document.createElement("input");
+		tableButton2.type = "button";
+		tableButton2.value = "Koncový stav";
+		tableButton2.tableTab = tableTab;
+		tableButton2.setAttributeNS(null, "onclick", 'tableButton2Click(tableTab);');
+		tableButton2.style.borderStyle = "outset";
+		tableTab.appendChild(tableButton2);
+		
+		initTable(wp);
+		wp.appendChild(tableTab);
+		
+		// TEXT TAB
+		wp.appendChild(textTab);
+		
+		$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
+			updateEditorTab(wp, e.relatedTarget);
+		});
+		$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
+			updateTableTab(wp, e.relatedTarget);
+		});
+		$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
+			updateTextTab(wp, e.relatedTarget);
+		});
+		
+		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
+			wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
+			wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
+		});
+		
+		$('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
+			deselectElement(svg);
+			for (i = 0; i < rect.states.length; i++)
+			{
+				if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
+					deleteState(rect.states[i]);
+			}
+		});
+	}
+	else if (wp.type == "REG")
+	{
+		var textArea = document.createElement("input");
+		textArea.setAttribute("type", "text");
+		textArea.setAttribute("class", "myTextArea");
+		$(textArea).on('input',regTextChanged);
+		//$(textArea).focusout(tableCellChangedFinal);
+		wp.appendChild(textArea);	
+		
+		var textAreaSyntax = document.createElement("img");
+		textArea.syntax = textAreaSyntax;
+		wp.appendChild(textAreaSyntax);	
+	}
 }
 
 function initTable(wp) {
@@ -231,11 +263,11 @@ function initTable(wp) {
 }
 
 function initTextTab(wp) {
-	var textArea = document.createElement("input");
-	textArea.setAttribute("type", "text");
-	textArea.setAttribute("size", "50");
-	wp.textTab.appendChild(textArea);	
-	wp.textTab.textArea = textArea;
+	console.log("initializing text tab");
+	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
+	console.log(x);
+	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
+	console.log(wp.textTab.textArea);
 }
 
 function updateEditorTab(wp, target)
@@ -285,6 +317,8 @@ function updateTableTabFromEditor(wp)
 
 function updateTableTabFromText(wp)	// not finished
 {
+	wp.textTab.textArea.style.display = "none";	// hide answer textarea
+	
 	var table = wp.tableTab.table;
 	var s = wp.textTab.textArea.value;
 	var str = s.split(" ");
@@ -334,31 +368,34 @@ function updateTableTabFromText(wp)	// not finished
 					table.states.push(exits[j]);
 			}
 		}
-		else if (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i]))	// DFA
+		else
 		{
-			var state1 = str[i].substring(1, str[i].indexOf(","));
-			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
-			var state2 = str[i].substring(str[i].indexOf("=") + 1, str[i].length);
-			if (table.states.indexOf(state1) == -1)
-				table.states.push(state1);
-			if (table.states.indexOf(state2) == -1)
-				table.states.push(state2);
-			if (table.symbols.indexOf(symb) == -1)
-				table.symbols.push(symb);
-		}
-		else if (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))	// NFA
-		{
-			var state1 = str[i].substring(1, str[i].indexOf(","));
-			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
-			var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
-			if (table.states.indexOf(state1) == -1)
-				table.states.push(state1);
-			if (table.symbols.indexOf(symb) == -1)
-				table.symbols.push(symb);
-			for (j = 0; j < states2.length; j++)
+			if ((wp.type == "DFA") && (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i])))	// DFA
 			{
-				if (table.states.indexOf(states2[j]) == -1)
-					table.states.push(states2[j]);
+				var state1 = str[i].substring(1, str[i].indexOf(","));
+				var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+				var state2 = str[i].substring(str[i].indexOf("=") + 1, str[i].length);
+				if (table.states.indexOf(state1) == -1)
+					table.states.push(state1);
+				if (table.states.indexOf(state2) == -1)
+					table.states.push(state2);
+				if (table.symbols.indexOf(symb) == -1)
+					table.symbols.push(symb);
+			}
+			else if ((wp.type == "NFA") && (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i])))	// NFA
+			{
+				var state1 = str[i].substring(1, str[i].indexOf(","));
+				var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+				var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
+				if (table.states.indexOf(state1) == -1)
+					table.states.push(state1);
+				if (table.symbols.indexOf(symb) == -1)
+					table.symbols.push(symb);
+				for (j = 0; j < states2.length; j++)
+				{
+					if (table.states.indexOf(states2[j]) == -1)
+						table.states.push(states2[j]);
+				}
 			}
 		}
 	}
@@ -425,7 +462,7 @@ function updateTableTabFromText(wp)	// not finished
 	// filling transitions
 	for (i = 0; i < str.length; i++)
 	{
-		if (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i]))	// DFA
+		if ((wp.type == "DFA") && (/^\([^ ,]+,[^ ,]+\)=[^ ,]+$/.test(str[i])))	// DFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -437,11 +474,12 @@ function updateTableTabFromText(wp)	// not finished
 			cell.myDiv.value += state2 + '}';
 			cell.myDiv.prevValue = cell.myDiv.value;
 		}
-		else if (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))	// NFA
+		else if ((wp.type == "NFA") && (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i])))	// NFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
 			var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
+			console.log(states2);
 			var cell = table.rows[table.states.indexOf(state1) + 2].cells[table.symbols.indexOf(symb) + 2];
 			cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
 			for (j = 0; j < states2.length; j++)
@@ -1113,6 +1151,9 @@ function updateTextTabFromTable(wp)
 
 function updateTextTabFromEditor(wp)
 {
+	if (!wp.textTab.textArea)
+		initTextTab(wp);
+	wp.textTab.textArea.style.display = "";	// show answer textarea
 	var textArea = wp.textTab.textArea;
 	textArea.value = generateAnswer(wp.svg.rect);
 }
@@ -1148,6 +1189,11 @@ function button2Click(rect) {
         rect.mode = modeEnum.ADD_TRANSITION;
         deselectElement(rect.parentSvg);
     }
+}
+
+function regTextChanged()
+{
+	checkSyntax(this, this.syntax);
 }
 
 function toggleInitStateOn(state)
@@ -1282,6 +1328,7 @@ function generateAnswer(rect)
 {
 	var finalStates = [];
     var out = "";
+	var type = rect.parentSvg.wp.type;
 	for (i = 0; i < rect.states.length; i++)
     {
 		if (rect.states[i].init !== 0)
@@ -1296,17 +1343,47 @@ function generateAnswer(rect)
     {
         if (rect.states[i].end !== 0)
             finalStates.push(rect.states[i]);
-        for (j = 0; j < rect.states[i].lines1.length; j++)
-    	{
-            
-            var str = rect.states[i].lines1[j].name;
-            str = str.split(',');
-            for (k = 0; k < str.length; k++)
-    		{
-                out += "(" + rect.states[i].name + "," + str[k] +
-                	")=" + rect.states[i].lines1[j].end.name + " ";
-            }
-        }
+		if (type == "DFA")
+		{
+			for (j = 0; j < rect.states[i].lines1.length; j++)
+			{
+				var str = rect.states[i].lines1[j].name;
+				str = str.split(',');
+				for (k = 0; k < str.length; k++)
+				{
+					out += "(" + rect.states[i].name + "," + str[k] +
+						")=" + rect.states[i].lines1[j].end.name + " ";
+				}
+			}
+		}
+		else if (type == "NFA")
+		{
+			var transitions = {};
+			for (j = 0; j < rect.states[i].lines1.length; j++)
+			{
+				var str = rect.states[i].lines1[j].name;
+				str = str.split(',');
+				for (k = 0; k < str.length; k++)
+				{
+					if (!transitions[str[k]])
+						transitions[str[k]] = [];
+					transitions[str[k]].push(rect.states[i].lines1[j].end.name);
+				}
+			}
+			var keys = [];
+			for (var key in transitions) 
+			{
+				if (transitions.hasOwnProperty(key)) 
+				{
+				keys.push(key);
+				}
+			}
+			for (j = 0; j < keys.length; j++)
+			{
+				out += "(" + rect.states[i].name + "," + keys[j] +
+						")={" + transitions[keys[j]] + "} ";
+			}
+		}
     }
     if (finalStates.length !== 0)
     {
