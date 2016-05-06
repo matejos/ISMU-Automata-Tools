@@ -82,6 +82,14 @@ function init(id, type) {
 		editor.appendChild(button4);
 		editor.appendChild(textBox);
 		editor.appendChild(button5);
+		
+		if (wp.realtype == "EFA")
+		{
+			var editorButtonEpsilon = document.createElement("input");
+			editorButtonEpsilon.type = "button";
+			editorButtonEpsilon.value = "Přidat epsilon";
+			editor.appendChild(editorButtonEpsilon);
+		}
 
 		var p1 = document.createElement("p");
 		editor.appendChild(p1);
@@ -182,6 +190,12 @@ function init(id, type) {
 		button3.style.borderStyle = "outset";
 		button4.style.borderStyle = "outset";
 		button5.style.borderStyle = "outset";
+		if (wp.realtype == "EFA")
+		{
+			editorButtonEpsilon.rect = rect;
+			editorButtonEpsilon.setAttributeNS(null, "onclick", 'editorButtonEpsilonClick();');
+			editorButtonEpsilon.style.borderStyle = "outset";
+		}
 		
 		wp.appendChild(editor);
 		
@@ -1200,6 +1214,13 @@ function doGetCaretPosition (oField) {
   return iCaretPos;
 }
 
+function editorButtonEpsilonClick()
+{
+	var newname = renamingTransition.line.name.substring(0, renamingCursor) + 'ε' + renamingTransition.line.name.substring(renamingCursor, renamingTransition.line.name.length);
+	renameTransition(renamingTransition.line, newname);
+	renamingCursor++;
+}
+
 function tableButtonEpsilonClick(tableTab)
 {
 	tableAddColumn(tableTab.table, 'ε');
@@ -1375,19 +1396,25 @@ function button4Click(rect) {
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "path")) {
         if (svg.inputBox.value === "")
         {
-            alert("Nelze prázdný přechod");
+			if (svg.wp.realtype == "EFA")
+			{
+				svg.inputBox.value = "ε";
+			}
+			else
+			{
+				alert("Nelze prázdný přechod");
+				return;
+			}
         }
-        else if (/[^a-z,]/.test(svg.inputBox.value))
+        else if (/[ =()]/.test(svg.inputBox.value))
         {
-            alert("Chybná syntax! (pouze a-z oddělené čárkami)");
+            alert("Chybná syntax! (řeťezec znaků, s výjimkou speciálních znaků a mezery)");
+			return;
         }
-        else
-        {
-        	svg.selectedElement.name = svg.inputBox.value;
-        	svg.selectedElement.text.node.nodeValue = svg.inputBox.value;
-			svg.selectedElement.rect.setAttribute("width", svg.selectedElement.text.getComputedTextLength() + 8);
-			moveTextRect(svg.selectedElement.rect, svg.selectedElement.text.getAttribute('x'), svg.selectedElement.text.getAttribute('y'));
-        }
+		svg.selectedElement.name = svg.inputBox.value;
+		svg.selectedElement.text.node.nodeValue = svg.inputBox.value;
+		svg.selectedElement.rect.setAttribute("width", svg.selectedElement.text.getComputedTextLength() + 8);
+		moveTextRect(svg.selectedElement.rect, svg.selectedElement.text.getAttribute('x'), svg.selectedElement.text.getAttribute('y'));
     }
 }
 
@@ -1482,11 +1509,6 @@ function generateAnswer(rect)
         out +="}";
 	}
 	return out;
-}
-
-function editorButtonEpsilonClick(rect)
-{
-	
 }
 
 function createStateAbs(rect, x, y, name)
@@ -2099,7 +2121,16 @@ function stopTyping()
 		renamingTransition.setAttribute("fill", "white");
 		renameTransition(renamingTransition.line, renamingTransition.line.name.replace("|", ""));
 		if (renamingTransition.line.name == "")
-			renameTransition(renamingTransition.line, transitionPrevName);
+		{
+			if (renamingTransition.parentSvg.wp.realtype == "EFA")
+			{
+				renameTransition(renamingTransition.line, "ε");
+			}
+			else
+			{
+				renameTransition(renamingTransition.line, transitionPrevName);
+			}
+		}
 		/*else if (renamingTransition.line.name == "abc")
 		{
 			renamingTransition.setAttribute("fill", "red");
