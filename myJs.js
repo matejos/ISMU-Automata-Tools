@@ -213,6 +213,8 @@ function init(id, type) {
 			tableTab.appendChild(tableButtonEpsilon);
 		}
 		
+		var tablep = document.createElement('p');
+		tableTab.appendChild(tablep);
 		initTable(wp);
 		wp.appendChild(tableTab);
 		
