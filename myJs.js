@@ -1541,8 +1541,8 @@ function stateDblClick(evt)
 }
 function createTransition(state1, state2, symbols)
 {
-	var x1 = state1.getAttribute("cx");
-	var y1 = state1.getAttribute("cy");
+	var x1 = +state1.getAttribute("cx");
+	var y1 = +state1.getAttribute("cy");
 	var aLine = document.createElementNS(svgns, 'path');
 	var att;
 	if (state1 == state2)
@@ -1558,10 +1558,19 @@ function createTransition(state1, state2, symbols)
 	}
 	else
 	{
-		var x2 = state2.getAttribute("cx");
-		var y2 = state2.getAttribute("cy");
+		var z = 50;
+		var x2 = +state2.getAttribute("cx");
+		var y2 = +state2.getAttribute("cy");
+		var angle = Math.acos( (x2 - x1) / Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) ) );
+		if (y2 > y1)
+			angle = -angle;
+		angle += Math.PI/2;
+		aLine.dx = (Math.cos(angle) * z);
+		aLine.dy = (-Math.sin(angle) * z);
+		var cpx = ((x1 + x2)/2) + aLine.dx;
+		var cpy = ((y1 + y2)/2) + aLine.dy;
 		att = "M "+x1+" "+y1+" Q "
-			+ controlPoint(x1, y1, x2, y2)
+			+ cpx + " " + cpy
 			+ " " + x2 + " " + y2;
 		var str = att.split(' ');
 		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
@@ -1883,6 +1892,8 @@ function moveElement(evt) {
 						//temp = temp.split(' ');
 						//str[4] = temp[0];
 						//str[5] = temp[1];
+						str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines1[i].dx;
+						str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines1[i].dy;
 						
 						tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
 						ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
@@ -1905,6 +1916,8 @@ function moveElement(evt) {
 					//temp = temp.split(' ');
 					//str[4] = temp[0];
 					//str[5] = temp[1];
+					str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines2[i].dx;
+					str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines2[i].dy;
 					
 					tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
 					ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
@@ -1965,8 +1978,10 @@ function movePath(line, mouseX, mouseY) {
 	}
 	else
 	{
-		str[4] = ((+str[1] + (+str[6]))/2)+(2*(mouseX-((+str[1] + (+str[6]))/2)));
-		str[5] = ((+str[2] + (+str[7]))/2)+(2*(mouseY-((+str[2] + (+str[7]))/2)));
+		line.dx = (2*(mouseX-((+str[1] + (+str[6]))/2)));
+		line.dy = (2*(mouseY-((+str[2] + (+str[7]))/2)));
+		str[4] = ((+str[1] + (+str[6]))/2) + line.dx;
+		str[5] = ((+str[2] + (+str[7]))/2) + line.dy;
 
 		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
 		var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
