@@ -75,9 +75,6 @@ function init(id, type) {
 		button5.type = "button";
 		button5.value = "Smaž zvolené";
 		
-		var button6 = document.createElement("input");
-		button6.type = "button";
-		button6.value = "Vygeneruj výstup";
 
 		editor.appendChild(button1);
 		editor.appendChild(button2);
@@ -85,7 +82,6 @@ function init(id, type) {
 		editor.appendChild(button4);
 		editor.appendChild(textBox);
 		editor.appendChild(button5);
-		editor.appendChild(button6);
 
 		var p1 = document.createElement("p");
 		editor.appendChild(p1);
@@ -176,19 +172,16 @@ function init(id, type) {
 		button3.rect = rect;
 		button4.rect = rect;
 		button5.rect = rect;
-		button6.rect = rect;
 		button1.setAttributeNS(null, "onclick", 'button1Click(rect);');
 		button2.setAttributeNS(null, "onclick", 'button2Click(rect);');
 		button3.setAttributeNS(null, "onclick", 'button3Click(rect);');
 		button4.setAttributeNS(null, "onclick", 'button4Click(rect);');
 		button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
-		button6.setAttributeNS(null, "onclick", 'button6Click(rect);');
 		button1.style.borderStyle = "outset";
 		button2.style.borderStyle = "outset";
 		button3.style.borderStyle = "outset";
 		button4.style.borderStyle = "outset";
 		button5.style.borderStyle = "outset";
-		button6.style.borderStyle = "outset";
 		
 		wp.appendChild(editor);
 		
@@ -1487,13 +1480,6 @@ function generateAnswer(rect)
         out +="}";
 	}
 	return out;
-}
-function button6Click(rect) {
-    var svg = rect.parentSvg;
-    var out = generateAnswer(rect);
-    
-	var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
-	document.getElementsByTagName('textarea')[x].value = out; 
 }
 
 function editorButtonEpsilonClick(rect)
