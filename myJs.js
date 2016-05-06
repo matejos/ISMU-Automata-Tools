@@ -5,6 +5,7 @@ var transitionPrevName;
 var circleSize = 25;
 var fadeTime = 100;
 var cursorTimer;
+var controlKeys = [13, 27, 8, 46, 35, 36, 37, 39];
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -208,6 +209,17 @@ function init(id, type) {
 		tableButton2.style.borderStyle = "outset";
 		tableTab.appendChild(tableButton2);
 		
+		if (wp.realtype == "EFA")
+		{
+			var tableButtonEpsilon = document.createElement("input");
+			tableButtonEpsilon.type = "button";
+			tableButtonEpsilon.value = "Přidat epsilon";
+			tableButtonEpsilon.tableTab = tableTab;
+			tableButtonEpsilon.setAttributeNS(null, "onclick", 'tableButtonEpsilonClick(tableTab);');
+			tableButtonEpsilon.style.borderStyle = "outset";
+			tableTab.appendChild(tableButtonEpsilon);
+		}
+		
 		initTable(wp);
 		wp.appendChild(tableTab);
 		
@@ -268,7 +280,13 @@ function initTextTab(wp) {
 	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
 	console.log(x);
 	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
-	console.log(wp.textTab.textArea);
+	
+	// only for testing in local html
+	if(!wp.textTab.textArea)
+	{
+		wp.textTab.textArea = document.createElement('textarea');
+		wp.appendChild(wp.textTab.textArea);
+	}
 }
 
 function updateEditorTab(wp, target)
@@ -420,8 +438,11 @@ function updateTableTabFromText(wp)	// not finished
 	// filling out columns' headers from symbols and delete buttons above them
 	for (i = 0; i < table.symbols.length; i++)
 	{
+		var symbout = table.symbols[i];
+		if (symbout == "\\e")
+			symbout = "ε";
 		tableAddColumnDeleteButton(row, table);
-		tableAddColumnHeader(row2, table.symbols[i]);
+		tableAddColumnHeader(row2, symbout);
 	}
 	
 	// column add button
@@ -491,6 +512,21 @@ function updateTableTabFromText(wp)	// not finished
 			}
 			cell.myDiv.value += '}';
 			cell.myDiv.prevValue = cell.myDiv.value;
+		}
+	}
+	
+	// sort cells' values
+	for (i = 2; i < table.rows.length - 1; i++)
+	{
+		for (j = 2; j < table.rows[i].cells.length; j++)
+		{
+			var val = table.rows[i].cells[j].myDiv.value;
+			val = val.replace(/{|}/g, "");
+			var vals = val.split(",");
+			vals.sort();
+			var q = vals.indexOf(state);
+			table.rows[i].cells[j].myDiv.value = "{" + vals.toString() + "}";
+			table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
 		}
 	}
 }
@@ -769,27 +805,30 @@ function tableChChangedFinal()
 		var div = $(this).get(0);
 		var prevName = div.prevValue;
 		var newName = div.value;
-		
-		// Rename the symbol in editor
-		for (i = 0; i < table.wp.svg.rect.states.length; i++)
+		if (prevName != newName)
 		{
-			for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
+			console.log("CH changed, correct");
+			// Rename the symbol in editor
+			for (i = 0; i < table.wp.svg.rect.states.length; i++)
 			{
-				var val = table.wp.svg.rect.states[i].lines1[j].name;
-				var vals = val.split(",");
-				var index = vals.indexOf(prevName);
-				if (index != -1)
+				for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
 				{
-					if (vals.indexOf(newName) == -1)
-						vals[index] = newName;
-					else
-						vals.splice(index, 1);
-					renameTransition(table.wp.svg.rect.states[i].lines1[j], vals.toString());
+					var val = table.wp.svg.rect.states[i].lines1[j].name;
+					var vals = val.split(",");
+					var index = vals.indexOf(prevName);
+					if (index != -1)
+					{
+						if (vals.indexOf(newName) == -1)
+							vals[index] = newName;
+						else
+							vals.splice(index, 1);
+						renameTransition(table.wp.svg.rect.states[i].lines1[j], vals.toString());
+					}
 				}
 			}
+			
+			div.prevValue = div.value;
 		}
-		
-		div.prevValue = div.value;
 	}
 }
 
@@ -978,7 +1017,7 @@ function tableAddCell(row)
 	var div = document.createElement("input");
 	div.value = "{}";
 	div.prevValue = div.value;
-	div.setAttribute("size", 1);
+	div.setAttribute("size", 3);
 	$(div).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv");
@@ -1001,21 +1040,24 @@ function tableAddCell(row)
 	cell.appendChild(div);
 }
 
-function tableAddColumn(table)
+function tableAddColumn(table, symb)
 {
 	table.rows[0].deleteCell(table.rows[0].cells.length - 1);
 	tableAddColumnDeleteButton(table.rows[0], table);
 	tableAddColumnAddButton(table.rows[0], table);
 	
-	var names = [];
-	for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
-		names.push(String.fromCharCode(k));
-	for (k = 0; k < table.symbols.length; k++)
-		names.splice(names.indexOf(table.symbols[k]), 1);
-	var name = names[0];
-	table.symbols.push(name);
+	if (!symb)
+	{
+		var names = [];
+		for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
+			names.push(String.fromCharCode(k));
+		for (k = 0; k < table.symbols.length; k++)
+			names.splice(names.indexOf(table.symbols[k]), 1);
+		symb = names[0];
+	}
 	
-	tableAddColumnHeader(table.rows[1], name);
+	table.symbols.push(symb);
+	tableAddColumnHeader(table.rows[1], symb);
 	for (i = 2; i < table.rows.length - 1; i++)
 	{
 		tableAddCell(table.rows[i]);
@@ -1134,6 +1176,40 @@ function tableButton2Click(tableTab) {
 	}
 }
 
+function doGetCaretPosition (oField) {
+
+  // Initialize
+  var iCaretPos = 0;
+
+  // IE Support
+  if (document.selection) {
+
+    // Set focus on the element
+    oField.focus();
+
+    // To get cursor position, get empty selection range
+    var oSel = document.selection.createRange();
+
+    // Move selection start to 0 position
+    oSel.moveStart('character', -oField.value.length);
+
+    // The caret position is selection length
+    iCaretPos = oSel.text.length;
+  }
+
+  // Firefox support
+  else if (oField.selectionStart || oField.selectionStart == '0')
+    iCaretPos = oField.selectionStart;
+
+  // Return results
+  return iCaretPos;
+}
+
+function tableButtonEpsilonClick(tableTab)
+{
+	tableAddColumn(tableTab.table, 'ε');
+}
+
 function updateTextTab(wp, target)
 {
 	var t = target.getAttribute("data-target");
@@ -1157,6 +1233,14 @@ function updateTextTabFromEditor(wp)
 	wp.textTab.textArea.style.display = "";	// show answer textarea
 	var textArea = wp.textTab.textArea;
 	textArea.value = generateAnswer(wp.svg.rect);
+}
+
+function textButtonEpsilonClick(textTab)
+{
+	var pos = doGetCaretPosition (textTab.textArea);
+	var val = textTab.textArea.value;
+	var str = val.substring(0, pos) + 'ε' + val.substring(pos, val.length);
+	textTab.textArea.value = str;
 }
 
 function button1Click(rect) {
@@ -1352,6 +1436,8 @@ function generateAnswer(rect)
 				str = str.split(',');
 				for (k = 0; k < str.length; k++)
 				{
+					if (str[k] == "ε")
+						str[k] = "\\e";
 					out += "(" + rect.states[i].name + "," + str[k] +
 						")=" + rect.states[i].lines1[j].end.name + " ";
 				}
@@ -1381,7 +1467,10 @@ function generateAnswer(rect)
 			}
 			for (j = 0; j < keys.length; j++)
 			{
-				out += "(" + rect.states[i].name + "," + keys[j] +
+				var keyout = keys[j];
+				if (keyout == "ε")
+					keyout = "\\e";
+				out += "(" + rect.states[i].name + "," + keyout +
 						")={" + transitions[keys[j]] + "} ";
 			}
 		}
@@ -1405,6 +1494,11 @@ function button6Click(rect) {
     
 	var x = parseInt(svg.divId.substring(1, svg.divId.length)) - 1;
 	document.getElementsByTagName('textarea')[x].value = out; 
+}
+
+function editorButtonEpsilonClick(rect)
+{
+	
 }
 
 function createStateAbs(rect, x, y, name)
@@ -2045,12 +2139,15 @@ function transitionDblClick(evt)
 	$(document).keypress(function( event ) {
 		
 		var key = event.keyCode || event.which || event.charCode;
-		var s_key = String.fromCharCode(key);
-		if (!incorrectEditorTransitionsCharsSyntax(s_key))
+		if (controlKeys.indexOf(key) == -1)
 		{
-			var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
-			renameTransition(rect.line, newname);
-			renamingCursor++;
+			var s_key = String.fromCharCode(key);
+			if (!incorrectEditorTransitionsCharsSyntax(s_key))
+			{
+				var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
+				renameTransition(rect.line, newname);
+				renamingCursor++;
+			}
 		}
 		event.preventDefault();
 	});
