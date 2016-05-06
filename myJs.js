@@ -53,11 +53,11 @@ function init(id, type) {
 
 		var button1 = document.createElement("input");
 		button1.type = "button";
-		button1.value = "Přidat stav";
+		button1.value = "Přidávat stavy";
 
 		var button2 = document.createElement("input");
 		button2.type = "button";
-		button2.value = "Přidat přechod";
+		button2.value = "Přidávat přechody";
 
 		var button3 = document.createElement("input");
 		button3.type = "button";
@@ -1558,8 +1558,8 @@ function createStateAbs(rect, x, y, name)
 
 	rect.states.push(shape);
 	putOnTop(shape);
-	rect.button1.style.borderStyle = "outset";
-	rect.mode = modeEnum.SELECT;
+	if (rect.button1.style.borderStyle == "outset")
+		rect.mode = modeEnum.SELECT;
 	return shape;
 }
 
@@ -1583,8 +1583,8 @@ function rectClick(evt, rect) {
             createState(evt);
             break;
 		case modeEnum.ADD_TRANSITION:
-			rect.button2.style.borderStyle = "outset";
-			rect.mode = modeEnum.SELECT;
+			if (rect.button2.style.borderStyle == "outset")
+				rect.mode = modeEnum.SELECT;
 			if (rect.parentSvg.makingTransition !== 0) {
 				rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
 				rect.parentSvg.makingTransition = 0;
@@ -1629,7 +1629,7 @@ function stateDblClick(evt)
 	evt.preventDefault();
 	var state = evt.target;
 	var rect = state.parentRect;
-	rect.button2.style.borderStyle = "inset";
+	//rect.button2.style.borderStyle = "inset";
 	rect.mode = modeEnum.ADD_TRANSITION;
 	selectStateForTransition(state);
 }
@@ -1742,8 +1742,9 @@ function createTransition(state1, state2, symbols)
 	whitenState(state1);
 	state1.lines1.push(aLine);
 	state2.lines2.push(aLine);
-	state2.parentRect.mode = modeEnum.SELECT;
-	state2.parentRect.button2.style.borderStyle = "outset";
+	if (state2.parentRect.button2.style.borderStyle == "outset")
+		state2.parentRect.mode = modeEnum.SELECT;
+	//state2.parentRect.button2.style.borderStyle = "outset";
 	
 	state2.parentSvg.makingTransition = 0;
 	state2.parentSvg.selectedElement = 0;
@@ -1761,8 +1762,8 @@ function clickState(evt) {
                 for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
                     if (state.parentSvg.makingTransition.lines1[i].end == state)
 					{
-						state.parentRect.button2.style.borderStyle = "outset";
-						state.parentRect.mode = modeEnum.SELECT;
+						if (state.parentRect.button2.style.borderStyle == "outset")
+							state.parentRect.mode = modeEnum.SELECT;
 						state.parentRect.parentSvg.selectedElement = state.parentRect.parentSvg.makingTransition;
 						state.parentRect.parentSvg.makingTransition = 0;
 						deselectElement(state.parentRect.parentSvg);
