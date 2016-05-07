@@ -788,6 +788,30 @@ function tableRhChangedFinal()
 		var prevName = div.prevValue;
 		prevName = removePrefixFromState(prevName);
 		var newName = div.value;
+		
+		var state = findState(table.wp.svg.rect, prevName);
+		console.log(state);
+		if (newName[0] == '↔')
+		{
+			toggleInitStateOn(state);
+			toggleEndStateOn(state);
+		}
+		else if (newName[0] == '←')
+		{
+			toggleInitStateOff(state);
+			toggleEndStateOn(state);
+		}
+		else if (newName[0] == '→')
+		{
+			toggleInitStateOn(state);
+			toggleEndStateOff(state);
+		}
+		else
+		{
+			toggleInitStateOff(state);
+			toggleEndStateOff(state);
+		}
+					
 		newName = removePrefixFromState(newName);
 		
 		console.log(prevName + "   " + newName);
@@ -1350,46 +1374,52 @@ function regTextChanged()
 
 function toggleInitStateOn(state)
 {
-	var x2 = state.getAttribute("cx");
-	var x1 = x2 - circleSize * 2.5;
-	var y = state.getAttribute("cy");
-	var aLine = document.createElementNS(svgns, 'path');
-	var att = "M "+x1+" "+y+" L ";
-	att += x2+" "+y;
-	aLine.setAttribute('d', att);
-	aLine.setAttribute('stroke', 'black');
-	aLine.setAttribute('stroke-width', 3);
-	aLine.setAttribute('fill', 'none');
-	aLine.parentSvg = state.parentSvg;
-	
-	var defs = document.createElementNS(svgns, 'defs');
-	var marker = document.createElementNS(svgns, 'marker');
-	marker.setAttribute('id', 'Triangle');
-	marker.setAttribute('viewBox', '0 0 10 10');
-	marker.setAttribute('refX', '22');
-	marker.setAttribute('refY', '5');
-	marker.setAttribute('markerUnits', 'strokeWidth');
-	marker.setAttribute('markerWidth', '6');
-	marker.setAttribute('markerHeight', '6');
-	marker.setAttribute('orient', 'auto');
-	var markerpath = document.createElementNS(svgns, 'path');
-	markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-	markerpath.setAttribute('fill', 'black');
-	marker.appendChild(markerpath);
-	
-	state.parentSvg.appendChild(defs);
-	defs.appendChild(marker);
-	aLine.setAttribute('marker-end', 'url(#Triangle)');
-	
-	state.parentSvg.appendChild(aLine);
-	putOnTop(state);
-	state.init = aLine;
+	if (state.init === 0) 
+	{
+		var x2 = state.getAttribute("cx");
+		var x1 = x2 - circleSize * 2.5;
+		var y = state.getAttribute("cy");
+		var aLine = document.createElementNS(svgns, 'path');
+		var att = "M "+x1+" "+y+" L ";
+		att += x2+" "+y;
+		aLine.setAttribute('d', att);
+		aLine.setAttribute('stroke', 'black');
+		aLine.setAttribute('stroke-width', 3);
+		aLine.setAttribute('fill', 'none');
+		aLine.parentSvg = state.parentSvg;
+		
+		var defs = document.createElementNS(svgns, 'defs');
+		var marker = document.createElementNS(svgns, 'marker');
+		marker.setAttribute('id', 'Triangle');
+		marker.setAttribute('viewBox', '0 0 10 10');
+		marker.setAttribute('refX', '22');
+		marker.setAttribute('refY', '5');
+		marker.setAttribute('markerUnits', 'strokeWidth');
+		marker.setAttribute('markerWidth', '6');
+		marker.setAttribute('markerHeight', '6');
+		marker.setAttribute('orient', 'auto');
+		var markerpath = document.createElementNS(svgns, 'path');
+		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+		markerpath.setAttribute('fill', 'black');
+		marker.appendChild(markerpath);
+		
+		state.parentSvg.appendChild(defs);
+		defs.appendChild(marker);
+		aLine.setAttribute('marker-end', 'url(#Triangle)');
+		
+		state.parentSvg.appendChild(aLine);
+		putOnTop(state);
+		state.init = aLine;
+	}
 }
 
 function toggleInitStateOff(state)
 {
+	if (state.init !== 0) 
+	{
 	state.parentSvg.removeChild(state.init);
 	state.init = 0;
+	}
 }
 
 function toggleInitState(state)
@@ -1403,27 +1433,33 @@ function toggleInitState(state)
 
 function toggleEndStateOn(state)
 {
-	var shape = document.createElementNS(svgns, "circle");
-	shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
-	shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
-	shape.setAttributeNS(null, "r", circleSize - 5);
-	if (state.parentSvg.selectedElement == state)
-		shape.setAttributeNS(null, "fill", "lightgreen");
-	else
-		shape.setAttributeNS(null, "fill", "white");
-	shape.setAttributeNS(null, "stroke", "black");
-	shape.setAttributeNS(null, "stroke-width", 1);
-	shape.parentSvg = state.parentSvg;
-	shape.parentRect = state.parentRect;
-	shape.setAttribute('pointer-events', 'none');
-	state.end = shape;
-	putOnTop(state);
+	if (state.end === 0) 
+	{
+		var shape = document.createElementNS(svgns, "circle");
+		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
+		shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
+		shape.setAttributeNS(null, "r", circleSize - 5);
+		if (state.parentSvg.selectedElement == state)
+			shape.setAttributeNS(null, "fill", "lightgreen");
+		else
+			shape.setAttributeNS(null, "fill", "white");
+		shape.setAttributeNS(null, "stroke", "black");
+		shape.setAttributeNS(null, "stroke-width", 1);
+		shape.parentSvg = state.parentSvg;
+		shape.parentRect = state.parentRect;
+		shape.setAttribute('pointer-events', 'none');
+		state.end = shape;
+		putOnTop(state);
+	}
 }
 
 function toggleEndStateOff(state)
 {
-	state.parentSvg.removeChild(state.end);
-	state.end = 0;
+	if (state.end !== 0) 
+	{
+		state.parentSvg.removeChild(state.end);
+		state.end = 0;
+	}
 }
 
 function toggleEndState(state)
