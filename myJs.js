@@ -229,11 +229,12 @@ function init(id, type) {
 		
 		var tablep = document.createElement('p');
 		tableTab.appendChild(tablep);
-		initTable(wp);
+		initTableTab(wp);
 		wp.appendChild(tableTab);
 		
 		// TEXT TAB
 		wp.appendChild(textTab);
+		initTextTab(wp);
 		
 		$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
 			updateEditorTab(wp, e.relatedTarget);
@@ -259,22 +260,9 @@ function init(id, type) {
 			}
 		});
 	}
-	else if (wp.type == "REG")
-	{
-		var textArea = document.createElement("input");
-		textArea.setAttribute("type", "text");
-		textArea.setAttribute("class", "myTextArea");
-		$(textArea).on('input',regTextChanged);
-		//$(textArea).focusout(tableCellChangedFinal);
-		wp.appendChild(textArea);	
-		
-		var textAreaSyntax = document.createElement("img");
-		textArea.syntax = textAreaSyntax;
-		wp.appendChild(textAreaSyntax);	
-	}
 }
 
-function initTable(wp) {
+function initTableTab(wp) {
 	var table = document.createElement("table");
 	table.setAttribute("class", "myTable");
 	wp.tableTab.table = table;
@@ -285,10 +273,14 @@ function initTable(wp) {
 }
 
 function initTextTab(wp) {
-	console.log("initializing text tab");
 	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
-	console.log(x);
 	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
+	wp.textTab.appendChild(wp.textTab.textArea.parentElement.parentElement);
+	
+	if (wp.textTab.textArea.value == "")
+	{
+		updateEditorTabFromText(wp);
+	}
 	
 	// only for testing in local html
 	if(!wp.textTab.textArea)
@@ -345,7 +337,7 @@ function updateTableTabFromEditor(wp)
 
 function updateTableTabFromText(wp)	// not finished
 {
-	wp.textTab.textArea.style.display = "none";	// hide answer textarea
+	//wp.textTab.textArea.style.display = "none";	// hide answer textarea
 	
 	var table = wp.tableTab.table;
 	var s = wp.textTab.textArea.value;
@@ -1246,9 +1238,11 @@ function updateTextTabFromEditor(wp)
 {
 	if (!wp.textTab.textArea)
 		initTextTab(wp);
-	wp.textTab.textArea.style.display = "";	// show answer textarea
 	var textArea = wp.textTab.textArea;
+	//textArea.style.display = "";	// show answer textarea
 	textArea.value = generateAnswer(wp.svg.rect);
+	textArea.focus();
+	textArea.blur();
 }
 
 function textButtonEpsilonClick(textTab)

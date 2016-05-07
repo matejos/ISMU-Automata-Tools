@@ -1,9 +1,10 @@
-// Skript.cpp : Defines the entry point for the console application.
+﻿// Skript.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <string>
 
 using namespace std;
@@ -71,6 +72,7 @@ int main(int argc, char* argv[])
 			while (!input.eof())
 			{
 				getline(input, s);
+				
 				if (s.find(":e") != string::npos)
 				{
 					getline(input, s2);
@@ -80,33 +82,36 @@ int main(int argc, char* argv[])
 					{
 						formtype = "DFA";
 					}
-					else if (type == "NFA" || type == "EFA")
-					{
-						formtype = "NFA";
-					}
-					else if (type == "REG" || type == "GRA" || type == "ALL")
+					else if (type == "REG" || type == "GRA" || type == "NFA" || type == "EFA")
 					{
 						formtype = type;
 					}
 					if (formtype != "")
 					{
 						q++;
-						if (formtype == "DFA" || formtype == "NFA")
+						string formtypelower = formtype;
+						std::transform(formtypelower.begin(), formtypelower.end(), formtypelower.begin(), ::tolower);
+						if (formtype == "DFA" || formtype == "NFA" || formtype == "EFA")
 						{
 							output << "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" << q 
 								<< "a\">Editor</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q 
 								<< "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q 
 								<< "c\">Text</a></li></ul></ul>" << endl;
+							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />" << endl;
+							output << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/" << formtypelower << "parserN.js\" type=\"text/javascript\"></script>" << endl;
+							output << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
 							output << "<div id=\"q" << q << "\" class=\"tab-content\"><script>init(\"q" << q << "\", \"" << type << "\");</script></div>" << endl;
 						}
 						else
 						{
-							output << "<div id=\"q" << q << "\"><script>init(\"q" << q << "\", \"" << type << "\");</script></div>" << endl;
+							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />" << endl;
+							output << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/" << formtypelower << "parserN.js\" type=\"text/javascript\"></script>" << endl;
+							output << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
 						}
 					}
-					output << s << endl << s2 << endl;
+					output << s2 << endl;
 				}
-				else
+				else if (s.find("<input") == string::npos)
 				{
 					output << s << endl;
 				}
