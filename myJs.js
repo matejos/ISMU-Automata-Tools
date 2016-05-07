@@ -565,71 +565,75 @@ function tableCellClick(evt)
 
 function tableDeleteRow(table, index)
 {
-	//table.states.splice(table.states.indexOf(cell.parentNode.cells[1].myDiv.innerHTML), 1);
-	
-	// Deselect this row's header, if it was selected
-	if (table.selectedCell != 0 && index == table.selectedCell.myCell.parentNode.rowIndex)
-		table.selectedCell = 0;
-	
-	// Delete state in graph
-	var state = table.rows[index].cells[1].myDiv.value;
-	state = removePrefixFromState(state);
-	deleteState(findState(table.wp.svg.rect, state));
-	
-	// Traverse all transitions cells in table and change the name
-	for (i = 2; i < table.rows.length - 1; i++)
+	if (!table.statesLocked && !table.symbolsLocked)
 	{
-		for (j = 2; j < table.rows[i].cells.length; j++)
+		// Deselect this row's header, if it was selected
+		if (table.selectedCell != 0 && index == table.selectedCell.myCell.parentNode.rowIndex)
+			table.selectedCell = 0;
+		
+		// Delete state in graph
+		var state = table.rows[index].cells[1].myDiv.value;
+		state = removePrefixFromState(state);
+		deleteState(findState(table.wp.svg.rect, state));
+		
+		// Traverse all transitions cells in table and change the name
+		for (i = 2; i < table.rows.length - 1; i++)
 		{
-			var val = table.rows[i].cells[j].myDiv.value;
-			val = val.replace(/{|}/g, "");
-			var vals = val.split(",");
-			var q = vals.indexOf(state);
-			if (q != -1)
+			for (j = 2; j < table.rows[i].cells.length; j++)
 			{
-				vals.splice(q, 1);
-				val = vals.toString();
-				table.rows[i].cells[j].myDiv.value = "{" + val + "}";
-				table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+				var val = table.rows[i].cells[j].myDiv.value;
+				val = val.replace(/{|}/g, "");
+				var vals = val.split(",");
+				var q = vals.indexOf(state);
+				if (q != -1)
+				{
+					vals.splice(q, 1);
+					val = vals.toString();
+					table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+				}
 			}
 		}
+		
+		// Delete table row
+		table.deleteRow(index);
 	}
-	
-	// Delete table row
-	table.deleteRow(index);
 }
 
 function tableDeleteColumn(table, index)
 {
-	var symbol = table.rows[1].cells[index].myDiv.value;
-	console.log(symbol);
-	
-	// Delete transitions of this symbol in graph
-	for (i = 0; i < table.wp.svg.rect.states.length; i++)
+	if (!table.statesLocked && !table.symbolsLocked)
 	{
-		for (j = table.wp.svg.rect.states[i].lines1.length - 1; j >= 0 ; j--)
+		var symbol = table.rows[1].cells[index].myDiv.value;
+		console.log(symbol);
+		
+		// Delete transitions of this symbol in graph
+		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
-			var tr = table.wp.svg.rect.states[i].lines1[j].name;
-			if (tr == symbol)
-				deleteTransition(table.wp.svg.rect.states[i].lines1[j]);
-			else
+			for (j = table.wp.svg.rect.states[i].lines1.length - 1; j >= 0 ; j--)
 			{
-				var trs = tr.split(",");
-				var q = trs.indexOf(symbol);
-				if (q != -1)
+				var tr = table.wp.svg.rect.states[i].lines1[j].name;
+				if (tr == symbol)
+					deleteTransition(table.wp.svg.rect.states[i].lines1[j]);
+				else
 				{
-					trs.splice(q, 1);
-					tr = trs.toString();
-					renameTransition(table.wp.svg.rect.states[i].lines1[j], tr);
+					var trs = tr.split(",");
+					var q = trs.indexOf(symbol);
+					if (q != -1)
+					{
+						trs.splice(q, 1);
+						tr = trs.toString();
+						renameTransition(table.wp.svg.rect.states[i].lines1[j], tr);
+					}
 				}
 			}
 		}
-	}
-	
-	// Delete table column
-	for (i = 0; i < table.rows.length - 1; i++)
-	{
-		table.rows[i].deleteCell(index);
+		
+		// Delete table column
+		for (i = 0; i < table.rows.length - 1; i++)
+		{
+			table.rows[i].deleteCell(index);
+		}
 	}
 }
 
@@ -722,6 +726,34 @@ function tableSymbolExists(div, symbol)
 	return -1;
 }
 
+function lockTable(table, exc)
+{
+	console.log("locking table");
+	for (var i = 1; i < table.rows.length - 1; i++)
+	{
+		for (var j = 1; j < table.rows[i].cells.length; j++)
+		{
+			if (table.rows[i].cells[j].myDiv == exc)
+				continue;
+			$(table.rows[i].cells[j].myDiv).prop('readonly', true);
+		}
+	}
+	table.statesLocked = true;
+}
+
+function unlockTable(table)
+{
+	console.log("unlocking table");
+	for (var i = 1; i < table.rows.length - 1; i++)
+	{
+		for (var j = 1; j < table.rows[i].cells.length; j++)
+		{
+			$(table.rows[i].cells[j].myDiv).prop('readonly', false);
+		}
+	}
+	table.statesLocked = false;
+}
+
 function tableRhChanged()
 {
 	var state = this.value;
@@ -733,26 +765,14 @@ function tableRhChanged()
 	else if (tableStateExists(this, state) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
-		for (var i = 2; i < table.rows.length - 1; i++)
-		{
-			if (i == ri)
-				continue;
-			$(table.rows[i].cells[1].myDiv).prop('readonly', true);
-		}
-		table.statesLocked = true;
+		lockTable(table, this);
 	}
 	else
 	{
 		$(this).removeClass("incorrect", fadeTime);
 		if (table.statesLocked)
 		{
-			for (var i = 2; i < table.rows.length - 1; i++)
-			{
-				if (i == ri)
-					continue;
-				$(table.rows[i].cells[1].myDiv).prop('readonly', false);
-			}
-			table.statesLocked = false;
+			unlockTable(table)
 		}
 	}
 	
@@ -816,26 +836,14 @@ function tableChChanged()
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
-		for (var i = 2; i < table.rows[1].cells.length; i++)
-		{
-			if (i == ci)
-				continue;
-			$(table.rows[1].cells[i].myDiv).prop('readonly', true);
-		}
-		table.symbolsLocked = true;
+		lockTable(table, this);
 	}
 	else
 	{
 		$(this).removeClass("incorrect", fadeTime);
 		if (table.symbolsLocked)
 		{
-			for (var i = 2; i < table.rows[1].cells.length; i++)
-			{
-				if (i == ci)
-					continue;
-				$(table.rows[1].cells[i].myDiv).prop('readonly', false);
-			}
-			table.symbolsLocked = false;
+			unlockTable(table)
 		}
 	}
 	console.log("CH: " + this.value);
@@ -1086,52 +1094,58 @@ function tableAddCell(row)
 
 function tableAddColumn(table, symb)
 {
-	table.rows[0].deleteCell(table.rows[0].cells.length - 1);
-	tableAddColumnDeleteButton(table.rows[0], table);
-	tableAddColumnAddButton(table.rows[0], table);
-	
-	if (!symb)
+	if (!table.statesLocked && !table.symbolsLocked)
 	{
-		var names = [];
-		for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
-			names.push(String.fromCharCode(k));
-		for (k = 0; k < table.symbols.length; k++)
-			names.splice(names.indexOf(table.symbols[k]), 1);
-		symb = names[0];
-	}
-	
-	table.symbols.push(symb);
-	tableAddColumnHeader(table.rows[1], symb);
-	for (i = 2; i < table.rows.length - 1; i++)
-	{
-		tableAddCell(table.rows[i]);
+		table.rows[0].deleteCell(table.rows[0].cells.length - 1);
+		tableAddColumnDeleteButton(table.rows[0], table);
+		tableAddColumnAddButton(table.rows[0], table);
+		
+		if (!symb)
+		{
+			var names = [];
+			for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
+				names.push(String.fromCharCode(k));
+			for (k = 0; k < table.symbols.length; k++)
+				names.splice(names.indexOf(table.symbols[k]), 1);
+			symb = names[0];
+		}
+		
+		table.symbols.push(symb);
+		tableAddColumnHeader(table.rows[1], symb);
+		for (i = 2; i < table.rows.length - 1; i++)
+		{
+			tableAddCell(table.rows[i]);
+		}
 	}
 }
 
 function tableAddRow(table)
 {
-	console.log("adding row");
-	table.rows[table.rows.length - 1].deleteCell(0);
-	tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
-	
-	var names = [];
-	for (k = 65; k < 91; k++)
-		names.push(String.fromCharCode(k));
-	for (k = 0; k < table.wp.svg.rect.states.length; k++)
-		names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
-	var name = names[0];
-	table.states.push(name);
-	
-	tableAddRowHeader(table.rows[table.rows.length - 1], name);
-	for (i = 2; i < table.rows[0].cells.length - 1; i++)
+	if (!table.statesLocked && !table.symbolsLocked)
 	{
-		tableAddCell(table.rows[table.rows.length - 1]);
+		console.log("adding row");
+		table.rows[table.rows.length - 1].deleteCell(0);
+		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
+		
+		var names = [];
+		for (k = 65; k < 91; k++)
+			names.push(String.fromCharCode(k));
+		for (k = 0; k < table.wp.svg.rect.states.length; k++)
+			names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
+		var name = names[0];
+		table.states.push(name);
+		
+		tableAddRowHeader(table.rows[table.rows.length - 1], name);
+		for (i = 2; i < table.rows[0].cells.length - 1; i++)
+		{
+			tableAddCell(table.rows[table.rows.length - 1]);
+		}
+		tableAddRowAddButton(table);
+		
+		// Add state to graph
+		console.log(table.wp.svg.rect);
+		createStateAbs(table.wp.svg.rect, 200, 100);
 	}
-	tableAddRowAddButton(table);
-	
-	// Add state to graph
-	console.log(table.wp.svg.rect);
-	createStateAbs(table.wp.svg.rect, 200, 100);
 }
 
 function tableButton1Click(tableTab) {
