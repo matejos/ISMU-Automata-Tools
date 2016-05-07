@@ -503,7 +503,7 @@ function updateTableTabFromText(wp)	// not finished
 			cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
 			if (cell.myDiv.value.length > 1)
 				cell.myDiv.value += ',';
-			cell.myDiv.value += state2 + '}';
+			cell.myDiv.value += state2;
 			cell.myDiv.prevValue = cell.myDiv.value;
 		}
 		else if ((wp.type == "NFA") && (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i])))	// NFA
@@ -526,17 +526,20 @@ function updateTableTabFromText(wp)	// not finished
 	}
 	
 	// sort cells' values
-	for (i = 2; i < table.rows.length - 1; i++)
+	if (wp.type == "NFA")
 	{
-		for (j = 2; j < table.rows[i].cells.length; j++)
+		for (i = 2; i < table.rows.length - 1; i++)
 		{
-			var val = table.rows[i].cells[j].myDiv.value;
-			val = val.replace(/{|}/g, "");
-			var vals = val.split(",");
-			vals.sort();
-			var q = vals.indexOf(state);
-			table.rows[i].cells[j].myDiv.value = "{" + vals.toString() + "}";
-			table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+			for (j = 2; j < table.rows[i].cells.length; j++)
+			{
+				var val = table.rows[i].cells[j].myDiv.value;
+				val = val.replace(/{|}/g, "");
+				var vals = val.split(",");
+				vals.sort();
+				var q = vals.indexOf(state);
+				table.rows[i].cells[j].myDiv.value = "{" + vals.toString() + "}";
+				table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+			}
 		}
 	}
 }
@@ -625,7 +628,10 @@ function tableDeleteRow(table, index)
 				{
 					vals.splice(q, 1);
 					val = vals.toString();
-					table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					if (table.wp.type == "NFA")
+						table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					else
+						table.rows[i].cells[j].myDiv.value = val;
 					table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
 				}
 			}
@@ -840,8 +846,8 @@ function tableRhChangedFinal()
 	if ($(this).hasClass("incorrect") == false)
 	{
 		// Rename the state in graph
-		var table = $(this).parent().parent().parent().parent().get(0);
-		var div = $(this).get(0);
+		var table = this.parentElement.parentElement.parentElement.parentElement;
+		var div = this;
 		var prevName = div.prevValue;
 		prevName = removePrefixFromState(prevName);
 		var newName = div.value;
@@ -896,7 +902,10 @@ function tableRhChangedFinal()
 				{
 					vals[index] = newName;
 					val = vals.toString();
-					table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					if (table.wp.type == "NFA")
+						table.rows[i].cells[j].myDiv.value = "{" + val + "}";
+					else
+						table.rows[i].cells[j].myDiv.value = val;
 					table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
 				}
 			}
@@ -934,8 +943,8 @@ function tableChChangedFinal()
 {
 	if ($(this).hasClass("incorrect") == false)
 	{
-		var table = $(this).parent().parent().parent().parent().get(0);
-		var div = $(this).get(0);
+		var table = this.parentElement.parentElement.parentElement.parentElement;
+		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
 		if (prevName != newName)
@@ -967,7 +976,9 @@ function tableChChangedFinal()
 
 function tableCellChanged()
 {
-	if (incorrectTableTransitionsSyntax(this.value))
+	var table = this.parentElement.parentElement.parentElement.parentElement;
+	if ( (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
+		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 		$(this).addClass("incorrect", fadeTime);
 	else
 		$(this).removeClass("incorrect", fadeTime);
@@ -978,12 +989,21 @@ function tableCellChangedFinal()
 {
 	if ($(this).hasClass("incorrect") == false)
 	{
-		var table = $(this).parent().parent().parent().parent().get(0);
-		var div = $(this).get(0);
+		var table = this.parentElement.parentElement.parentElement.parentElement;
+		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
-		prevName = prevName.substring(1, prevName.length - 1);
-		newName = newName.substring(1, newName.length - 1);
+		if (table.wp.type == "NFA")
+		{
+			prevName = prevName.substring(1, prevName.length - 1);
+			newName = newName.substring(1, newName.length - 1);
+		}
+		else
+		{
+			if (newName == "")
+				newName = "-";
+			div.value = newName;
+		}
 		
 		var stateName = table.rows[div.myCell.parentElement.rowIndex].cells[1].myDiv.value;
 		stateName = removePrefixFromState(stateName);
@@ -992,12 +1012,6 @@ function tableCellChangedFinal()
 		
 		var prevStates = prevName.split(",");
 		var newStates = newName.split(",");
-		/*
-		console.log(prevName);
-		console.log(newName);
-		console.log(stateName);
-		console.log(symbol);
-		*/
 		
 		// Delete the transitions in graph
 		console.log(prevStates);
@@ -1030,11 +1044,10 @@ function tableCellChangedFinal()
 		}
 		
 		//Add the transitions in graph
-		if (newStates.length == 1 && newStates[0] == "")
+		if (newStates.length == 1 && ((newStates[0] == "") || (table.wp.type == "DFA" && newStates[0] == "-")))
 		{
 			newStates = [];
 		}
-		console.log(newStates);
 		for (var i = 0; i < newStates.length; i++)
 		{
 			if (prevStates.indexOf(newStates[i]) == -1)
@@ -1072,7 +1085,7 @@ function tableCellChangedFinal()
 				}
 			}
 		}
-		
+
 		div.prevValue = div.value;
 	}
 }
@@ -1146,9 +1159,12 @@ function tableAddColumnHeader(row, value)
 function tableAddCell(row)
 {
 	var cell = row.insertCell(row.cells.length);
-	
+	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	var div = document.createElement("input");
-	div.value = "{}";
+	if (table.wp.type == "NFA")
+		div.value = "{}";
+	else
+		div.value = "-";
 	div.prevValue = div.value;
 	div.setAttribute("size", 3);
 	$(div).click(tableEditCellClick);
@@ -1158,12 +1174,18 @@ function tableAddCell(row)
 	$(div).on('input',tableCellChanged);
 	$(div).focusout(tableCellChangedFinal);
 
+	
+	var regex;
+	if (table.wp.type == "NFA")
+		regex = /[^ =()]/;
+	else
+		regex = /[^ =(){},]/;
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
 		var txt = String.fromCharCode(kc);
-		if (!txt.match(/[^ =()]/)) {
+		if (!txt.match(regex)) {
 			return false;
 		}
 	});
@@ -2418,14 +2440,24 @@ function incorrectGraphTransitionsSyntax(val)
 	return (!graphTransitionsSyntax().test(val))
 }
 
-function tableTransitionsSyntax()
+function tableNFATransitionsSyntax()
 {
 	return /^\{\}$|^\{[^ ,]+(,[^ ,]+)*\}$/;
 }
 
-function incorrectTableTransitionsSyntax(val)
+function incorrectTableNFATransitionsSyntax(val)
 {
-	return (!tableTransitionsSyntax().test(val))
+	return (!tableNFATransitionsSyntax().test(val))
+}
+
+function tableDFATransitionsSyntax()
+{
+	return /^$|^-$|^[^ ,{}()=\\-]+$/;
+}
+
+function incorrectTableDFATransitionsSyntax(val)
+{
+	return (!tableDFATransitionsSyntax().test(val))
 }
 
 function transitionSyntax()
@@ -2439,7 +2471,7 @@ function incorrectTransitionSyntax(val)
 }
 function stateSyntax()
 {
-	return /^[^ =(),]+$/;
+	return /^[^ =(),↔←→]+$/;
 }
 function incorrectStateSyntax(val)
 {
