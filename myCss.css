@@ -54,6 +54,7 @@
 	background-color: #cccccc;
 	text-align: right;
 	cursor: pointer;
+	border-right: 3px solid;
 }
 
 .rhs {
@@ -64,6 +65,7 @@
 
 .ch {
 	background-color: #cccccc;
+	border-bottom: 3px solid;
 }
 
 .tc {

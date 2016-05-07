@@ -275,18 +275,20 @@ function initTableTab(wp) {
 function initTextTab(wp) {
 	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
 	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
-	wp.textTab.appendChild(wp.textTab.textArea.parentElement.parentElement);
-	
-	if (wp.textTab.textArea.value == "")
-	{
-		updateGraphTabFromText(wp);
-	}
-	
 	// only for testing in local html
 	if(!wp.textTab.textArea)
 	{
 		wp.textTab.textArea = document.createElement('textarea');
-		wp.appendChild(wp.textTab.textArea);
+		wp.textTab.appendChild(wp.textTab.textArea);
+	}
+	else
+	{
+		wp.textTab.appendChild(wp.textTab.textArea.parentElement.parentElement);
+		
+		if (wp.textTab.textArea.value == "")
+		{
+			updateGraphTabFromText(wp);
+		}
 	}
 }
 
