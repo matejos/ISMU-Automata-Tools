@@ -34,10 +34,10 @@ function init(id, type) {
 	
 	if (wp.type == "NFA" || wp.type == "DFA")
 	{
-		var editor = document.createElement("div");
-		editor.setAttribute("id", id + "a");
-		editor.setAttribute("class", "tab-pane fade in active");
-		editor.wp = wp;
+		var graph = document.createElement("div");
+		graph.setAttribute("id", id + "a");
+		graph.setAttribute("class", "tab-pane fade in active");
+		graph.wp = wp;
 		
 		var tableTab = document.createElement("div");
 		tableTab.setAttribute("id", id + "b");
@@ -76,23 +76,23 @@ function init(id, type) {
 		button5.value = "Smaž zvolené";
 		
 
-		editor.appendChild(button1);
-		editor.appendChild(button2);
-		editor.appendChild(button3);
-		editor.appendChild(button4);
-		editor.appendChild(textBox);
-		editor.appendChild(button5);
+		graph.appendChild(button1);
+		graph.appendChild(button2);
+		graph.appendChild(button3);
+		graph.appendChild(button4);
+		graph.appendChild(textBox);
+		graph.appendChild(button5);
 		
 		if (wp.realtype == "EFA")
 		{
-			var editorButtonEpsilon = document.createElement("input");
-			editorButtonEpsilon.type = "button";
-			editorButtonEpsilon.value = "Přidat epsilon";
-			editor.appendChild(editorButtonEpsilon);
+			var graphButtonEpsilon = document.createElement("input");
+			graphButtonEpsilon.type = "button";
+			graphButtonEpsilon.value = "Přidat epsilon";
+			graph.appendChild(graphButtonEpsilon);
 		}
 
 		var p1 = document.createElement("p");
-		editor.appendChild(p1);
+		graph.appendChild(p1);
 
 
 		var mydiv = document.createElement("DIV");
@@ -100,7 +100,7 @@ function init(id, type) {
 		mydiv.setAttribute("class", "canvas");
 		mydiv.setAttributeNS(null, "id", "mydiv");
 		$(mydiv).resizable({minHeight: 400, minWidth: 400});
-		editor.appendChild(mydiv);
+		graph.appendChild(mydiv);
 		
 		
 		var svg = document.createElementNS(svgns, 'svg');
@@ -192,12 +192,12 @@ function init(id, type) {
 		button5.style.borderStyle = "outset";
 		if (wp.realtype == "EFA")
 		{
-			editorButtonEpsilon.rect = rect;
-			editorButtonEpsilon.setAttributeNS(null, "onclick", 'editorButtonEpsilonClick();');
-			editorButtonEpsilon.style.borderStyle = "outset";
+			graphButtonEpsilon.rect = rect;
+			graphButtonEpsilon.setAttributeNS(null, "onclick", 'graphButtonEpsilonClick();');
+			graphButtonEpsilon.style.borderStyle = "outset";
 		}
 		
-		wp.appendChild(editor);
+		wp.appendChild(graph);
 		
 		// TABLE TAB
 		var tableButton1 = document.createElement("input");
@@ -237,7 +237,7 @@ function init(id, type) {
 		initTextTab(wp);
 		
 		$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
-			updateEditorTab(wp, e.relatedTarget);
+			updateGraphTab(wp, e.relatedTarget);
 		});
 		$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
 			updateTableTab(wp, e.relatedTarget);
@@ -279,7 +279,7 @@ function initTextTab(wp) {
 	
 	if (wp.textTab.textArea.value == "")
 	{
-		updateEditorTabFromText(wp);
+		updateGraphTabFromText(wp);
 	}
 	
 	// only for testing in local html
@@ -290,14 +290,14 @@ function initTextTab(wp) {
 	}
 }
 
-function updateEditorTab(wp, target)
+function updateGraphTab(wp, target)
 {
 	var t = target.getAttribute("data-target");
 	var x = t.substr(t.length - 1, 1);
 	if (x == "b")
-		updateEditorTabFromTable(wp);
+		updateGraphTabFromTable(wp);
 	else
-		updateEditorTabFromText(wp);
+		updateGraphTabFromText(wp);
 	
 	for (i = 0; i < wp.svg.rect.states.length; i++)
 	{
@@ -308,15 +308,15 @@ function updateEditorTab(wp, target)
 	}
 }
 
-function updateEditorTabFromTable(wp)	// not finished
+function updateGraphTabFromTable(wp)	// not finished
 {
 
 }
 
-function updateEditorTabFromText(wp)
+function updateGraphTabFromText(wp)
 {
 	updateTableTabFromText(wp);
-	updateEditorTabFromTable(wp);
+	updateGraphTabFromTable(wp);
 }
 
 function updateTableTab(wp, target)
@@ -324,14 +324,14 @@ function updateTableTab(wp, target)
 	var t = target.getAttribute("data-target");
 	var x = t.substr(t.length - 1, 1);
 	if (x == "a")
-		updateTableTabFromEditor(wp);
+		updateTableTabFromGraph(wp);
 	else
 		updateTableTabFromText(wp);
 }
 
-function updateTableTabFromEditor(wp)
+function updateTableTabFromGraph(wp)
 {
-	updateTextTabFromEditor(wp);
+	updateTextTabFromGraph(wp);
 	updateTableTabFromText(wp);
 }
 
@@ -569,7 +569,7 @@ function tableDeleteRow(table, index)
 	if (table.selectedCell != 0 && index == table.selectedCell.myCell.parentNode.rowIndex)
 		table.selectedCell = 0;
 	
-	// Delete state in editor
+	// Delete state in graph
 	var state = table.rows[index].cells[1].myDiv.value;
 	state = removePrefixFromState(state);
 	deleteState(findState(table.wp.svg.rect, state));
@@ -602,7 +602,7 @@ function tableDeleteColumn(table, index)
 	var symbol = table.rows[1].cells[index].myDiv.value;
 	console.log(symbol);
 	
-	// Delete transitions of this symbol in editor
+	// Delete transitions of this symbol in graph
 	for (i = 0; i < table.wp.svg.rect.states.length; i++)
 	{
 		for (j = table.wp.svg.rect.states[i].lines1.length - 1; j >= 0 ; j--)
@@ -746,7 +746,7 @@ function tableRhChangedFinal()
 {
 	if ($(this).hasClass("incorrect") == false)
 	{
-		// Rename the state in editor
+		// Rename the state in graph
 		var table = $(this).parent().parent().parent().parent().get(0);
 		var div = $(this).get(0);
 		var prevName = div.prevValue;
@@ -755,7 +755,7 @@ function tableRhChangedFinal()
 		newName = removePrefixFromState(newName);
 		
 		console.log(prevName + "   " + newName);
-		// Rename state in editor
+		// Rename state in graph
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
 			if (table.wp.svg.rect.states[i].name == prevName)
@@ -809,7 +809,7 @@ function tableChChangedFinal()
 		if (prevName != newName)
 		{
 			console.log("CH changed, correct");
-			// Rename the symbol in editor
+			// Rename the symbol in graph
 			for (i = 0; i < table.wp.svg.rect.states.length; i++)
 			{
 				for (j = 0; j < table.wp.svg.rect.states[i].lines1.length; j++)
@@ -867,7 +867,7 @@ function tableCellChangedFinal()
 		console.log(symbol);
 		*/
 		
-		// Delete the transitions in editor
+		// Delete the transitions in graph
 		console.log(prevStates);
 		for (var i = 0; i < prevStates.length; i++)
 		{
@@ -897,7 +897,7 @@ function tableCellChangedFinal()
 			}
 		}
 		
-		//Add the transitions in editor
+		//Add the transitions in graph
 		if (newStates.length == 1 && newStates[0] == "")
 		{
 			newStates = [];
@@ -1086,7 +1086,7 @@ function tableAddRow(table)
 	}
 	tableAddRowAddButton(table);
 	
-	// Add state to editor
+	// Add state to graph
 	console.log(table.wp.svg.rect);
 	createStateAbs(table.wp.svg.rect, 200, 100);
 }
@@ -1117,7 +1117,7 @@ function tableButton1Click(tableTab) {
 			on = true;
 		}
 		
-		// Edit init state in editor
+		// Edit init state in graph
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
 			if (table.wp.svg.rect.states[i].name == state)
@@ -1160,7 +1160,7 @@ function tableButton2Click(tableTab) {
 			on = true;
 		}
 		
-		// Edit exit state in editor
+		// Edit exit state in graph
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
 			if (table.wp.svg.rect.states[i].name == state)
@@ -1206,7 +1206,7 @@ function doGetCaretPosition (oField) {
   return iCaretPos;
 }
 
-function editorButtonEpsilonClick()
+function graphButtonEpsilonClick()
 {
 	var newname = renamingTransition.line.name.substring(0, renamingCursor) + 'ε' + renamingTransition.line.name.substring(renamingCursor, renamingTransition.line.name.length);
 	renameTransition(renamingTransition.line, newname);
@@ -1225,16 +1225,16 @@ function updateTextTab(wp, target)
 	if (x == "b")
 		updateTextTabFromTable(wp);
 	else
-		updateTextTabFromEditor(wp);
+		updateTextTabFromGraph(wp);
 }
 
 function updateTextTabFromTable(wp)
 {
-	updateEditorTabFromTable(wp);
-	updateTextTabFromEditor(wp);
+	updateGraphTabFromTable(wp);
+	updateTextTabFromGraph(wp);
 }
 
-function updateTextTabFromEditor(wp)
+function updateTextTabFromGraph(wp)
 {
 	if (!wp.textTab.textArea)
 		initTextTab(wp);
@@ -2156,7 +2156,7 @@ function transitionDblClick(evt)
 		if (controlKeys.indexOf(key) == -1)
 		{
 			var s_key = String.fromCharCode(key);
-			if (!incorrectEditorTransitionsCharsSyntax(s_key))
+			if (!incorrectGraphTransitionsCharsSyntax(s_key))
 			{
 				var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
 				renameTransition(rect.line, newname);
@@ -2246,24 +2246,24 @@ function stopMovingElement(evt) {
     }
 }
 
-function editorTransitionsCharsSyntax()
+function graphTransitionsCharsSyntax()
 {
 	return /[^ =()]/;
 }
 
-function incorrectEditorTransitionsCharsSyntax(val)
+function incorrectGraphTransitionsCharsSyntax(val)
 {
-	return (!editorTransitionsCharsSyntax().test(val))
+	return (!graphTransitionsCharsSyntax().test(val))
 }
 
-function editorTransitionsSyntax()
+function graphTransitionsSyntax()
 {
 	return /^[^ ,]+(,[^ ,]+)*$/;
 }
 
-function incorrectEditorTransitionsSyntax(val)
+function incorrectGraphTransitionsSyntax(val)
 {
-	return (!editorTransitionsSyntax().test(val))
+	return (!graphTransitionsSyntax().test(val))
 }
 
 function tableTransitionsSyntax()

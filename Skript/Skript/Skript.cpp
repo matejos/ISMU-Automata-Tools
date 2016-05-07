@@ -94,7 +94,7 @@ int main(int argc, char* argv[])
 						if (formtype == "DFA" || formtype == "NFA" || formtype == "EFA")
 						{
 							output << "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" << q 
-								<< "a\">Editor</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q 
+								<< "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q 
 								<< "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q 
 								<< "c\">Text</a></li></ul></ul>" << endl;
 							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />" << endl;

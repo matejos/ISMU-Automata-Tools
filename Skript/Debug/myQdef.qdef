@@ -10,7 +10,7 @@
 <style type="text/css">@import "//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style>
 --
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^*. \{c\} . \{ab\}^*</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1c">Text</a></li></ul></ul>
 <input name="q1" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q1-div" class="parser_text_default"> :e <br><span id="q1-error" class="parser_error"></span></div><script type="text/javascript">register("q1", dfaParser.parse)</script>
@@ -23,7 +23,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^* . \{c\} . \{ba\}^*</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q2a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q2c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q2a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q2c">Text</a></li></ul></ul>
 <input name="q2" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/nfaparserN.js" type="text/javascript"></script>
 <div id="q2-div" class="parser_text_default"> :e <br><span id="q2-error" class="parser_error"></span></div><script type="text/javascript">register("q2", nfaParser.parse)</script>
@@ -36,7 +36,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{za každým výskytem podslova } ab\text{ ve slově } w \text{ bezprostředně následuje znak }c \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q3a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q3b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q3c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q3a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q3b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q3c">Text</a></li></ul></ul>
 <input name="q3" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/efaparserN.js" type="text/javascript"></script>
 <div id="q3-div" class="parser_text_default"> :e <br><span id="q3-error" class="parser_error"></span></div><script type="text/javascript">register("q3", efaParser.parse)</script>
@@ -71,7 +71,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ začíná na } a \text{ a končí na } bc \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q6a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q6b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q6c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q6a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q6b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q6c">Text</a></li></ul></ul>
 <input name="q6" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q6-div" class="parser_text_default"> :e <br><span id="q6-error" class="parser_error"></span></div><script type="text/javascript">register("q6", dfaParser.parse)</script>
@@ -84,7 +84,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{jestliže } w \text{ obsahuje } a, \text{ pak } w \text{ obsahuje i } b \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q7a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q7b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q7c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q7a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q7b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q7c">Text</a></li></ul></ul>
 <input name="q7" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q7-div" class="parser_text_default"> :e <br><span id="q7-error" class="parser_error"></span></div><script type="text/javascript">register("q7", dfaParser.parse)</script>
@@ -97,7 +97,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ obsahuje } a \text{ právě tehdy, když obsahuje } b \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q8a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q8b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q8c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q8a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q8b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q8c">Text</a></li></ul></ul>
 <input name="q8" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q8-div" class="parser_text_default"> :e <br><span id="q8-error" class="parser_error"></span></div><script type="text/javascript">register("q8", dfaParser.parse)</script>
@@ -110,7 +110,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{každý prefix slova } w, \text{ který končí znakem } c, \text{ obsahuje znak } a \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q9a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q9b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q9c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q9a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q9b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q9c">Text</a></li></ul></ul>
 <input name="q9" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q9-div" class="parser_text_default"> :e <br><span id="q9-error" class="parser_error"></span></div><script type="text/javascript">register("q9", dfaParser.parse)</script>
@@ -123,7 +123,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{počet znaků } a \text{ a } b \text{ v každém prefixu slova } w \text{ se neliší o více než 1} \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q10a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q10b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q10c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q10a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q10b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q10c">Text</a></li></ul></ul>
 <input name="q10" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q10-div" class="parser_text_default"> :e <br><span id="q10-error" class="parser_error"></span></div><script type="text/javascript">register("q10", dfaParser.parse)</script>
@@ -136,7 +136,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{b\}^+ . \{ca\}^* . \{a\}^+</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q11a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q11b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q11c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q11a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q11b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q11c">Text</a></li></ul></ul>
 <input name="q11" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q11-div" class="parser_text_default"> :e <br><span id="q11-error" class="parser_error"></span></div><script type="text/javascript">register("q11", dfaParser.parse)</script>
@@ -149,7 +149,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{ pokud slovo } w \text{ obsahuje nějaké písmeno } b, \text{ pak počet výskytů písmene } a \text{ za prvním výskytem písmene } b \text{ je dělitelný 3 } \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q12a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q12b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q12c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q12a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q12b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q12c">Text</a></li></ul></ul>
 <input name="q12" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q12-div" class="parser_text_default"> :e <br><span id="q12-error" class="parser_error"></span></div><script type="text/javascript">register("q12", dfaParser.parse)</script>
@@ -162,7 +162,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ neobsahuje dva stejné znaky bezprostředně za sebou} \}</m>
-<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q13a">Editor</a></li><li class="myli"><a data-toggle="tab" data-target="#q13b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q13c">Text</a></li></ul></ul>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q13a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q13b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q13c">Text</a></li></ul></ul>
 <input name="q13" type="hidden" value="" />
 <noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script>
 <div id="q13-div" class="parser_text_default"> :e <br><span id="q13-error" class="parser_error"></span></div><script type="text/javascript">register("q13", dfaParser.parse)</script>
