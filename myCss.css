@@ -19,6 +19,11 @@
 	background: none;
 }
 
+.statusText {
+	font-size: 1.3em;
+	padding: 5px;
+}
+
 .myTextArea {
 	width: 75%;
 }

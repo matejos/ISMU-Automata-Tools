@@ -200,39 +200,9 @@ function init(id, type) {
 		wp.appendChild(graph);
 		
 		// TABLE TAB
-		var tableButtonInit = document.createElement("input");
-		tableButtonInit.type = "button";
-		tableButtonInit.value = "Počátečný stav";
-		tableButtonInit.tableTab = tableTab;
-		tableButtonInit.setAttributeNS(null, "onclick", 'tableButtonInitClick(tableTab);');
-		tableButtonInit.style.borderStyle = "outset";
-		tableTab.appendChild(tableButtonInit);
-		tableTab.buttonInit = tableButtonInit;
 		
-		var tableButtonEnd = document.createElement("input");
-		tableButtonEnd.type = "button";
-		tableButtonEnd.value = "Koncový stav";
-		tableButtonEnd.tableTab = tableTab;
-		tableButtonEnd.setAttributeNS(null, "onclick", 'tableButtonEndClick(tableTab);');
-		tableButtonEnd.style.borderStyle = "outset";
-		tableTab.appendChild(tableButtonEnd);
-		tableTab.buttonEnd = tableButtonEnd;
-		
-		if (wp.realtype == "EFA")
-		{
-			var tableButtonEpsilon = document.createElement("input");
-			tableButtonEpsilon.type = "button";
-			tableButtonEpsilon.value = "Přidat epsilon";
-			tableButtonEpsilon.tableTab = tableTab;
-			tableButtonEpsilon.setAttributeNS(null, "onclick", 'tableButtonEpsilonClick(tableTab);');
-			tableButtonEpsilon.style.borderStyle = "outset";
-			tableTab.appendChild(tableButtonEpsilon);
-		}
-		
-		var tablep = document.createElement('p');
-		tableTab.appendChild(tablep);
 		initTableTab(wp);
-		wp.appendChild(tableTab);
+		
 		
 		// TEXT TAB
 		wp.appendChild(textTab);
@@ -261,22 +231,60 @@ function init(id, type) {
 					deleteState(rect.states[i]);
 			}
 		});
-		
-		$('a[data-target="#' + id + 'b"]').on('hidden.bs.tab', function (e) {
-			tableButtonInit.style.borderStyle = "outset";
-			tableButtonEnd.style.borderStyle = "outset";
-		});
 	}
 }
 
 function initTableTab(wp) {
+	var tableButtonInit = document.createElement("input");
+	tableButtonInit.type = "button";
+	tableButtonInit.value = "Počátečný stav";
+	tableButtonInit.tableTab = wp.tableTab;
+	tableButtonInit.setAttributeNS(null, "onclick", 'tableButtonInitClick(tableTab);');
+	tableButtonInit.style.borderStyle = "outset";
+	wp.tableTab.appendChild(tableButtonInit);
+	wp.tableTab.buttonInit = tableButtonInit;
+	
+	var tableButtonEnd = document.createElement("input");
+	tableButtonEnd.type = "button";
+	tableButtonEnd.value = "Koncový stav";
+	tableButtonEnd.tableTab = wp.tableTab;
+	tableButtonEnd.setAttributeNS(null, "onclick", 'tableButtonEndClick(tableTab);');
+	tableButtonEnd.style.borderStyle = "outset";
+	wp.tableTab.appendChild(tableButtonEnd);
+	wp.tableTab.buttonEnd = tableButtonEnd;
+	
+	if (wp.realtype == "EFA")
+	{
+		var tableButtonEpsilon = document.createElement("input");
+		tableButtonEpsilon.type = "button";
+		tableButtonEpsilon.value = "Přidat epsilon";
+		tableButtonEpsilon.tableTab = wp.tableTab;
+		tableButtonEpsilon.setAttributeNS(null, "onclick", 'tableButtonEpsilonClick(tableTab);');
+		tableButtonEpsilon.style.borderStyle = "outset";
+		wp.tableTab.appendChild(tableButtonEpsilon);
+	}
+	
+	wp.tableTab.appendChild(document.createElement('p'));
+		
 	var table = document.createElement("table");
 	table.setAttribute("class", "myTable");
 	wp.tableTab.table = table;
 	table.selectedCell = 0;
 	table.wp = wp;
+	table.tableTab = wp.tableTab;
 	wp.tableTab.appendChild(table);
-	console.log(table);
+	
+	wp.tableTab.statusText = document.createElement("p");
+	$(wp.tableTab.statusText).addClass("incorrect statusText", fadeTime);
+	wp.tableTab.statusText.style.display = "none";
+	wp.tableTab.appendChild(wp.tableTab.statusText);
+
+	wp.appendChild(wp.tableTab);
+	
+	$('a[data-target="#' + wp.svg.divId + 'b"]').on('hidden.bs.tab', function (e) {
+			tableButtonInit.style.borderStyle = "outset";
+			tableButtonEnd.style.borderStyle = "outset";
+		});
 }
 
 function initTextTab(wp) {
@@ -808,6 +816,8 @@ function tableRhChanged()
 	else if (tableStateExists(this, state) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
+		table.tableTab.statusText.innerHTML = "Duplicitní název stavu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else
@@ -815,7 +825,9 @@ function tableRhChanged()
 		$(this).removeClass("incorrect", fadeTime);
 		if (table.locked)
 		{
-			unlockTable(table)
+			unlockTable(table);
+			table.tableTab.statusText.innerHTML = "";
+			table.tableTab.statusText.style.display = "none";
 		}
 		if (this.value[0] == '↔')
 		{
@@ -926,6 +938,8 @@ function tableChChanged()
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
+		table.tableTab.statusText.innerHTML = "Duplicitní název symbolu přechodu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else
@@ -933,7 +947,9 @@ function tableChChanged()
 		$(this).removeClass("incorrect", fadeTime);
 		if (table.locked)
 		{
-			unlockTable(table)
+			table.tableTab.statusText.innerHTML = "";
+			table.tableTab.statusText.style.display = "none";
+			unlockTable(table);
 		}
 	}
 	console.log("CH: " + this.value);
@@ -1058,7 +1074,7 @@ function tableCellChangedFinal()
 				if (state2 == -1)
 				{
 					console.log("adding state " + state2Name + " and transition " + symbol);
-					state2 = createStateAbs(table.wp.svg.rect, 100, 100, state2Name);
+					state2 = tableAddRow(table, state2Name);
 					createTransition(state, state2, symbol);
 				}
 				else
@@ -1223,7 +1239,7 @@ function tableAddColumn(table, symb)
 	}
 }
 
-function tableAddRow(table)
+function tableAddRow(table, name)
 {
 	if (!table.locked)
 	{
@@ -1232,12 +1248,15 @@ function tableAddRow(table)
 		table.rows[table.rows.length - 1].deleteCell(0);
 		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
 		
-		var names = [];
-		for (k = 65; k < 91; k++)
-			names.push(String.fromCharCode(k));
-		for (k = 0; k < table.wp.svg.rect.states.length; k++)
-			names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
-		var name = names[0];
+		if (!name)
+		{
+			var names = [];
+			for (k = 65; k < 91; k++)
+				names.push(String.fromCharCode(k));
+			for (k = 0; k < table.wp.svg.rect.states.length; k++)
+				names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
+			name = names[0];
+		}
 		table.states.push(name);
 		
 		tableAddRowHeader(table.rows[table.rows.length - 1], name);
@@ -1249,7 +1268,7 @@ function tableAddRow(table)
 		
 		// Add state to graph
 		console.log(table.wp.svg.rect);
-		createStateAbs(table.wp.svg.rect, 200, 100);
+		return createStateAbs(table.wp.svg.rect, 200, 100, name);
 	}
 }
 
