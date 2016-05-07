@@ -61,6 +61,7 @@
 	background-color: lightgreen;
 	text-align: right;
 	cursor: text;
+	border-right: 3px solid;
 }
 
 .ch {

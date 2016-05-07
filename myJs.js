@@ -200,21 +200,23 @@ function init(id, type) {
 		wp.appendChild(graph);
 		
 		// TABLE TAB
-		var tableButton1 = document.createElement("input");
-		tableButton1.type = "button";
-		tableButton1.value = "Počátečný stav";
-		tableButton1.tableTab = tableTab;
-		tableButton1.setAttributeNS(null, "onclick", 'tableButton1Click(tableTab);');
-		tableButton1.style.borderStyle = "outset";
-		tableTab.appendChild(tableButton1);
+		var tableButtonInit = document.createElement("input");
+		tableButtonInit.type = "button";
+		tableButtonInit.value = "Počátečný stav";
+		tableButtonInit.tableTab = tableTab;
+		tableButtonInit.setAttributeNS(null, "onclick", 'tableButtonInitClick(tableTab);');
+		tableButtonInit.style.borderStyle = "outset";
+		tableTab.appendChild(tableButtonInit);
+		tableTab.buttonInit = tableButtonInit;
 		
-		var tableButton2 = document.createElement("input");
-		tableButton2.type = "button";
-		tableButton2.value = "Koncový stav";
-		tableButton2.tableTab = tableTab;
-		tableButton2.setAttributeNS(null, "onclick", 'tableButton2Click(tableTab);');
-		tableButton2.style.borderStyle = "outset";
-		tableTab.appendChild(tableButton2);
+		var tableButtonEnd = document.createElement("input");
+		tableButtonEnd.type = "button";
+		tableButtonEnd.value = "Koncový stav";
+		tableButtonEnd.tableTab = tableTab;
+		tableButtonEnd.setAttributeNS(null, "onclick", 'tableButtonEndClick(tableTab);');
+		tableButtonEnd.style.borderStyle = "outset";
+		tableTab.appendChild(tableButtonEnd);
+		tableTab.buttonEnd = tableButtonEnd;
 		
 		if (wp.realtype == "EFA")
 		{
@@ -258,6 +260,11 @@ function init(id, type) {
 				if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
 					deleteState(rect.states[i]);
 			}
+		});
+		
+		$('a[data-target="#' + id + 'b"]').on('hidden.bs.tab', function (e) {
+			tableButtonInit.style.borderStyle = "outset";
+			tableButtonEnd.style.borderStyle = "outset";
 		});
 	}
 }
@@ -533,16 +540,24 @@ function updateTableTabFromText(wp)	// not finished
 		}
 	}
 }
-
-function tableEditCellClick(evt)
+function tableDeselectCell(table)
 {
-	var cell = evt.target;
-	var table = cell.parentElement.parentElement.parentElement.parentElement;
-	if (!table.statesLocked && table.selectedCell != 0)
+	if (table.selectedCell != 0)
 	{
 		var div = table.selectedCell;
 		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
+		table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+		table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
+	}
+}
+function tableEditCellClick(evt)
+{
+	var cell = evt.target;
+	var table = cell.parentElement.parentElement.parentElement.parentElement;
+	if (!table.locked)
+	{
+		tableDeselectCell(table);
 	}
 }
 
@@ -551,7 +566,7 @@ function tableCellClick(evt)
 	var cell = evt.target;
 	console.log(cell);
 	var table = cell.parentElement.parentElement.parentElement.parentElement;
-	if (!table.statesLocked && table.selectedCell != cell)
+	if (!table.locked && table.selectedCell != cell)
 	{
 		var div = table.selectedCell;
 		if (table.selectedCell != 0)
@@ -559,17 +574,38 @@ function tableCellClick(evt)
 			$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		}
 		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
+		
+		var name = cell.value;
+		if (name[0] == '↔')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
+		}
+		else if (name[0] == '←')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
+		}
+		else if (name[0] == '→')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
+		}
+		else
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
+		}
+		
 		table.selectedCell = cell;
 	}
 }
 
 function tableDeleteRow(table, index)
 {
-	if (!table.statesLocked && !table.symbolsLocked)
+	if (!table.locked)
 	{
-		// Deselect this row's header, if it was selected
-		if (table.selectedCell != 0 && index == table.selectedCell.myCell.parentNode.rowIndex)
-			table.selectedCell = 0;
+		tableDeselectCell(table);
 		
 		// Delete state in graph
 		var state = table.rows[index].cells[1].myDiv.value;
@@ -602,8 +638,9 @@ function tableDeleteRow(table, index)
 
 function tableDeleteColumn(table, index)
 {
-	if (!table.statesLocked && !table.symbolsLocked)
+	if (!table.locked)
 	{
+		tableDeselectCell(table);
 		var symbol = table.rows[1].cells[index].myDiv.value;
 		console.log(symbol);
 		
@@ -738,7 +775,7 @@ function lockTable(table, exc)
 			$(table.rows[i].cells[j].myDiv).prop('readonly', true);
 		}
 	}
-	table.statesLocked = true;
+	table.locked = true;
 }
 
 function unlockTable(table)
@@ -751,7 +788,7 @@ function unlockTable(table)
 			$(table.rows[i].cells[j].myDiv).prop('readonly', false);
 		}
 	}
-	table.statesLocked = false;
+	table.locked = false;
 }
 
 function tableRhChanged()
@@ -770,9 +807,29 @@ function tableRhChanged()
 	else
 	{
 		$(this).removeClass("incorrect", fadeTime);
-		if (table.statesLocked)
+		if (table.locked)
 		{
 			unlockTable(table)
+		}
+		if (this.value[0] == '↔')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
+		}
+		else if (this.value[0] == '←')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
+		}
+		else if (this.value[0] == '→')
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
+		}
+		else
+		{
+			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 		}
 	}
 	
@@ -865,7 +922,7 @@ function tableChChanged()
 	else
 	{
 		$(this).removeClass("incorrect", fadeTime);
-		if (table.symbolsLocked)
+		if (table.locked)
 		{
 			unlockTable(table)
 		}
@@ -1118,8 +1175,9 @@ function tableAddCell(row)
 
 function tableAddColumn(table, symb)
 {
-	if (!table.statesLocked && !table.symbolsLocked)
+	if (!table.locked)
 	{
+		tableDeselectCell(table);
 		table.rows[0].deleteCell(table.rows[0].cells.length - 1);
 		tableAddColumnDeleteButton(table.rows[0], table);
 		tableAddColumnAddButton(table.rows[0], table);
@@ -1145,8 +1203,9 @@ function tableAddColumn(table, symb)
 
 function tableAddRow(table)
 {
-	if (!table.statesLocked && !table.symbolsLocked)
+	if (!table.locked)
 	{
+		tableDeselectCell(table);
 		console.log("adding row");
 		table.rows[table.rows.length - 1].deleteCell(0);
 		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
@@ -1172,7 +1231,7 @@ function tableAddRow(table)
 	}
 }
 
-function tableButton1Click(tableTab) {
+function tableButtonInitClick(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
 	if (cell != 0 && cell.myCell.cellIndex == 1)
@@ -1215,7 +1274,7 @@ function tableButton1Click(tableTab) {
 	}
 }
 
-function tableButton2Click(tableTab) {
+function tableButtonEndClick(tableTab) {
 	var table = tableTab.table;
 	var cell = table.selectedCell;
 	if (cell != 0 && cell.myCell.cellIndex == 1)
