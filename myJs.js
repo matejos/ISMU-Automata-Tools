@@ -707,13 +707,27 @@ function tableStateExists(div, state)
 	return -1;
 }
 
+function tableSymbolExists(div, symbol)
+{
+	var table = div.parentElement.parentElement.parentElement.parentElement;
+	var ci = div.parentElement.cellIndex;
+	for (var i = 2; i < table.rows[1].cells.length; i++)
+	{
+		if (i == ci)
+			continue;
+		var val = table.rows[1].cells[i].myDiv.value;
+		if (val == symbol)
+			return table.rows[1].cells[i].myDiv;
+	}
+	return -1;
+}
+
 function tableRhChanged()
 {
 	var state = this.value;
 	var table = this.parentElement.parentElement.parentElement.parentElement;
 	var ri = this.parentElement.parentElement.rowIndex;
 	state = removePrefixFromState(state);
-	console.log(state);
 	if (incorrectStateSyntax(state))
 		$(this).addClass("incorrect", fadeTime);
 	else if (tableStateExists(this, state) != -1)
@@ -793,10 +807,37 @@ function tableRhChangedFinal()
 
 function tableChChanged()
 {
+	var symbol = this.value;
+	var table = this.parentElement.parentElement.parentElement.parentElement;
+	var ci = this.parentElement.cellIndex;
+	
 	if (incorrectTransitionSyntax(this.value))
 		$(this).addClass("incorrect", fadeTime);
+	else if (tableSymbolExists(this, symbol) != -1)
+	{
+		$(this).addClass("incorrect", fadeTime);
+		for (var i = 2; i < table.rows[1].cells.length; i++)
+		{
+			if (i == ci)
+				continue;
+			$(table.rows[1].cells[i].myDiv).prop('readonly', true);
+		}
+		table.symbolsLocked = true;
+	}
 	else
+	{
 		$(this).removeClass("incorrect", fadeTime);
+		if (table.symbolsLocked)
+		{
+			for (var i = 2; i < table.rows[1].cells.length; i++)
+			{
+				if (i == ci)
+					continue;
+				$(table.rows[1].cells[i].myDiv).prop('readonly', false);
+			}
+			table.symbolsLocked = false;
+		}
+	}
 	console.log("CH: " + this.value);
 }
 
