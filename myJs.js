@@ -4,8 +4,7 @@ var renamingTransition = 0;
 var transitionPrevName;
 var circleSize = 25;
 var fadeTime = 100;
-var cursorTimer;
-var controlKeys = [13, 27, 8, 46, 35, 36, 37, 39];
+var controlKeys = [13, 27, 8, 46, 35, 36, 37, 39, 124];
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -87,14 +86,6 @@ function init(id, type) {
 		graph.appendChild(buttonRenameTransition);
 		graph.appendChild(textBox);
 		graph.appendChild(buttonDeleteSelected);
-		
-		if (wp.realtype == "EFA")
-		{
-			var graphButtonEpsilon = document.createElement("input");
-			graphButtonEpsilon.type = "button";
-			graphButtonEpsilon.value = "Přidat epsilon";
-			graph.appendChild(graphButtonEpsilon);
-		}
 
 		var p1 = document.createElement("p");
 		graph.appendChild(p1);
@@ -113,7 +104,6 @@ function init(id, type) {
 		svg.setAttribute('height', '100%');
 		svg.selectedElement = 0;
 		svg.makingTransition = 0;
-		renamingCursor = 0;
 		svg.inputBox = textBox;
 		svg.parentSvg = svg;
 		svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
@@ -167,12 +157,6 @@ function init(id, type) {
 		buttonEndState.style.borderStyle = "outset";
 		buttonRenameTransition.style.borderStyle = "outset";
 		buttonDeleteSelected.style.borderStyle = "outset";
-		if (wp.realtype == "EFA")
-		{
-			graphButtonEpsilon.rect = rect;
-			graphButtonEpsilon.setAttributeNS(null, "onclick", 'graphButtonEpsilonClick();');
-			graphButtonEpsilon.style.borderStyle = "outset";
-		}
 		
 		wp.appendChild(graph);
 		
@@ -196,6 +180,7 @@ function init(id, type) {
 		});
 		
 		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
+			stopTyping()
 			wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
 			wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
 		});
@@ -445,6 +430,7 @@ function updateTableTabFromText(wp)	// not finished
 	cell.appendChild(div);
 	
 	// filling out columns' headers from symbols and delete buttons above them
+	table.symbols.sort();
 	for (i = 0; i < table.symbols.length; i++)
 	{
 		var symbout = table.symbols[i];
@@ -457,8 +443,8 @@ function updateTableTabFromText(wp)	// not finished
 	// column add button
 	tableAddColumnAddButton(row, table);
 	
-	console.log(table.states.length);
 	// filling out rows' headers from states
+	table.states.sort();
 	for (i = 0; i < table.states.length; i++)
 	{
 		var state = table.states[i];
@@ -1227,9 +1213,9 @@ function tableAddCell(row)
 	
 	var regex;
 	if (table.wp.type == "NFA")
-		regex = /[^ =()]/;
+		regex = /[^ =()|]/;
 	else
-		regex = /[^ =(){},]/;
+		regex = /[^ =(){},|]/;
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
 		if (kc == 0)
@@ -1407,13 +1393,6 @@ function doGetCaretPosition (oField) {
 
   // Return results
   return iCaretPos;
-}
-
-function graphButtonEpsilonClick()
-{
-	var newname = renamingTransition.line.name.substring(0, renamingCursor) + 'ε' + renamingTransition.line.name.substring(renamingCursor, renamingTransition.line.name.length);
-	renameTransition(renamingTransition.line, newname);
-	renamingCursor++;
 }
 
 function tableButtonEpsilonClick()
@@ -1871,26 +1850,6 @@ function stateDblClick(evt)
 }
 function createTransition(state1, state2, symbols)
 {
-	var type = state1.parentSvg.wp.realtype;
-	console.log(symbols == "");
-	if (symbols == "")
-	{
-		if (type == "EFA")
-			symbols = "ε";
-		else
-		{	
-			var name = "";
-			while (name == "")
-				name = prompt("Nelze přidat prázdný přechod! Zadej symboly přechodu oddělené čárkou", "");
-			if (name == null)
-			{
-				rectClick(null, state1.parentRect);
-				deselectElement(state1.parentSvg);
-				return;
-			}
-			symbols = name;
-		}
-	}
 	var x1 = +state1.getAttribute("cx");
 	var y1 = +state1.getAttribute("cy");
 	var aLine = document.createElementNS(svgns, 'path');
@@ -2021,14 +1980,36 @@ function clickState(evt) {
 					{
 						if (state.parentRect.buttonAddTransitions.style.borderStyle == "outset")
 							state.parentRect.mode = modeEnum.SELECT;
-						state.parentRect.parentSvg.selectedElement = state.parentRect.parentSvg.makingTransition;
-						state.parentRect.parentSvg.makingTransition = 0;
-						deselectElement(state.parentRect.parentSvg);
+						state.parentSvg.selectedElement = state.parentSvg.makingTransition;
+						state.parentSvg.makingTransition = 0;
+						deselectElement(state.parentSvg);
 						return;
 					}
-				var name = prompt("Zadej symboly přechodu oddělené čárkou", "");
+				var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", "");
+				do
+				{
+					incorrect = false;
+					if (name == "" && state.parentSvg.wp.realtype == "EFA")
+						name = "ε";
+					if (name == "")
+					{
+						name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+						incorrect = true;
+					}
+					else if (incorrectGraphTransitionsSyntax(name))
+					{
+						name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+						incorrect = true;
+					}
+				}
+				while (incorrect);
+				
 				if (name != null)
 				{
+					var names = name.split(",");
+					var namesUnique = names.filter(function(item, pos) {return names.indexOf(item) == pos;});
+					name = namesUnique.toString();
+					name = name.replace("\\e", "ε");
 					createTransition(state.parentSvg.makingTransition, state, name);
 				}
 				else
@@ -2255,10 +2236,6 @@ function moveElement(evt) {
 						str[1] = mouseX;
 						str[2] = mouseY;
 						
-						//temp = controlPoint(str[1], str[2], str[6], str[7]);
-						//temp = temp.split(' ');
-						//str[4] = temp[0];
-						//str[5] = temp[1];
 						str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines1[i].dx;
 						str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines1[i].dy;
 						
@@ -2278,11 +2255,7 @@ function moveElement(evt) {
 					str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
 					str[6] = mouseX;
 					str[7] = mouseY;
-					
-					//temp = controlPoint(str[1], str[2], str[6], str[7]);
-					//temp = temp.split(' ');
-					//str[4] = temp[0];
-					//str[5] = temp[1];
+
 					str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines2[i].dx;
 					str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines2[i].dy;
 					
@@ -2377,9 +2350,6 @@ function stopTyping()
 {
 	if (renamingTransition !== 0)
 	{
-		clearInterval(cursorTimer);
-		$(document).unbind("keypress");
-		$(document).unbind("keydown");
 		renamingTransition.setAttribute("fill", "white");
 		renameTransition(renamingTransition.line, renamingTransition.line.name.replace("|", ""));
 		if (renamingTransition.line.name == "")
@@ -2393,10 +2363,6 @@ function stopTyping()
 				renameTransition(renamingTransition.line, transitionPrevName);
 			}
 		}
-		/*else if (renamingTransition.line.name == "abc")
-		{
-			renamingTransition.setAttribute("fill", "red");
-		}*/
 		renamingTransition.setAttribute("stroke", "black");
 		renamingTransition.setAttribute('class', '');
 		renamingTransition = 0;
@@ -2409,100 +2375,36 @@ function transitionDblClick(evt)
 	var svg = rect.parentSvg;
 	$(document.activeElement).blur();
 	renamingTransition = rect;
-	transitionPrevName = line.name;
-	stopTyping();
 	rect.setAttribute("stroke", "lightgreen");
-	renamingTransition = rect;
-	renamingCursor = line.name.length;
-	var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-	renameTransition(rect.line, newname);
-	cursorTimer = setInterval(toggleCursor, 500);
-	rect.setAttribute('class', 'editable');
-	$(document).keypress(function( event ) {
-		
-		var key = event.keyCode || event.which || event.charCode;
-		if (controlKeys.indexOf(key) == -1)
-		{
-			var s_key = String.fromCharCode(key);
-			if (!incorrectGraphTransitionsCharsSyntax(s_key))
-			{
-				var newname = line.name.substring(0, renamingCursor) + s_key + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect.line, newname);
-				renamingCursor++;
-			}
-		}
-		event.preventDefault();
-	});
-	$(document).keydown(function( event ) {
-		var key = event.keyCode || event.which || event.charCode;
-		console.log(key);
-		if (key == 13)	// enter or escape
-		{
-			stopTyping();
-		}
-		else if (key == 27)
-		{
-			renameTransition(rect.line, transitionPrevName);
-			stopTyping();
-		}
-		else if (key == 8)	// backspace
-		{
-			event.preventDefault();
-			var newname = line.name.substring(0, renamingCursor - 1) + line.name.substring(renamingCursor, line.name.length);
-			renameTransition(rect.line, newname);
-			if (renamingCursor > 0)
-				renamingCursor--;
-		}
-		else if (key == 46)	// delete
-		{
-			var newname = line.name.substring(0, renamingCursor + 1) + line.name.substring(renamingCursor + 2, line.name.length);
-			renameTransition(rect.line, newname);
-		}
-		else if (key == 35)	// end
-		{
-			event.preventDefault();
-			if (renamingCursor < line.name.length - 1)
-			{
-				renameTransition(rect.line, line.name.replace("|", ""));
-				renamingCursor = line.name.length;
-				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect.line, newname);
-			}
-		}
-		else if (key == 36)	// home
-		{
-			event.preventDefault();
-			if (renamingCursor > 0)
-			{
-				renameTransition(rect.line, line.name.replace("|", ""));
-				renamingCursor = 0;
-				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect.line, newname);
-			}
-		}
-		else if (key == 37)	// left arrow
-		{
-			if (renamingCursor > 0)
-			{
-				renameTransition(rect.line, line.name.replace("|", ""));
-				renamingCursor--;
-				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect.line, newname);
-			}
-		}
-		else if (key == 39)	// right arrow
-		{
-			if (renamingCursor < line.name.length - 1)
-			{
-				renameTransition(rect.line, line.name.replace("|", ""));
-				renamingCursor++;
-				var newname = line.name.substring(0, renamingCursor) + '|' + line.name.substring(renamingCursor, line.name.length);
-				renameTransition(rect.line, newname);
-			}
-		}
-	});
 	stopMovingElement(evt);
-	moving = false;
+	var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", line.name);
+	do
+	{
+		incorrect = false;
+		if (name == "" && svg.wp.realtype == "EFA")
+			name = "ε";
+		if (name == "")
+		{
+			name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+			incorrect = true;
+		}
+		else if (incorrectGraphTransitionsSyntax(name))
+		{
+			name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+			incorrect = true;
+		}
+	}
+	while (incorrect);
+	
+	if (name != null)
+	{
+		var names = name.split(",");
+		var namesUnique = names.filter(function(item, pos) {return names.indexOf(item) == pos;});
+		name = namesUnique.toString();
+		name = name.replace("\\e", "ε");
+		renameTransition(rect.line, name);
+	}
+	stopTyping();
 }
 function stopMovingElement(evt) {
 	evt.preventDefault();
@@ -2526,7 +2428,7 @@ function incorrectGraphTransitionsCharsSyntax(val)
 
 function graphTransitionsSyntax()
 {
-	return /^[^ ,]+(,[^ ,]+)*$/;
+	return /^[^ =(),]+(,[^ =(),]+)*$/;
 }
 
 function incorrectGraphTransitionsSyntax(val)
