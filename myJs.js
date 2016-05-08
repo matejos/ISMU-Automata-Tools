@@ -552,13 +552,16 @@ function updateTableTabFromText(wp)	// not finished
 		}
 	}
 	
-	wp.tableTab.buttonEpsilon.disabled = false;
-	for (var i = 2; i < table.rows[1].cells.length; i++)
+	if (wp.tableTab.buttonEpsilon)
 	{
-		if (table.rows[1].cells[i].myDiv.value == 'ε')
+		wp.tableTab.buttonEpsilon.disabled = false;
+		for (var i = 2; i < table.rows[1].cells.length; i++)
 		{
-			wp.tableTab.buttonEpsilon.disabled = true;
-			break;
+			if (table.rows[1].cells[i].myDiv.value == 'ε')
+			{
+				wp.tableTab.buttonEpsilon.disabled = true;
+				break;
+			}
 		}
 	}
 }
@@ -600,22 +603,22 @@ function tableCellClick(evt)
 		var name = cell.value;
 		if (name[0] == '↔')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonInit.disabled = true;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
 		}
 		else if (name[0] == '←')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonInit.disabled = false;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
 		}
 		else if (name[0] == '→')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonInit.disabled = true;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 		}
 		else
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonInit.disabled = false;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 		}
 		
@@ -847,22 +850,22 @@ function tableRhChanged()
 		}
 		if (this.value[0] == '↔')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonInit.disabled = true;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
 		}
 		else if (this.value[0] == '←')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonInit.disabled = false;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "inset";
 		}
 		else if (this.value[0] == '→')
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "inset";
+			table.wp.tableTab.buttonInit.disabled = true;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 		}
 		else
 		{
-			table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+			table.wp.tableTab.buttonInit.disabled = false;
 			table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 		}
 	}
@@ -1323,17 +1326,10 @@ function tableButtonInitClick(tableTab) {
 		}
 		
 		// Edit init state in graph
-		for (i = 0; i < table.wp.svg.rect.states.length; i++)
-		{
-			if (table.wp.svg.rect.states[i].name == state)
-			{
-				if (on)
-					toggleInitStateOn(table.wp.svg.rect.states[i]);
-				else
-					toggleInitStateOff(table.wp.svg.rect.states[i]);
-				break;
-			}
-		}
+		if (on)
+			toggleInitStateOn(findState(table.wp.svg.rect, state));
+		else
+			toggleInitStateOff(findState(table.wp.svg.rect, state));
 		
 		$(cell).trigger("input");
 	}
@@ -1366,17 +1362,10 @@ function tableButtonEndClick(tableTab) {
 		}
 		
 		// Edit exit state in graph
-		for (i = 0; i < table.wp.svg.rect.states.length; i++)
-		{
-			if (table.wp.svg.rect.states[i].name == state)
-			{
-				if (on)
-					toggleEndStateOn(table.wp.svg.rect.states[i]);
-				else
-					toggleEndStateOff(table.wp.svg.rect.states[i]);
-				break;
-			}
-		}
+		if (on)
+			toggleEndStateOn(findState(table.wp.svg.rect, state));
+		else
+			toggleEndStateOff(findState(table.wp.svg.rect, state));
 		
 		$(cell).trigger("input");
 	}
@@ -1804,7 +1793,8 @@ function rectDblClick(evt) {
 }
 
 function rectClick(evt, rect) {
-	evt.preventDefault();
+	if (evt)
+		evt.preventDefault();
 	stopTyping();
     switch (rect.mode) {
         case modeEnum.ADD_STATE:
@@ -1863,6 +1853,26 @@ function stateDblClick(evt)
 }
 function createTransition(state1, state2, symbols)
 {
+	var type = state1.parentSvg.wp.realtype;
+	console.log(symbols == "");
+	if (symbols == "")
+	{
+		if (type == "EFA")
+			symbols = "ε";
+		else
+		{	
+			var name = "";
+			while (name == "")
+				name = prompt("Nelze přidat prázdný přechod! Zadej symboly přechodu oddělené čárkou", "");
+			if (name == null)
+			{
+				rectClick(null, state1.parentRect);
+				deselectElement(state1.parentSvg);
+				return;
+			}
+			symbols = name;
+		}
+	}
 	var x1 = +state1.getAttribute("cx");
 	var y1 = +state1.getAttribute("cy");
 	var aLine = document.createElementNS(svgns, 'path');
@@ -1976,6 +1986,8 @@ function createTransition(state1, state2, symbols)
 	
 	state2.parentSvg.makingTransition = 0;
 	state2.parentSvg.selectedElement = 0;
+	
+	adjustTransitionWidth(aLine);
 }
 
 function clickState(evt) {
@@ -1997,7 +2009,13 @@ function clickState(evt) {
 						deselectElement(state.parentRect.parentSvg);
 						return;
 					}
-                createTransition(state.parentSvg.makingTransition, state, "a");
+				var name = prompt("Zadej symboly přechodu oddělené čárkou", "");
+				if (name != null)
+				{
+					createTransition(state.parentSvg.makingTransition, state, name);
+				}
+				else
+					rectClick(null, state.parentRect);
             } else {
                 selectStateForTransition(state);
             }
