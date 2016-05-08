@@ -572,7 +572,7 @@ function tableDeselectCell(table)
 		var div = table.selectedCell;
 		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
-		table.wp.tableTab.buttonInit.style.borderStyle = "outset";
+		table.wp.tableTab.buttonInit.disabled = false;
 		table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 	}
 }
@@ -600,7 +600,7 @@ function tableCellClick(evt)
 		}
 		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
 		
-		var name = cell.value;
+		var name = cell.prevValue;
 		if (name[0] == '↔')
 		{
 			table.wp.tableTab.buttonInit.disabled = true;
@@ -847,6 +847,23 @@ function tableRhChanged()
 			unlockTable(table);
 			table.tableTab.statusText.innerHTML = "";
 			table.tableTab.statusText.style.display = "none";
+		}
+		if (this.value[0] == '→' || this.value[0] == '↔')
+		{
+			for (i = 2; i < table.rows.length - 1; i++)
+			{
+				if (i == ri)
+					continue;
+				if (table.rows[i].cells[1].myDiv.prevValue[0] == '→' || table.rows[i].cells[1].myDiv.prevValue[0] == '↔')
+				{
+					toggleInitStateOff(findState(table.wp.svg.rect, removePrefixFromState(table.rows[i].cells[1].myDiv.prevValue)));
+					table.rows[i].cells[1].myDiv.value = "";
+					if (table.rows[i].cells[1].myDiv.prevValue[0] == '↔')
+						table.rows[i].cells[1].myDiv.value = "←";
+					table.rows[i].cells[1].myDiv.value += table.rows[i].cells[1].myDiv.prevValue.substring(1, table.rows[i].cells[1].myDiv.prevValue.length);
+					table.rows[i].cells[1].myDiv.prevValue = table.rows[i].cells[1].myDiv.value;
+				}
+			}
 		}
 		if (this.value[0] == '↔')
 		{
@@ -1324,6 +1341,7 @@ function tableButtonInitClick(tableTab) {
 			console.log(state + " is now an init state");
 			on = true;
 		}
+		cell.prevValue = cell.value;
 		
 		// Edit init state in graph
 		if (on)
@@ -1360,6 +1378,7 @@ function tableButtonEndClick(tableTab) {
 			console.log(state + " is now an exit state");
 			on = true;
 		}
+		cell.prevValue = cell.value;
 		
 		// Edit exit state in graph
 		if (on)
