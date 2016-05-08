@@ -1966,6 +1966,67 @@ function createTransition(state1, state2, symbols)
 	adjustTransitionWidth(aLine);
 }
 
+function getValidTransitionName(state1, state2, sname)
+{
+	var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", sname);
+	if (name == null)
+		return null;
+	do
+	{
+		incorrect = false;
+		var names = name.split(",");
+		names = names.filter(function(item, pos) {return names.indexOf(item) == pos;});
+		names.forEach(function(item, i) { if (item == "\\e") names[i] = "ε"; });
+		name = names.toString();
+		if (state1.parentSvg.wp.realtype == "EFA")
+		{
+			if (name == "")
+				name = "ε";
+		}
+		else
+		{
+			if ((name == "") || (names.indexOf("ε") != -1))
+			{
+				name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+				incorrect = true;
+			}
+		}
+		if (!incorrect)
+		{
+			if (incorrectGraphTransitionsSyntax(name))
+			{
+				name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+				incorrect = true;
+			}
+			else
+			{
+				if (state1.parentSvg.wp.type == "DFA")
+				{
+					for (var i = 0; i < names.length; i++)
+					{
+						for (var j = 0; j < state1.lines1.length; j++)
+						{
+							if (state1.lines1[j].end == state2)
+								continue;
+							var temp = state1.lines1[j].name.split(",");
+							if (temp.indexOf(names[i]) != -1)
+							{
+								name = prompt("Chyba: Existuje přechod z tohoto stavu pod alespoň jedním z těchto symbolů do jiného stavu, zadání vyžaduje determinizmus. Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+								incorrect = true;
+								// break
+								j = state1.lines1.length;
+								i = names.length;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	while (incorrect && name != null);
+	return name;
+}
+
 function clickState(evt) {
 	evt.preventDefault();
     var state = evt.target;
@@ -1975,7 +2036,7 @@ function clickState(evt) {
             break;
         case modeEnum.ADD_TRANSITION:
             if (state.parentSvg.makingTransition !== 0) {
-                for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
+                for (var i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
                     if (state.parentSvg.makingTransition.lines1[i].end == state)
 					{
 						if (state.parentRect.buttonAddTransitions.style.borderStyle == "outset")
@@ -1985,31 +2046,10 @@ function clickState(evt) {
 						deselectElement(state.parentSvg);
 						return;
 					}
-				var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", "");
-				do
-				{
-					incorrect = false;
-					if (name == "" && state.parentSvg.wp.realtype == "EFA")
-						name = "ε";
-					if (name == "")
-					{
-						name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
-						incorrect = true;
-					}
-					else if (incorrectGraphTransitionsSyntax(name))
-					{
-						name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
-						incorrect = true;
-					}
-				}
-				while (incorrect);
+				var name = getValidTransitionName(state.parentSvg.makingTransition, state, "");
 				
 				if (name != null)
 				{
-					var names = name.split(",");
-					var namesUnique = names.filter(function(item, pos) {return names.indexOf(item) == pos;});
-					name = namesUnique.toString();
-					name = name.replace("\\e", "ε");
 					createTransition(state.parentSvg.makingTransition, state, name);
 				}
 				else
@@ -2377,32 +2417,11 @@ function transitionDblClick(evt)
 	renamingTransition = rect;
 	rect.setAttribute("stroke", "lightgreen");
 	stopMovingElement(evt);
-	var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", line.name);
-	do
-	{
-		incorrect = false;
-		if (name == "" && svg.wp.realtype == "EFA")
-			name = "ε";
-		if (name == "")
-		{
-			name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
-			incorrect = true;
-		}
-		else if (incorrectGraphTransitionsSyntax(name))
-		{
-			name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
-			incorrect = true;
-		}
-	}
-	while (incorrect);
+	var name = getValidTransitionName(line.start, line.end, line.name);
 	
 	if (name != null)
 	{
-		var names = name.split(",");
-		var namesUnique = names.filter(function(item, pos) {return names.indexOf(item) == pos;});
-		name = namesUnique.toString();
-		name = name.replace("\\e", "ε");
-		renameTransition(rect.line, name);
+		renameTransition(line, name);
 	}
 	stopTyping();
 }
