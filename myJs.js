@@ -51,37 +51,42 @@ function init(id, type) {
 		textTab.wp = wp;
 		wp.textTab = textTab;
 
-		var button1 = document.createElement("input");
-		button1.type = "button";
-		button1.value = "Přidávat stavy";
+		var buttonAddStates = document.createElement("input");
+		buttonAddStates.type = "button";
+		buttonAddStates.value = "Přidávat stavy";
 
-		var button2 = document.createElement("input");
-		button2.type = "button";
-		button2.value = "Přidávat přechody";
+		var buttonAddTransitions = document.createElement("input");
+		buttonAddTransitions.type = "button";
+		buttonAddTransitions.value = "Přidávat přechody";
 
-		var button3 = document.createElement("input");
-		button3.type = "button";
-		button3.value = "Koncový stav";
+		var buttonInitState = document.createElement("input");
+		buttonInitState.type = "button";
+		buttonInitState.value = "Počátečný stav";
 		
-		var button4 = document.createElement("input");
-		button4.type = "button";
-		button4.value = "Změnit znaky přechodu";
+		var buttonEndState = document.createElement("input");
+		buttonEndState.type = "button";
+		buttonEndState.value = "Koncový stav";
+		
+		var buttonRenameTransition = document.createElement("input");
+		buttonRenameTransition.type = "button";
+		buttonRenameTransition.value = "Změnit znaky přechodu";
 		
 		var textBox = document.createElement("input");
 		textBox.type = "text";
 		textBox.value = "a";
 		
-		var button5 = document.createElement("input");
-		button5.type = "button";
-		button5.value = "Smaž zvolené";
+		var buttonDeleteSelected = document.createElement("input");
+		buttonDeleteSelected.type = "button";
+		buttonDeleteSelected.value = "Smaž zvolené";
 		
 
-		graph.appendChild(button1);
-		graph.appendChild(button2);
-		graph.appendChild(button3);
-		graph.appendChild(button4);
+		graph.appendChild(buttonAddStates);
+		graph.appendChild(buttonAddTransitions);
+		graph.appendChild(buttonInitState);
+		graph.appendChild(buttonEndState);
+		graph.appendChild(buttonRenameTransition);
 		graph.appendChild(textBox);
-		graph.appendChild(button5);
+		graph.appendChild(buttonDeleteSelected);
 		
 		if (wp.realtype == "EFA")
 		{
@@ -126,70 +131,42 @@ function init(id, type) {
 		rect.setAttribute("height", '100%');
 		rect.parentSvg = svg;
 		rect.states = [];
+		rect.initState = null;
 		rect.mode = modeEnum.SELECT;
 		rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
 		rect.setAttributeNS(null, "onmouseup", "stopMovingElement(evt);");
-		rect.button1 = button1;
-		rect.button2 = button2;
+		rect.buttonAddStates = buttonAddStates;
+		rect.buttonAddTransitions = buttonAddTransitions;
+		rect.buttonInitState = buttonInitState;
+		rect.buttonEndState = buttonEndState;
 		$(rect).dblclick(rectDblClick);
 		svg.rect = rect;
 		svg.appendChild(rect);
 		
 		
-		var initState = document.createElementNS(svgns, "circle");
-		initState.setAttributeNS(null, "cx", 70);
-		initState.setAttributeNS(null, "cy", 50);
-		initState.setAttributeNS(null, "r", circleSize);
-		initState.setAttributeNS(null, "fill", "white");
-		initState.setAttributeNS(null, "stroke", "black");
-		initState.setAttributeNS(null, "stroke-width", 1);
-		initState.parentSvg = svg;
-		initState.parentRect = rect;
-		initState.init = 0;
-		initState.end = 0;
-		initState.lines1 = [];
-		initState.lines2 = [];
-		initState.name = String.fromCharCode(65 + rect.states.length);
-		initState.setAttributeNS(null, "onmousedown", "clickState(evt)");
-		initState.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
-		initState.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
-		$(initState).dblclick(stateDblClick);
+		
+		
 
-		var newText = document.createElementNS(svgns, "text");
-		newText.setAttributeNS(null, "x", initState.getAttribute("cx"));
-		newText.setAttributeNS(null, "y", initState.getAttribute("cy"));
-		newText.setAttribute('pointer-events', 'none');
-		newText.setAttribute('font-size', 20);
-		newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
-		newText.setAttribute('dy', ".3em");							// vertical alignment
-		newText.setAttribute('text-anchor', "middle");				// horizontal alignment
-		newText.setAttribute('class', 'noselect');
-		var textNode = document.createTextNode(String.fromCharCode(65 + rect.states.length));
-		newText.appendChild(textNode);
-		newText.node = textNode;
-
-		initState.text = newText;
-
-		toggleInitState(initState);
-		rect.states.push(initState);
-		putOnTop(initState);
-		rect.initState = initState;
-
-		button1.rect = rect;
-		button2.rect = rect;
-		button3.rect = rect;
-		button4.rect = rect;
-		button5.rect = rect;
-		button1.setAttributeNS(null, "onclick", 'button1Click(rect);');
-		button2.setAttributeNS(null, "onclick", 'button2Click(rect);');
-		button3.setAttributeNS(null, "onclick", 'button3Click(rect);');
-		button4.setAttributeNS(null, "onclick", 'button4Click(rect);');
-		button5.setAttributeNS(null, "onclick", 'button5Click(rect);');
-		button1.style.borderStyle = "outset";
-		button2.style.borderStyle = "outset";
-		button3.style.borderStyle = "outset";
-		button4.style.borderStyle = "outset";
-		button5.style.borderStyle = "outset";
+		buttonAddStates.rect = rect;
+		buttonAddTransitions.rect = rect;
+		buttonInitState.rect = rect;
+		buttonEndState.rect = rect;
+		buttonRenameTransition.rect = rect;
+		buttonDeleteSelected.rect = rect;
+		
+		buttonAddStates.setAttributeNS(null, "onclick", 'buttonAddStatesClick(rect);');
+		buttonAddTransitions.setAttributeNS(null, "onclick", 'buttonAddTransitionsClick(rect);');
+		buttonInitState.setAttributeNS(null, "onclick", 'buttonInitStateClick(rect);');
+		buttonEndState.setAttributeNS(null, "onclick", 'buttonEndStateClick(rect);');
+		buttonRenameTransition.setAttributeNS(null, "onclick", 'buttonRenameTransitionClick(rect);');
+		buttonDeleteSelected.setAttributeNS(null, "onclick", 'buttonDeleteSelectedClick(rect);');
+		
+		buttonAddStates.style.borderStyle = "outset";
+		buttonAddTransitions.style.borderStyle = "outset";
+		buttonInitState.style.borderStyle = "outset";
+		buttonEndState.style.borderStyle = "outset";
+		buttonRenameTransition.style.borderStyle = "outset";
+		buttonDeleteSelected.style.borderStyle = "outset";
 		if (wp.realtype == "EFA")
 		{
 			graphButtonEpsilon.rect = rect;
@@ -227,11 +204,18 @@ function init(id, type) {
 			deselectElement(svg);
 			for (i = 0; i < rect.states.length; i++)
 			{
-				if (rect.states[i].init == 0 && rect.states[i].end == 0 && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
+				if (!rect.states[i].init && !rect.states[i].end && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
 					deleteState(rect.states[i]);
 			}
 		});
 	}
+}
+
+function initGraphTab(wp)
+{
+	console.log("init graph tab");
+	var initState = createStateAbs(wp.svg.rect, 70, 50);
+	toggleInitState(initState);
 }
 
 function initTableTab(wp) {
@@ -296,14 +280,20 @@ function initTextTab(wp) {
 	{
 		wp.textTab.textArea = document.createElement('textarea');
 		wp.textTab.appendChild(wp.textTab.textArea);
+		initGraphTab(wp);
 	}
 	else
 	{
 		wp.textTab.appendChild(wp.textTab.textArea.parentElement.parentElement);
 		
-		if (wp.textTab.textArea.value == "")
+		if (wp.textTab.textArea.value != "")
 		{
+			console.log("generating from text");
 			updateGraphTabFromText(wp);
+		}
+		else
+		{
+			initGraphTab(wp);
 		}
 	}
 }
@@ -1473,13 +1463,13 @@ function textButtonEpsilonClick(textTab)
 	textTab.textArea.value = str;
 }
 
-function button1Click(rect) {
-    if (rect.button1.style.borderStyle == "inset") {
-        rect.button1.style.borderStyle = "outset";
+function buttonAddStatesClick(rect) {
+    if (rect.buttonAddStates.style.borderStyle == "inset") {
+        rect.buttonAddStates.style.borderStyle = "outset";
         rect.mode = modeEnum.SELECT;
     } else {
-        if (rect.button2.style.borderStyle == "inset") rect.button2.style.borderStyle = "outset";
-        rect.button1.style.borderStyle = "inset";
+        if (rect.buttonAddTransitions.style.borderStyle == "inset") rect.buttonAddTransitions.style.borderStyle = "outset";
+        rect.buttonAddStates.style.borderStyle = "inset";
         rect.mode = modeEnum.ADD_STATE;
         if (rect.parentSvg.makingTransition !== 0) {
             rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
@@ -1489,9 +1479,9 @@ function button1Click(rect) {
     }
 }
 
-function button2Click(rect) {
-    if (rect.button2.style.borderStyle == "inset") {
-        rect.button2.style.borderStyle = "outset";
+function buttonAddTransitionsClick(rect) {
+    if (rect.buttonAddTransitions.style.borderStyle == "inset") {
+        rect.buttonAddTransitions.style.borderStyle = "outset";
         rect.mode = modeEnum.SELECT;
         if (rect.parentSvg.makingTransition !== 0) {
             rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
@@ -1499,8 +1489,8 @@ function button2Click(rect) {
             deselectElement(rect.parentSvg);
         }
     } else {
-        if (rect.button1.style.borderStyle == "inset") rect.button1.style.borderStyle = "outset";
-        rect.button2.style.borderStyle = "inset";
+        if (rect.buttonAddStates.style.borderStyle == "inset") rect.buttonAddStates.style.borderStyle = "outset";
+        rect.buttonAddTransitions.style.borderStyle = "inset";
         rect.mode = modeEnum.ADD_TRANSITION;
         deselectElement(rect.parentSvg);
     }
@@ -1513,7 +1503,7 @@ function regTextChanged()
 
 function toggleInitStateOn(state)
 {
-	if (state.init === 0) 
+	if (!state.init) 
 	{
 		var x2 = state.getAttribute("cx");
 		var x1 = x2 - circleSize * 2.5;
@@ -1549,30 +1539,33 @@ function toggleInitStateOn(state)
 		state.parentSvg.appendChild(aLine);
 		putOnTop(state);
 		state.init = aLine;
+		
+		state.parentRect.initState = state;
 	}
 }
 
 function toggleInitStateOff(state)
 {
-	if (state.init !== 0) 
+	if (state.init) 
 	{
 	state.parentSvg.removeChild(state.init);
-	state.init = 0;
+	state.init = null;
+	if (state.parentRect.initState == state)
+		state.parentRect.initState = null;
 	}
 }
 
 function toggleInitState(state)
 {
-	if (state.init === 0) {
-		toggleInitStateOn(state)
-	} else {
-		toggleInitStateOff(state)
-	}
+	if (state.parentRect.initState)
+		toggleInitStateOff(state.parentRect.initState);
+	toggleInitStateOn(state);
+	state.parentRect.initState = state;
 }
 
 function toggleEndStateOn(state)
 {
-	if (state.end === 0) 
+	if (!state.end) 
 	{
 		var shape = document.createElementNS(svgns, "circle");
 		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
@@ -1589,35 +1582,47 @@ function toggleEndStateOn(state)
 		shape.setAttribute('pointer-events', 'none');
 		state.end = shape;
 		putOnTop(state);
+		
+		state.parentRect.buttonEndState.style.borderStyle = "inset";
 	}
 }
 
 function toggleEndStateOff(state)
 {
-	if (state.end !== 0) 
+	if (state.end) 
 	{
 		state.parentSvg.removeChild(state.end);
-		state.end = 0;
+		state.end = null;
+		
+		state.parentRect.buttonEndState.style.borderStyle = "outset";
 	}
 }
 
 function toggleEndState(state)
 {
-	if (state.end === 0) {
+	if (!state.end) {
 		toggleEndStateOn(state)
 	} else {
 		toggleEndStateOff(state)
 	}
 }
 
-function button3Click(rect) {
+function buttonInitStateClick(rect) {
+	rect.buttonInitState.disabled = true;
+    var svg = rect.parentSvg;
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
+		toggleInitState(svg.selectedElement);
+    }
+}
+
+function buttonEndStateClick(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
 		toggleEndState(svg.selectedElement);
     }
 }
 
-function button4Click(rect) {
+function buttonRenameTransitionClick(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "path")) {
         if (svg.inputBox.value === "")
@@ -1644,7 +1649,7 @@ function button4Click(rect) {
     }
 }
 
-function button5Click(rect) {
+function buttonDeleteSelectedClick(rect) {
 	var svg = rect.parentSvg;
 	switch (svg.selectedElement.tagName)
 	{
@@ -1662,19 +1667,11 @@ function generateAnswer(rect)
 	var finalStates = [];
     var out = "";
 	var type = rect.parentSvg.wp.type;
-	for (i = 0; i < rect.states.length; i++)
-    {
-		if (rect.states[i].init !== 0)
-		{
-			if (out == "")
-				out += "init=";
-            out += rect.states[i].name + " ";
-			break; // replace break with adding more init states, if they can be
-		}
-	}
+	if (rect.initState)
+		out += "init=" + rect.initState.name + " ";
     for (i = 0; i < rect.states.length; i++)
     {
-        if (rect.states[i].end !== 0)
+        if (rect.states[i].end)
             finalStates.push(rect.states[i]);
 		if (type == "DFA")
 		{
@@ -1759,8 +1756,8 @@ function createStateAbs(rect, x, y, name)
 	shape.setAttributeNS(null, "stroke-width", 1);
 	shape.parentSvg = rect.parentSvg;
 	shape.parentRect = rect;
-	shape.init = 0;
-	shape.end = 0;
+	shape.init = null;
+	shape.end = null;
 	shape.lines1 = [];
 	shape.lines2 = [];
 	if (!name)
@@ -1794,7 +1791,7 @@ function createStateAbs(rect, x, y, name)
 
 	rect.states.push(shape);
 	putOnTop(shape);
-	if (rect.button1.style.borderStyle == "outset")
+	if (rect.buttonAddStates.style.borderStyle == "outset")
 		rect.mode = modeEnum.SELECT;
 	return shape;
 }
@@ -1815,12 +1812,14 @@ function rectClick(evt, rect) {
 	if (evt)
 		evt.preventDefault();
 	stopTyping();
+	rect.buttonInitState.disabled = false;
+	rect.buttonEndState.style.borderStyle = "outset";
     switch (rect.mode) {
         case modeEnum.ADD_STATE:
             createState(evt);
             break;
 		case modeEnum.ADD_TRANSITION:
-			if (rect.button2.style.borderStyle == "outset")
+			if (rect.buttonAddTransitions.style.borderStyle == "outset")
 				rect.mode = modeEnum.SELECT;
 			if (rect.parentSvg.makingTransition !== 0) {
 				rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
@@ -1836,7 +1835,7 @@ function rectClick(evt, rect) {
 
 function putOnTop(state) {
     state.parentSvg.appendChild(state);
-    if (state.end !== 0) state.parentSvg.appendChild(state.end);
+    if (state.end) state.parentSvg.appendChild(state.end);
     state.parentSvg.appendChild(state.text);
 }
 function cubicControlPoints(x, y, d){
@@ -1857,7 +1856,7 @@ function controlPoint(x1, y1, x2, y2){
 function selectStateForTransition(state)
 {
 	state.setAttributeNS(null, "fill", "lightblue");
-	if (state.end !== 0)
+	if (state.end)
 		state.end.setAttributeNS(null, "fill", "lightblue");
 	state.parentSvg.makingTransition = state;
 }
@@ -1866,7 +1865,7 @@ function stateDblClick(evt)
 	evt.preventDefault();
 	var state = evt.target;
 	var rect = state.parentRect;
-	//rect.button2.style.borderStyle = "inset";
+	//rect.buttonAddTransitions.style.borderStyle = "inset";
 	rect.mode = modeEnum.ADD_TRANSITION;
 	selectStateForTransition(state);
 }
@@ -1999,12 +1998,11 @@ function createTransition(state1, state2, symbols)
 	whitenState(state1);
 	state1.lines1.push(aLine);
 	state2.lines2.push(aLine);
-	if (state2.parentRect.button2.style.borderStyle == "outset")
+	if (state2.parentRect.buttonAddTransitions.style.borderStyle == "outset")
 		state2.parentRect.mode = modeEnum.SELECT;
-	//state2.parentRect.button2.style.borderStyle = "outset";
 	
 	state2.parentSvg.makingTransition = 0;
-	state2.parentSvg.selectedElement = 0;
+	deselectElement(state2.parentSvg);
 	
 	adjustTransitionWidth(aLine);
 }
@@ -2021,7 +2019,7 @@ function clickState(evt) {
                 for (i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
                     if (state.parentSvg.makingTransition.lines1[i].end == state)
 					{
-						if (state.parentRect.button2.style.borderStyle == "outset")
+						if (state.parentRect.buttonAddTransitions.style.borderStyle == "outset")
 							state.parentRect.mode = modeEnum.SELECT;
 						state.parentRect.parentSvg.selectedElement = state.parentRect.parentSvg.makingTransition;
 						state.parentRect.parentSvg.makingTransition = 0;
@@ -2048,7 +2046,7 @@ function prevent(evt) {
 
 function whitenState(state) {
     state.setAttributeNS(null, "fill", "white");
-    if (state.end !== 0)
+    if (state.end)
         state.end.setAttributeNS(null, "fill", "white");
 }
 
@@ -2058,13 +2056,20 @@ function selectElement(evt) {
 	var svg = evt.target.parentSvg;
     deselectElement(svg);
     svg.selectedElement = evt.target;
+	svg.makingTransition = 0;
+	svg.rect.mode = modeEnum.SELECT;
     movingElement = svg.selectedElement;
     switch (svg.selectedElement.tagName)
     {
         case "circle":
             svg.selectedElement.setAttributeNS(null, "fill", "lightgreen");
-    		if (svg.selectedElement.end !== 0) 
+    		if (svg.selectedElement.end)
+			{
                 svg.selectedElement.end.setAttributeNS(null, "fill", "lightgreen");
+				svg.rect.buttonEndState.style.borderStyle = "inset";
+			}
+			if (svg.selectedElement == svg.rect.initState)
+				svg.rect.buttonInitState.disabled = true;
     		//putOnTop(svg.selectedElement);	// breaks doubleclicking on Chrome
             break;
 		case "text":
@@ -2124,8 +2129,8 @@ function deleteState(state)
 	var index = state.parentRect.states.indexOf(state);
 	state.text.removeChild(state.text.node);
 	//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
-    if (state.end !== 0) svg.removeChild(state.end);
-	if (state.init !== 0) svg.removeChild(state.init);
+    if (state.end) svg.removeChild(state.end);
+	if (state.init) svg.removeChild(state.init);
 	svg.removeChild(state);
 	state.parentRect.states.splice(index, 1);
 	deselectElement(svg);
@@ -2165,6 +2170,8 @@ function renameState(state, str)
 
 function deselectElement(svg) {
 	//stopTyping();
+	svg.rect.buttonInitState.disabled = false;
+	svg.rect.buttonEndState.style.borderStyle = "outset";
     if (svg.selectedElement !== 0) {
         switch (svg.selectedElement.tagName)
     	{
@@ -2213,12 +2220,12 @@ function moveElement(evt) {
 				svg.selectedElement.text.setAttribute("x", mouseX);
 				svg.selectedElement.setAttribute("cy", mouseY);
 				svg.selectedElement.text.setAttribute("y", mouseY);
-				if (svg.selectedElement.end !== 0) 
+				if (svg.selectedElement.end) 
 				{
 					svg.selectedElement.end.setAttribute("cx", mouseX);
 					svg.selectedElement.end.setAttribute("cy", mouseY);
 				}
-				if (svg.selectedElement.init !== 0) 
+				if (svg.selectedElement.init) 
 				{
 					var x2 = mouseX;
 					var x1 = x2 - circleSize * 2.5;
