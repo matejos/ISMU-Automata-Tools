@@ -945,7 +945,8 @@ function tableChChanged()
 	var table = this.parentElement.parentElement.parentElement.parentElement;
 	var ci = this.parentElement.cellIndex;
 	
-	if (incorrectTransitionSyntax(this.value))
+	if ( (table.wp.realtype == "EFA" && incorrectEFATransitionSyntax(this.value)) ||
+		(table.wp.realtype != "EFA" && (incorrectDFATransitionSyntax(this.value) || this.value == "\\e")) )
 		$(this).addClass("incorrect", fadeTime);
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
@@ -1166,6 +1167,7 @@ function tableAddColumnDeleteButton(row, table)
 function tableAddColumnHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
+	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	
 	var div = document.createElement("input");
 	div.value = value;
@@ -1178,12 +1180,17 @@ function tableAddColumnHeader(row, value)
 	$(div).on('input',tableChChanged);
 	$(div).focusout(tableChChangedFinal);
 	
+	var regex;
+	if (table.wp.realtype == "EFA")
+		regex = EFATransitionSyntax();
+	else
+		regex = DFATransitionSyntax();
 	$(div).keypress(function (e) {
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
 		var txt = String.fromCharCode(kc);
-		if (incorrectTransitionSyntax(txt)) {
+		if (!txt.match(regex)) {
 			return false;
 		}
 	});
@@ -2475,15 +2482,26 @@ function incorrectTableDFATransitionsSyntax(val)
 	return (!tableDFATransitionsSyntax().test(val))
 }
 
-function transitionSyntax()
+function EFATransitionSyntax()
 {
 	return /^[^ =(),]+$/;
 }
 
-function incorrectTransitionSyntax(val)
+function incorrectEFATransitionSyntax(val)
 {
-	return (!transitionSyntax().test(val))
+	return (!EFATransitionSyntax().test(val))
 }
+
+function DFATransitionSyntax()
+{
+	return /^[^ =(),ε]+$/;
+}
+
+function incorrectDFATransitionSyntax(val)
+{
+	return (!DFATransitionSyntax().test(val))
+}
+
 function stateSyntax()
 {
 	return /^[^ =(),↔←→]+$/;
