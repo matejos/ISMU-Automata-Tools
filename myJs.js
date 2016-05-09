@@ -254,6 +254,7 @@ function initTableTab(wp) {
 	$('a[data-target="#' + wp.svg.divId + 'b"]').on('hidden.bs.tab', function (e) {
 			tableButtonInit.style.borderStyle = "outset";
 			tableButtonEnd.style.borderStyle = "outset";
+			wp.tableTab.statusText.style.display = "none";
 		});
 }
 
