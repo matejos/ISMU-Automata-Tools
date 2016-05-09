@@ -1,5 +1,5 @@
 <input name="dfa-0" type="hidden" value="dfa-0" /><noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript><script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script> <script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/utilIS.js" type="text/javascript"></script><style type="text/css">@import "https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style> <!--________________________________________Příklad 0________________________________________-->
-Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^*. \{c\} . \{ab\}^*</m>
+Napište DFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^*. \{c\} . \{ab\}^*</m>
 <div id="dfa-0-div" class="parser_text_default"> :e <br><span id="dfa-0-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-0",dfaParser.parse)</script>
 :e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=E(D,b)=C(D,c)=C(E,a)=C(E,b)=D(E,c)=C F={D}" ok
 
@@ -9,7 +9,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 <input name="dfa-1" type="hidden" value="dfa-1" /><noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript><script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script> <script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/utilIS.js" type="text/javascript"></script><style type="text/css">@import "https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style> <!--________________________________________Příklad 1________________________________________-->
-Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^* . \{c\} . \{ba\}^*</m>
+Napište NFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^* . \{c\} . \{ba\}^*</m>
 <div id="dfa-1-div" class="parser_text_default"> :e <br><span id="dfa-1-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-1",dfaParser.parse)</script>
 :e="b:DFA-NFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=C(D,b)=E(D,c)=C(E,a)=D(E,b)=C(E,c)=C F={D}" ok
 
@@ -19,7 +19,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 <input name="dfa-2" type="hidden" value="dfa-2" /><noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript><script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script> <script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/utilIS.js" type="text/javascript"></script><style type="text/css">@import "https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style> <!--________________________________________Příklad 2________________________________________-->
-Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{za každým výskytem podslova } ab\text{ ve slově } w \text{ bezprostředně následuje znak }c \}</m>
+Napište EFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{za každým výskytem podslova } ab\text{ ve slově } w \text{ bezprostředně následuje znak }c \}</m>
 <div id="dfa-2-div" class="parser_text_default"> :e <br><span id="dfa-2-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-2",dfaParser.parse)</script>
 :e="b:DFA-EFA:(A,a)=B(A,b)=A(A,c)=A(B,a)=B(B,b)=C(B,c)=A(C,a)=D(C,b)=D(C,c)=E(D,a)=D(D,b)=D(D,c)=D(E,a)=B(E,b)=E(E,c)=E F={A,B,E}" ok
 
@@ -29,7 +29,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 <input name="dfa-3" type="hidden" value="dfa-3" /><noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript><script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script> <script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/utilIS.js" type="text/javascript"></script><style type="text/css">@import "https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style> <!--________________________________________Příklad 3________________________________________-->
-Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) + \#_b(w) = 3 \}</m>
+Napište GRA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) + \#_b(w) = 3 \}</m>
 <div id="dfa-3-div" class="parser_text_default"> :e <br><span id="dfa-3-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-3",dfaParser.parse)</script>
 :e="b:DFA-GRA:(A,a)=B(A,b)=B(A,c)=A(B,a)=C(B,b)=C(B,c)=B(C,a)=D(C,b)=D(C,c)=C(D,a)=E(D,b)=E(D,c)=D(E,a)=E(E,b)=E(E,c)=E F={D}" ok
 
@@ -39,7 +39,7 @@ Napište deterministický konečný automat popisující následující jazyk na
 
 
 <input name="dfa-4" type="hidden" value="dfa-4" /><noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript><script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/dfaparserN.js" type="text/javascript"></script> <script src="https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/utilIS.js" type="text/javascript"></script><style type="text/css">@import "https://is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/parser_style.css";</style> <!--________________________________________Příklad 4________________________________________-->
-Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) \bmod{2} = \#_c(w) \bmod{3} \}</m>
+Napište REG popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) \bmod{2} = \#_c(w) \bmod{3} \}</m>
 <div id="dfa-4-div" class="parser_text_default"> :e <br><span id="dfa-4-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-4",dfaParser.parse)</script>
 :e="b:DFA-REG:(A,a)=B(A,b)=A(A,c)=C(B,a)=A(B,b)=B(B,c)=D(C,a)=D(C,b)=C(C,c)=E(D,a)=C(D,b)=D(D,c)=F(E,a)=F(E,b)=E(E,c)=A(F,a)=E(F,b)=F(F,c)=B F={A,D}" ok
 

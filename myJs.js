@@ -258,8 +258,12 @@ function initTableTab(wp) {
 }
 
 function initTextTab(wp) {
+	/*
 	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
 	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
+	*/
+	wp.textTab.textArea = vysledkovePole(wp.svg.divId, "_e_a_1");
+	console.log(wp.textTab.textArea);
 	// only for testing in local html
 	if(!wp.textTab.textArea)
 	{
