@@ -69,13 +69,9 @@ function init(id, type) {
 		buttonRenameTransition.type = "button";
 		buttonRenameTransition.value = "Změnit znaky přechodu";
 		
-		var textBox = document.createElement("input");
-		textBox.type = "text";
-		textBox.value = "a";
-		
 		var buttonDeleteSelected = document.createElement("input");
 		buttonDeleteSelected.type = "button";
-		buttonDeleteSelected.value = "Smaž zvolené";
+		buttonDeleteSelected.value = "Smaž vybrané";
 		
 
 		graph.appendChild(buttonAddStates);
@@ -83,7 +79,6 @@ function init(id, type) {
 		graph.appendChild(buttonInitState);
 		graph.appendChild(buttonEndState);
 		graph.appendChild(buttonRenameTransition);
-		graph.appendChild(textBox);
 		graph.appendChild(buttonDeleteSelected);
 
 		var p1 = document.createElement("p");
@@ -103,10 +98,9 @@ function init(id, type) {
 		svg.setAttribute('height', '100%');
 		svg.selectedElement = 0;
 		svg.makingTransition = 0;
-		svg.inputBox = textBox;
 		svg.parentSvg = svg;
 		svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
-		svg.setAttributeNS(null, "onmouseleave", "stopMovingElement(evt);");
+		svg.setAttributeNS(null, "onmouseleave", "stopMovingElement();");
 		svg.div = mydiv;
 		svg.divId = id;
 		wp.svg = svg;
@@ -123,7 +117,7 @@ function init(id, type) {
 		rect.initState = null;
 		rect.mode = modeEnum.SELECT;
 		rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
-		rect.setAttributeNS(null, "onmouseup", "stopMovingElement(evt);");
+		rect.setAttributeNS(null, "onmouseup", "stopMovingElement();");
 		rect.buttonAddStates = buttonAddStates;
 		rect.buttonAddTransitions = buttonAddTransitions;
 		rect.buttonInitState = buttonInitState;
@@ -1722,27 +1716,7 @@ function buttonEndStateClick(rect) {
 function buttonRenameTransitionClick(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "path")) {
-        if (svg.inputBox.value === "")
-        {
-			if (svg.wp.realtype == "EFA")
-			{
-				svg.inputBox.value = "ε";
-			}
-			else
-			{
-				alert("Nelze prázdný přechod");
-				return;
-			}
-        }
-        else if (/[ =()]/.test(svg.inputBox.value))
-        {
-            alert("Chybná syntax! (řeťezec znaků, s výjimkou speciálních znaků a mezery)");
-			return;
-        }
-		svg.selectedElement.name = svg.inputBox.value;
-		svg.selectedElement.text.node.nodeValue = svg.inputBox.value;
-		svg.selectedElement.rect.setAttribute("width", svg.selectedElement.text.getComputedTextLength() + 8);
-		moveTextRect(svg.selectedElement.rect, svg.selectedElement.text.getAttribute('x'), svg.selectedElement.text.getAttribute('y'));
+		$(svg.selectedElement.rect).trigger("dblclick");
     }
 }
 
@@ -1870,7 +1844,7 @@ function createStateAbs(rect, x, y, name)
 	}
 	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
-	shape.setAttributeNS(null, "onmouseup", "stopMovingElement(evt)");
+	shape.setAttributeNS(null, "onmouseup", "stopMovingElement()");
 	$(shape).dblclick(stateDblClick);
 
 	var newText = document.createElementNS(svgns, "text");
@@ -2012,7 +1986,7 @@ function createTransition(state1, state2, symbols)
 	aLine.setAttribute('stroke-width', 3);
 	aLine.setAttribute('fill', 'none');
 	aLine.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
-	aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
+	aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement()');
 	aLine.parentSvg = state2.parentSvg;
 	aLine.name = symbols;
 	aLine.start = state1;
@@ -2053,7 +2027,7 @@ function createTransition(state1, state2, symbols)
 	newRect.setAttributeNS(null, "stroke-width", 1);
 	newRect.parentSvg = state2.parentSvg;
 	newRect.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
-	newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement(evt)');
+	newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement()');
 	newRect.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
 	newRect.line = aLine;
 	$(newRect).dblclick(transitionDblClick);
@@ -2211,7 +2185,6 @@ function selectElement(evt) {
         case "path":
             svg.selectedElement.setAttribute('stroke',"green");
 			svg.selectedElement.markerline.setAttribute('marker-end', "url(#TriangleSel)");
-            svg.inputBox.value = svg.selectedElement.text.node.nodeValue;
             break;
     }
 	$(document).unbind("keydown");
@@ -2530,14 +2503,14 @@ function repositionMarker(line)
 	line.markerline.setAttribute("d", "M" + x0 + "," + y0 + " L" + pathPoint.x +","+ pathPoint.y);
 }
 
-function transitionDblClick(evt)
+function transitionDblClick()
 {
-	var rect = evt.target;
+	var rect = this;
 	var line = rect.line;
 	var svg = rect.parentSvg;
 	$(document.activeElement).blur();
 	rect.setAttribute("stroke", "lightgreen");
-	stopMovingElement(evt);
+	stopMovingElement();
 	var name = getValidTransitionName(line.start, line.end, line.name);
 	
 	if (name != null)
@@ -2560,8 +2533,7 @@ function transitionDblClick(evt)
 	rect.setAttribute("stroke", "black");
 	rect.setAttribute('class', '');
 }
-function stopMovingElement(evt) {
-	evt.preventDefault();
+function stopMovingElement() {
     if (movingElement !== 0) {
         movingElement.setAttribute('class', 'none');
 		if (movingElement.tagName == "path")
