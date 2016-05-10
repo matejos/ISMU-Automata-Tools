@@ -333,22 +333,34 @@ function updateTableTabFromGraph(wp)
 	updateTableTabFromText(wp);
 }
 
-function updateTableTabFromText(wp)	// not finished
+function updateTableTabFromText(wp, pure)	// not finished
 {
-	//wp.textTab.textArea.style.display = "none";	// hide answer textarea
+	// saving old data
+	var oldTable = wp.tableTab.table;
 	
-	var table = wp.tableTab.table;
+	/*
+	// clearing previous table
+	var l = table.rows.length;
+	for (i = 0; i < l; i++)
+	{
+		table.deleteRow(0);
+	}*/
+	
+	var table = document.createElement("table");
+	table.setAttribute("class", "myTable");
+	wp.tableTab.table = table;
+	table.selectedCell = 0;
+	table.wp = wp;
+	table.tableTab = wp.tableTab;
+	wp.tableTab.appendChild(table);
+	
 	var s = wp.textTab.textArea.value;
 	var str = s.split(" ");
 	table.states = [];
 	table.symbols = [];
-	initStates = [];
-	exitStates = [];
+	table.initState = null;
+	table.exitStates = [];
 	
-	// clearing previous table
-	var l = table.rows.length;
-	for (i = 0; i < l; i++)
-		table.deleteRow(0);
 	
 	// header row and topleft corner cell
 	var row = table.insertRow(table.rows.length);
@@ -371,7 +383,8 @@ function updateTableTabFromText(wp)	// not finished
 		if (/^init=[^ ]+$/.test(str[i]))
 		{
 			str[i] = str[i].substring(5, str[i].length);
-			initStates.push(str[i]);
+			console.log("found init state " + str[i]);
+			table.initState = str[i];
 			if (table.states.indexOf(str[i]) == -1)
 				table.states.push(str[i]);
 		}
@@ -381,7 +394,7 @@ function updateTableTabFromText(wp)	// not finished
 			var exits = str[i].split(",");
 			for (j =  0; j < exits.length; j++)
 			{
-				exitStates.push(exits[j]);
+				table.exitStates.push(exits[j]);
 				if (table.states.indexOf(exits[j]) == -1)
 					table.states.push(exits[j]);
 			}
@@ -394,7 +407,9 @@ function updateTableTabFromText(wp)	// not finished
 				var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
 				var state2 = str[i].substring(str[i].indexOf("=") + 1, str[i].length);
 				if (table.states.indexOf(state1) == -1)
+				{
 					table.states.push(state1);
+				}
 				if (table.states.indexOf(state2) == -1)
 					table.states.push(state2);
 				if (table.symbols.indexOf(symb) == -1)
@@ -459,14 +474,14 @@ function updateTableTabFromText(wp)	// not finished
 		tableAddRowDeleteButton(row, table);
 		
 		var headerval = "";
-		if (initStates.indexOf(state) != -1)
+		if (table.initState.indexOf(state) != -1)
 		{
-			if (exitStates.indexOf(state) != -1)
+			if (table.exitStates.indexOf(state) != -1)
 				headerval += '↔';
 			else
 				headerval += '→';
 		}
-		else if (exitStates.indexOf(state) != -1)
+		else if (table.exitStates.indexOf(state) != -1)
 			headerval += '←';
 		
 		headerval += state;
@@ -533,6 +548,7 @@ function updateTableTabFromText(wp)	// not finished
 		}
 	}
 	
+	// disable epsilon button if there is an epsilon column
 	if (wp.tableTab.buttonEpsilon)
 	{
 		wp.tableTab.buttonEpsilon.disabled = false;
@@ -545,6 +561,81 @@ function updateTableTabFromText(wp)	// not finished
 			}
 		}
 	}
+	
+	if (!pure)
+	{
+		var oldStates = [];
+		var oldSymbols = [];
+		
+		for (var i = 2; i < oldTable.rows[1].cells.length; i++)
+		{
+			var symbol = oldTable.rows[1].cells[i].myDiv.value;
+			oldSymbols.push(symbol);
+			if (table.symbols.indexOf(symbol) == -1)
+				tableDeleteColumn(oldTable, i);
+		}
+		
+		for (var i = 2; i < oldTable.rows.length - 1; i++)
+		{
+			var state = removePrefixFromState(oldTable.rows[i].cells[1].myDiv.value);
+			oldStates.push(state);
+			var foundState = false;
+			for (var j = 2; j < table.rows.length - 1; j++)
+			{
+				if (removePrefixFromState(table.rows[j].cells[1].myDiv.value) == state)
+				{
+					foundState = true;
+					for (var k = 2; k < oldTable.rows[i].cells.length; k++)
+					{
+						var symbol = oldTable.rows[1].cells[k].myDiv.value;
+						for (var l = 2; l < table.rows[j].cells.length; l++)
+						{
+							if (table.rows[1].cells[l].myDiv.value == symbol)
+							{
+								console.log("OLD: " + oldTable.rows[i].cells[k].myDiv.value + "NEW: " + table.rows[j].cells[l].myDiv.value);
+								table.rows[j].cells[l].myDiv.prevValue = oldTable.rows[i].cells[k].myDiv.value;
+								$(table.rows[j].cells[l].myDiv).trigger("input");
+								$(table.rows[j].cells[l].myDiv).trigger("focusout");
+							}
+						}
+					}
+				}
+			}
+			if (!foundState)
+			{
+				deleteState(findState(table.wp.svg.rect, removePrefixFromState(state)));
+			}
+		}
+		for (var j = 2; j < table.rows.length - 1; j++)
+		{
+			var nullify = false;
+			var state = removePrefixFromState(table.rows[j].cells[1].myDiv.value);
+			if (oldStates.indexOf(state) == -1)
+			{
+				if (!findState(table.wp.svg.rect, state))
+					createStateAbs(table.wp.svg.rect, 300, 300, state);
+				nullify = true;
+			}
+			for (var l = 2; l < table.rows[j].cells.length; l++)
+			{
+				var symbol = table.rows[1].cells[l].myDiv.value;
+				if (!nullify && oldSymbols.indexOf(symbol) == -1)
+					nullify = true;
+				if (nullify)
+					table.rows[j].cells[l].myDiv.prevValue = "{}";
+				$(table.rows[j].cells[l].myDiv).trigger("input");
+				$(table.rows[j].cells[l].myDiv).trigger("focusout");
+			}
+		}
+		
+		toggleInitStateOff(findState(table.wp.svg.rect, oldTable.initState));
+		toggleInitStateOn(findState(table.wp.svg.rect, table.initState));
+		for (var i = 0; i < oldTable.exitStates.length; i++)
+			toggleEndStateOff(findState(table.wp.svg.rect, oldTable.exitStates[i]));
+		for (var i = 0; i < table.exitStates.length; i++)
+			toggleEndStateOn(findState(table.wp.svg.rect, table.exitStates[i]));
+	}
+	wp.tableTab.removeChild(oldTable);
 }
 function tableDeselectCell(table)
 {
@@ -612,10 +703,10 @@ function tableDeleteRow(table, index)
 	if (!table.locked)
 	{
 		tableDeselectCell(table);
-		
 		// Delete state in graph
 		var state = table.rows[index].cells[1].myDiv.value;
 		state = removePrefixFromState(state);
+		table.states.splice(table.states.indexOf(state), 1);
 		deleteState(findState(table.wp.svg.rect, state));
 		
 		// Traverse all transitions cells in table and change the name
@@ -1097,7 +1188,7 @@ function tableCellChangedFinal()
 				var state2Name = newStates[i];
 				console.log("searching for " + state2Name);
 				var state2 = findState(table.wp.svg.rect, state2Name);
-				if (state2 == -1)
+				if (!state2)
 				{
 					console.log("adding state " + state2Name + " and transition " + symbol);
 					state2 = tableAddRow(table, state2Name);
@@ -1275,11 +1366,6 @@ function tableAddRow(table, name)
 {
 	if (!table.locked)
 	{
-		tableDeselectCell(table);
-		console.log("adding row");
-		table.rows[table.rows.length - 1].deleteCell(0);
-		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
-		
 		if (!name)
 		{
 			var names = [];
@@ -1289,14 +1375,24 @@ function tableAddRow(table, name)
 				names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
 			name = names[0];
 		}
-		table.states.push(name);
 		
-		tableAddRowHeader(table.rows[table.rows.length - 1], name);
-		for (i = 2; i < table.rows[0].cells.length - 1; i++)
+		if (table.states.indexOf(name) == -1)
 		{
-			tableAddCell(table.rows[table.rows.length - 1]);
+			tableDeselectCell(table);
+			console.log("adding row");
+			table.rows[table.rows.length - 1].deleteCell(0);
+			tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
+			
+			
+			table.states.push(name);
+			
+			tableAddRowHeader(table.rows[table.rows.length - 1], name);
+			for (i = 2; i < table.rows[0].cells.length - 1; i++)
+			{
+				tableAddCell(table.rows[table.rows.length - 1]);
+			}
+			tableAddRowAddButton(table);
 		}
-		tableAddRowAddButton(table);
 		
 		// Add state to graph
 		console.log(table.wp.svg.rect);
@@ -1442,6 +1538,7 @@ function updateTextTabFromGraph(wp)
 	var textArea = wp.textTab.textArea;
 	//textArea.style.display = "";	// show answer textarea
 	textArea.value = generateAnswer(wp.svg.rect);
+	updateTableTabFromText(wp, true);
 	textArea.focus();
 	textArea.blur();
 }
@@ -1494,7 +1591,7 @@ function regTextChanged()
 
 function toggleInitStateOn(state)
 {
-	if (!state.init) 
+	if (state && !state.init) 
 	{
 		var x2 = state.getAttribute("cx");
 		var x1 = x2 - circleSize * 2.5;
@@ -1537,7 +1634,7 @@ function toggleInitStateOn(state)
 
 function toggleInitStateOff(state)
 {
-	if (state.init) 
+	if (state && state.init) 
 	{
 	state.parentSvg.removeChild(state.init);
 	state.init = null;
@@ -1556,7 +1653,7 @@ function toggleInitState(state)
 
 function toggleEndStateOn(state)
 {
-	if (!state.end) 
+	if (state && !state.end) 
 	{
 		var shape = document.createElementNS(svgns, "circle");
 		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
@@ -1580,7 +1677,7 @@ function toggleEndStateOn(state)
 
 function toggleEndStateOff(state)
 {
-	if (state.end) 
+	if (state && state.end) 
 	{
 		state.parentSvg.removeChild(state.end);
 		state.end = null;
@@ -1727,6 +1824,7 @@ function generateAnswer(rect)
 
 function createStateAbs(rect, x, y, name)
 {
+	console.log("creating state " + name);
 	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
 	var shape = document.createElementNS(svgns, "circle");
 	var width = rect.parentSvg.div.offsetWidth;
@@ -2139,34 +2237,37 @@ function findState(rect, state)
 		if (rect.states[i].name == state)
 			return rect.states[i];
 	}
-	return -1;
+	return null;
 }
 
 function deleteState(state)
 {
-	console.log("deleting state " + state.name);
-	var svg = state.parentSvg;
-	var target = state.lines1.length;
-	
-	// Delete transitions FROM and TO this state
-	for (i = 0; i < target; i++)
-    {
-		deleteTransition(state.lines1[0]);
+	if (state)
+	{
+		console.log("deleting state " + state.name);
+		var svg = state.parentSvg;
+		var target = state.lines1.length;
+		
+		// Delete transitions FROM and TO this state
+		for (i = 0; i < target; i++)
+		{
+			deleteTransition(state.lines1[0]);
+		}
+		target = state.lines2.length;
+		for (i = 0; i < target; i++)
+		{
+			deleteTransition(state.lines2[0]);
+		}
+		
+		var index = state.parentRect.states.indexOf(state);
+		state.text.removeChild(state.text.node);
+		//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
+		if (state.end) svg.removeChild(state.end);
+		if (state.init) svg.removeChild(state.init);
+		svg.removeChild(state);
+		state.parentRect.states.splice(index, 1);
+		deselectElement(svg);
 	}
-	target = state.lines2.length;
-	for (i = 0; i < target; i++)
-    {
-		deleteTransition(state.lines2[0]);
-	}
-	
-	var index = state.parentRect.states.indexOf(state);
-	state.text.removeChild(state.text.node);
-	//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
-    if (state.end) svg.removeChild(state.end);
-	if (state.init) svg.removeChild(state.init);
-	svg.removeChild(state);
-	state.parentRect.states.splice(index, 1);
-	deselectElement(svg);
 }
 
 function deleteTransition(tr)
@@ -2178,6 +2279,11 @@ function deleteTransition(tr)
 	svg.removeChild(tr.text);
 	svg.removeChild(tr.rect);
 	svg.removeChild(tr);
+}
+
+function adjustStateWidth(state)
+{
+	state.setAttribute("rx", line.text.getComputedTextLength() + 8);
 }
 
 function adjustTransitionWidth(line)
@@ -2198,7 +2304,7 @@ function renameState(state, str)
 {
 	state.name = str;
 	state.text.node.nodeValue = str;
-	//adjustTransitionWidth(state);
+	//adjustStateWidth(state);
 }
 
 function deselectElement(svg) {
