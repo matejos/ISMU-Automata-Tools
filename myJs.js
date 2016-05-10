@@ -2499,7 +2499,10 @@ function movePath(line, mouseX, mouseY) {
 	{
 		var dx = mouseX - str[1];
 		var dy = mouseY - str[2];
-		var angle = Math.acos( dx / Math.sqrt( sqr(dx) + sqr(dy) ) );
+		var sqrtt = Math.sqrt( sqr(dx) + sqr(dy) );
+		if (sqrtt == 0)
+			sqrtt = 0.001;
+		var angle = Math.acos( dx / sqrtt );
 		if (mouseY > str[2])
 			angle = -angle;
 		
