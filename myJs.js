@@ -1159,7 +1159,6 @@ function tableCellChanged()
 		$(this).addClass("incorrect", fadeTime);
 	else
 		$(this).removeClass("incorrect", fadeTime);
-	console.log("Cell: " + this.value);
 }
 
 function tableCellChangedFinal()
@@ -1191,7 +1190,6 @@ function tableCellChangedFinal()
 		var newStates = newName.split(",");
 		
 		// Delete the transitions in graph
-		console.log(prevStates);
 		for (var i = 0; i < prevStates.length; i++)
 		{
 			if (newStates.indexOf(prevStates[i]) == -1)
@@ -1723,9 +1721,9 @@ function toggleEndState(state)
 }
 
 function buttonInitStateClick(rect) {
-	rect.buttonInitState.disabled = true;
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
+		rect.buttonInitState.disabled = true;
 		toggleInitState(svg.selectedElement);
     }
 }
