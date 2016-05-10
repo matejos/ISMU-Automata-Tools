@@ -134,7 +134,52 @@ function init(id, type) {
 		svg.appendChild(rect);
 		
 		
+		var defs = document.createElementNS(svgns, 'defs');
+		var marker = document.createElementNS(svgns, 'marker');
+		marker.setAttribute('id', 'Triangle');
+		marker.setAttribute('viewBox', '0 0 10 10');
+		//marker.setAttribute('refX', '22');
+		marker.setAttribute('refY', '5');
+		marker.setAttribute('markerUnits', 'strokeWidth');
+		marker.setAttribute('markerWidth', '6');
+		marker.setAttribute('markerHeight', '6');
+		marker.setAttribute('orient', 'auto');
+		var markerpath = document.createElementNS(svgns, 'path');
+		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+		markerpath.setAttribute('fill', 'black');
+		marker.appendChild(markerpath);
+		defs.appendChild(marker);
 		
+		var marker = document.createElementNS(svgns, 'marker');
+		marker.setAttribute('id', 'TriangleSel');
+		marker.setAttribute('viewBox', '0 0 10 10');
+		marker.setAttribute('refY', '5');
+		marker.setAttribute('markerUnits', 'strokeWidth');
+		marker.setAttribute('markerWidth', '6');
+		marker.setAttribute('markerHeight', '6');
+		marker.setAttribute('orient', 'auto');
+		var markerpath = document.createElementNS(svgns, 'path');
+		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+		markerpath.setAttribute('fill', 'green');
+		marker.appendChild(markerpath);
+		defs.appendChild(marker);
+		
+		var marker = document.createElementNS(svgns, 'marker');
+		marker.setAttribute('id', 'TriangleInit');
+		marker.setAttribute('viewBox', '0 0 10 10');
+		marker.setAttribute('refX', '22');
+		marker.setAttribute('refY', '5');
+		marker.setAttribute('markerUnits', 'strokeWidth');
+		marker.setAttribute('markerWidth', '6');
+		marker.setAttribute('markerHeight', '6');
+		marker.setAttribute('orient', 'auto');
+		var markerpath = document.createElementNS(svgns, 'path');
+		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+		markerpath.setAttribute('fill', 'black');
+		marker.appendChild(markerpath);
+		defs.appendChild(marker);
+		
+		svg.appendChild(defs);
 		
 
 		buttonAddStates.rect = rect;
@@ -299,6 +344,7 @@ function updateGraphTab(wp, target)
 	
 	for (i = 0; i < wp.svg.rect.states.length; i++)
 	{
+		adjustStateWidth(wp.svg.rect.states[i]);
 		for (j = 0; j < wp.svg.rect.states[i].lines1.length; j++)
 		{
 			adjustTransitionWidth(wp.svg.rect.states[i].lines1[j]);
@@ -1604,25 +1650,7 @@ function toggleInitStateOn(state)
 		aLine.setAttribute('stroke-width', 3);
 		aLine.setAttribute('fill', 'none');
 		aLine.parentSvg = state.parentSvg;
-		
-		var defs = document.createElementNS(svgns, 'defs');
-		var marker = document.createElementNS(svgns, 'marker');
-		marker.setAttribute('id', 'Triangle');
-		marker.setAttribute('viewBox', '0 0 10 10');
-		marker.setAttribute('refX', '22');
-		marker.setAttribute('refY', '5');
-		marker.setAttribute('markerUnits', 'strokeWidth');
-		marker.setAttribute('markerWidth', '6');
-		marker.setAttribute('markerHeight', '6');
-		marker.setAttribute('orient', 'auto');
-		var markerpath = document.createElementNS(svgns, 'path');
-		markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-		markerpath.setAttribute('fill', 'black');
-		marker.appendChild(markerpath);
-		
-		state.parentSvg.appendChild(defs);
-		defs.appendChild(marker);
-		aLine.setAttribute('marker-end', 'url(#Triangle)');
+		aLine.setAttribute('marker-end', 'url(#TriangleInit)');
 		
 		state.parentSvg.appendChild(aLine);
 		putOnTop(state);
@@ -1655,10 +1683,11 @@ function toggleEndStateOn(state)
 {
 	if (state && !state.end) 
 	{
-		var shape = document.createElementNS(svgns, "circle");
+		var shape = document.createElementNS(svgns, "ellipse");
 		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
 		shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
-		shape.setAttributeNS(null, "r", circleSize - 5);
+		shape.setAttributeNS(null, "rx", state.getAttribute("rx") - 5);
+		shape.setAttributeNS(null, "ry", circleSize - 5);
 		if (state.parentSvg.selectedElement == state)
 			shape.setAttributeNS(null, "fill", "lightgreen");
 		else
@@ -1698,14 +1727,14 @@ function toggleEndState(state)
 function buttonInitStateClick(rect) {
 	rect.buttonInitState.disabled = true;
     var svg = rect.parentSvg;
-    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
 		toggleInitState(svg.selectedElement);
     }
 }
 
 function buttonEndStateClick(rect) {
     var svg = rect.parentSvg;
-    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
 		toggleEndState(svg.selectedElement);
     }
 }
@@ -1741,7 +1770,7 @@ function buttonDeleteSelectedClick(rect) {
 	var svg = rect.parentSvg;
 	switch (svg.selectedElement.tagName)
 	{
-		case "circle":
+		case "ellipse":
 			deleteState(svg.selectedElement);
 			break;
 		case "path":
@@ -1826,7 +1855,7 @@ function createStateAbs(rect, x, y, name)
 {
 	console.log("creating state " + name);
 	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
-	var shape = document.createElementNS(svgns, "circle");
+	var shape = document.createElementNS(svgns, "ellipse");
 	var width = rect.parentSvg.div.offsetWidth;
 	var height = rect.parentSvg.div.offsetHeight;
 	if (width == 0)
@@ -1839,7 +1868,8 @@ function createStateAbs(rect, x, y, name)
 	if (y > height - circleSize) y = height - circleSize;
 	shape.setAttributeNS(null, "cx", x);
 	shape.setAttributeNS(null, "cy", y);
-	shape.setAttributeNS(null, "r", circleSize);
+	shape.setAttributeNS(null, "rx", circleSize);
+	shape.setAttributeNS(null, "ry", circleSize);
 	shape.setAttributeNS(null, "fill", "white");
 	shape.setAttributeNS(null, "stroke", "black");
 	shape.setAttributeNS(null, "stroke-width", 1);
@@ -1877,6 +1907,7 @@ function createStateAbs(rect, x, y, name)
 	newText.node = textNode;
 
 	shape.text = newText;
+	adjustStateWidth(shape);
 
 	rect.states.push(shape);
 	putOnTop(shape);
@@ -2006,24 +2037,14 @@ function createTransition(state1, state2, symbols)
 	aLine.start = state1;
 	aLine.end = state2;
 	
-	var defs = document.createElementNS(svgns, 'defs');
-	var marker = document.createElementNS(svgns, 'marker');
-	marker.setAttribute('id', 'Triangle');
-	marker.setAttribute('viewBox', '0 0 10 10');
-	marker.setAttribute('refX', '22');
-	marker.setAttribute('refY', '5');
-	marker.setAttribute('markerUnits', 'strokeWidth');
-	marker.setAttribute('markerWidth', '6');
-	marker.setAttribute('markerHeight', '6');
-	marker.setAttribute('orient', 'auto');
-	var markerpath = document.createElementNS(svgns, 'path');
-	markerpath.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
-	markerpath.setAttribute('fill', 'black');
-	marker.appendChild(markerpath);
+	var line = document.createElementNS(svgns, 'path');
+	line.setAttribute('stroke-width', 3);
+	line.setAttribute('marker-end', 'url(#Triangle)');
+	state2.parentSvg.appendChild(line);
 	
-	state2.parentSvg.appendChild(defs);
-	defs.appendChild(marker);
-	aLine.setAttribute('marker-end', 'url(#Triangle)');
+	
+	aLine.markerline = line;
+	repositionMarker(aLine);
 	
 	
 	var newText = document.createElementNS(svgns, 'text');
@@ -2192,7 +2213,7 @@ function selectElement(evt) {
     movingElement = svg.selectedElement;
     switch (svg.selectedElement.tagName)
     {
-        case "circle":
+        case "ellipse":
             svg.selectedElement.setAttributeNS(null, "fill", "lightgreen");
     		if (svg.selectedElement.end)
 			{
@@ -2207,7 +2228,8 @@ function selectElement(evt) {
 		case "rect":
 			svg.selectedElement = svg.selectedElement.line;
         case "path":
-            svg.selectedElement.setAttribute('stroke',"lightgreen");
+            svg.selectedElement.setAttribute('stroke',"green");
+			svg.selectedElement.markerline.setAttribute('marker-end', "url(#TriangleSel)");
             svg.inputBox.value = svg.selectedElement.text.node.nodeValue;
             break;
     }
@@ -2218,7 +2240,7 @@ function selectElement(evt) {
 		{
 			switch (svg.selectedElement.tagName)
 			{
-				case "circle":
+				case "ellipse":
 					deleteState(svg.selectedElement);
 					break;
 				case "path":
@@ -2276,6 +2298,7 @@ function deleteTransition(tr)
 	var svg = tr.parentSvg;
 	tr.start.lines1.splice(tr.start.lines1.indexOf(tr), 1);
 	tr.end.lines2.splice(tr.end.lines2.indexOf(tr), 1);
+	svg.removeChild(tr.markerline);
 	svg.removeChild(tr.text);
 	svg.removeChild(tr.rect);
 	svg.removeChild(tr);
@@ -2283,7 +2306,23 @@ function deleteTransition(tr)
 
 function adjustStateWidth(state)
 {
-	state.setAttribute("rx", line.text.getComputedTextLength() + 8);
+	var shortened = false;
+	var padding = 8;
+	var maxfont = 24;
+	var minfont = 12;
+	
+	state.text.setAttribute('font-size', maxfont);
+	while (state.text.getComputedTextLength() > circleSize * 2 - padding && state.text.getAttribute('font-size') > minfont)
+	{
+		state.text.setAttribute('font-size', state.text.getAttribute('font-size') - 1);
+	}
+	while (state.text.getComputedTextLength() > circleSize * 2 - padding)
+	{
+		state.text.node.nodeValue = state.text.node.nodeValue.substring(0, state.text.node.nodeValue.length - 1);
+		shortened = true;
+	}
+	if (shortened)
+		state.text.node.nodeValue = state.text.node.nodeValue.substring(0, state.text.node.nodeValue.length - 2) + "..";
 }
 
 function adjustTransitionWidth(line)
@@ -2304,7 +2343,7 @@ function renameState(state, str)
 {
 	state.name = str;
 	state.text.node.nodeValue = str;
-	//adjustStateWidth(state);
+	adjustStateWidth(state);
 }
 
 function deselectElement(svg) {
@@ -2314,11 +2353,12 @@ function deselectElement(svg) {
     if (svg.selectedElement !== 0) {
         switch (svg.selectedElement.tagName)
     	{
-        	case "circle":
+        	case "ellipse":
         		whitenState(svg.selectedElement);
                 break;
             case "path":
                 svg.selectedElement.setAttribute('stroke',"black");
+				svg.selectedElement.markerline.setAttribute('marker-end', "url(#Triangle)");
                 break;
             case "text":
                 svg.selectedElement.line.setAttribute('stroke',"black");
@@ -2343,7 +2383,7 @@ function moveElement(evt) {
         movingElement.setAttribute('class', 'movable');
         switch (svg.selectedElement.tagName)
     	{
-            case "circle":
+            case "ellipse":
                 var str, temp, tx;
 				var width = svg.div.offsetWidth;
 				var height = svg.div.offsetHeight;
@@ -2405,6 +2445,7 @@ function moveElement(evt) {
 						str = str.join(" ");
 					}
 					svg.selectedElement.lines1[i].setAttribute("d", str);
+					repositionMarker(svg.selectedElement.lines1[i]);
 				}
 				for (i = 0; i < svg.selectedElement.lines2.length; i++)
 				{
@@ -2424,6 +2465,7 @@ function moveElement(evt) {
 					moveTextRect(svg.selectedElement.lines2[i].rect, tx, ty);
 					str = str.join(" ");
 					svg.selectedElement.lines2[i].setAttribute("d", str);
+					repositionMarker(svg.selectedElement.lines2[i]);
 					}
 				}
                 break;
@@ -2489,7 +2531,21 @@ function movePath(line, mouseX, mouseY) {
 
 		str = str.join(" ");
 	}
-    line.setAttribute("d", str);
+	line.setAttribute("d", str);
+	repositionMarker(line);
+}
+
+function repositionMarker(line)
+{
+	var pathLength = line.getTotalLength();
+	var pathPoint = line.getPointAtLength(pathLength - circleSize - 15);
+	var pathPoint2 = line.getPointAtLength(pathLength - circleSize - 15.01);
+
+	var slope = (pathPoint.y - pathPoint2.y)/(pathPoint.x - pathPoint2.x);
+	var x0 = pathPoint2.x + (pathPoint2.x - pathPoint.x);
+	var y0 = slope*(x0 - pathPoint.x) + pathPoint.y;
+
+	line.markerline.setAttribute("d", "M" + x0 + "," + y0 + " L" + pathPoint.x +","+ pathPoint.y);
 }
 
 function toggleCursor()
