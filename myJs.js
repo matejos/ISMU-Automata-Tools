@@ -220,7 +220,11 @@ function init(id, type) {
 			updateTableTab(wp, e.relatedTarget);
 		});
 		$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
-			updateTextTab(wp, e.relatedTarget);
+			updateTextTab(wp);
+		});
+		
+		$( "form" ).submit(function (e) {
+			updateTextTab(wp);
 		});
 		
 		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
@@ -344,10 +348,8 @@ function updateGraphTab(wp, target)
 {
 	var t = target.getAttribute("data-target");
 	var x = t.substr(t.length - 1, 1);
-	if (x == "b")
-		updateGraphTabFromTable(wp);
-	else
-		updateGraphTabFromText(wp);
+	if (x == "c")
+		updateTableTabFromText(wp);
 	
 	for (i = 0; i < wp.svg.rect.states.length; i++)
 	{
@@ -357,17 +359,6 @@ function updateGraphTab(wp, target)
 			adjustTransitionWidth(wp.svg.rect.states[i].lines1[j]);
 		}
 	}
-}
-
-function updateGraphTabFromTable(wp)	// not finished
-{
-
-}
-
-function updateGraphTabFromText(wp)
-{
-	updateTableTabFromText(wp);
-	updateGraphTabFromTable(wp);
 }
 
 function updateTableTab(wp, target)
@@ -382,7 +373,7 @@ function updateTableTab(wp, target)
 
 function updateTableTabFromGraph(wp)
 {
-	updateTextTabFromGraph(wp);
+	updateTextTab(wp);
 	updateTableTabFromText(wp);
 }
 
@@ -1566,29 +1557,13 @@ function tableButtonEpsilonClick()
 	tableAddColumn(table, 'ε');
 }
 
-function updateTextTab(wp, target)
-{
-	var t = target.getAttribute("data-target");
-	var x = t.substr(t.length - 1, 1);
-	if (x == "b")
-		updateTextTabFromTable(wp);
-	else
-		updateTextTabFromGraph(wp);
-}
-
-function updateTextTabFromTable(wp)
-{
-	updateGraphTabFromTable(wp);
-	updateTextTabFromGraph(wp);
-}
-
-function updateTextTabFromGraph(wp)
+function updateTextTab(wp)
 {
 	if (!wp.textTab.textArea)
 		initTextTab(wp);
 	var textArea = wp.textTab.textArea;
-	//textArea.style.display = "";	// show answer textarea
 	textArea.value = generateAnswer(wp.svg.rect);
+	console.log("updated " + wp.svg.divId + "  to " + textArea.value);
 	updateTableTabFromText(wp, true);
 	textArea.focus();
 	textArea.blur();
