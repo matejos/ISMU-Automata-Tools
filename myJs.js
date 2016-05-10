@@ -287,6 +287,12 @@ function initTableTab(wp) {
 	table.tableTab = wp.tableTab;
 	wp.tableTab.appendChild(table);
 	
+	table.states = [];
+	table.symbols = [];
+	table.initState = null;
+	table.exitStates = [];
+	
+	
 	wp.tableTab.statusText = document.createElement("p");
 	$(wp.tableTab.statusText).addClass("incorrect statusText", fadeTime);
 	wp.tableTab.statusText.style.display = "none";
@@ -307,7 +313,6 @@ function initTextTab(wp) {
 	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
 	*/
 	wp.textTab.textArea = vysledkovePole(wp.svg.divId, "_e_a_1");
-	console.log(wp.textTab.textArea);
 	// only for testing in local html
 	if(!wp.textTab.textArea)
 	{
@@ -321,8 +326,12 @@ function initTextTab(wp) {
 		
 		if (wp.textTab.textArea.value != "")
 		{
-			console.log("generating from text");
-			updateGraphTabFromText(wp);
+			var textval = wp.textTab.textArea.value
+			console.log("generating from text " + textval);
+			wp.textTab.textArea.value = "";
+			updateTableTabFromText(wp, true);
+			wp.textTab.textArea.value = textval;
+			updateTableTabFromText(wp);
 		}
 		else
 		{
@@ -2005,7 +2014,10 @@ function createTransition(state1, state2, symbols)
 		var z = 50;
 		var x2 = +state2.getAttribute("cx");
 		var y2 = +state2.getAttribute("cy");
-		var angle = Math.acos( (x2 - x1) / Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) ) );
+		var sqrtt = Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) );
+		if (sqrtt == 0)
+			sqrtt = 0.001;
+		var angle = Math.acos( (x2 - x1) / sqrtt );
 		if (y2 > y1)
 			angle = -angle;
 		angle += Math.PI/2;
