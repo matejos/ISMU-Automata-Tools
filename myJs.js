@@ -65,6 +65,10 @@ function init(id, type) {
 		buttonEndState.type = "button";
 		buttonEndState.value = "Koncový stav";
 		
+		var additionalControls = document.createElement("a");
+		additionalControls.href = "#";
+		additionalControls.innerHTML = "Další ovládací prvky";
+		
 		var buttonRenameTransition = document.createElement("input");
 		buttonRenameTransition.type = "button";
 		buttonRenameTransition.value = "Změnit znaky přechodu";
@@ -78,6 +82,9 @@ function init(id, type) {
 		graph.appendChild(buttonAddTransitions);
 		graph.appendChild(buttonInitState);
 		graph.appendChild(buttonEndState);
+		graph.appendChild(document.createElement("div"));
+		graph.appendChild(additionalControls);
+		graph.appendChild(document.createElement("div"));
 		graph.appendChild(buttonRenameTransition);
 		graph.appendChild(buttonDeleteSelected);
 
@@ -183,6 +190,7 @@ function init(id, type) {
 		buttonEndState.rect = rect;
 		buttonRenameTransition.rect = rect;
 		buttonDeleteSelected.rect = rect;
+		additionalControls.rect = rect;
 		
 		buttonAddStates.setAttributeNS(null, "onclick", 'buttonAddStatesClick(rect);');
 		buttonAddTransitions.setAttributeNS(null, "onclick", 'buttonAddTransitionsClick(rect);');
@@ -190,6 +198,7 @@ function init(id, type) {
 		buttonEndState.setAttributeNS(null, "onclick", 'buttonEndStateClick(rect);');
 		buttonRenameTransition.setAttributeNS(null, "onclick", 'buttonRenameTransitionClick(rect);');
 		buttonDeleteSelected.setAttributeNS(null, "onclick", 'buttonDeleteSelectedClick(rect);');
+		$(additionalControls).click(additionalControlsClick);
 		
 		buttonAddStates.style.borderStyle = "outset";
 		buttonAddTransitions.style.borderStyle = "outset";
@@ -197,6 +206,8 @@ function init(id, type) {
 		buttonEndState.style.borderStyle = "outset";
 		buttonRenameTransition.style.borderStyle = "outset";
 		buttonDeleteSelected.style.borderStyle = "outset";
+		additionalControls.shown = true;
+		$(additionalControls).trigger("click");
 		
 		wp.appendChild(graph);
 		
@@ -236,6 +247,7 @@ function init(id, type) {
 					deleteState(rect.states[i]);
 			}
 		});
+		deselectElement(svg);
 	}
 }
 
@@ -1622,7 +1634,7 @@ function toggleInitStateOn(state)
 		var att = "M "+x1+" "+y+" L ";
 		att += x2+" "+y;
 		aLine.setAttribute('d', att);
-		aLine.setAttribute('stroke', 'black');
+		aLine.setAttribute('stroke', 'red');
 		aLine.setAttribute('stroke-width', 3);
 		aLine.setAttribute('fill', 'none');
 		aLine.parentSvg = state.parentSvg;
@@ -1713,6 +1725,23 @@ function buttonEndStateClick(rect) {
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
 		toggleEndState(svg.selectedElement);
     }
+}
+
+function additionalControlsClick() {
+	if (this.shown)
+	{
+		this.setAttribute("class", "nedurazne rozbal");
+		$(this.rect.buttonRenameTransition).hide();
+		$(this.rect.buttonDeleteSelected).hide();
+	}
+	else
+	{
+		this.setAttribute("class", "nedurazne sbal");
+		$(this.rect.buttonRenameTransition).show();
+		$(this.rect.buttonDeleteSelected).show();
+	}
+	this.shown = !this.shown;
+	return false;
 }
 
 function buttonRenameTransitionClick(rect) {
