@@ -1,10 +1,9 @@
 var svgns = "http://www.w3.org/2000/svg";
 var movingElement = 0;
-var renamingTransition = 0;
 var transitionPrevName;
 var circleSize = 25;
 var fadeTime = 100;
-var controlKeys = [13, 27, 8, 46, 35, 36, 37, 39, 124];
+var maxfont = 24;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -225,7 +224,6 @@ function init(id, type) {
 		});
 		
 		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
-			stopTyping()
 			wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
 			wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
 		});
@@ -1897,7 +1895,7 @@ function createStateAbs(rect, x, y, name)
 	newText.setAttributeNS(null, "x", shape.getAttribute("cx"));
 	newText.setAttributeNS(null, "y", shape.getAttribute("cy"));
 	newText.setAttribute('pointer-events', 'none');
-	newText.setAttribute('font-size', 20);
+	newText.setAttribute('font-size', maxfont);
 	newText.setAttribute('font-family','Arial, Helvetica, sans-serif');
 	newText.setAttribute('dy', ".3em");							// vertical alignment
 	newText.setAttribute('text-anchor', "middle");				// horizontal alignment
@@ -1907,7 +1905,6 @@ function createStateAbs(rect, x, y, name)
 	newText.node = textNode;
 
 	shape.text = newText;
-	adjustStateWidth(shape);
 
 	rect.states.push(shape);
 	putOnTop(shape);
@@ -1931,7 +1928,6 @@ function rectDblClick(evt) {
 function rectClick(evt, rect) {
 	if (evt)
 		evt.preventDefault();
-	stopTyping();
 	rect.buttonInitState.disabled = false;
 	rect.buttonEndState.style.borderStyle = "outset";
     switch (rect.mode) {
@@ -2039,6 +2035,7 @@ function createTransition(state1, state2, symbols)
 	
 	var line = document.createElementNS(svgns, 'path');
 	line.setAttribute('stroke-width', 3);
+	line.setAttribute('pointer-events', 'none');
 	line.setAttribute('marker-end', 'url(#Triangle)');
 	state2.parentSvg.appendChild(line);
 	
@@ -2204,7 +2201,6 @@ function whitenState(state) {
 
 function selectElement(evt) {
 	evt.preventDefault();
-	stopTyping();
 	var svg = evt.target.parentSvg;
     deselectElement(svg);
     svg.selectedElement = evt.target;
@@ -2308,13 +2304,12 @@ function adjustStateWidth(state)
 {
 	var shortened = false;
 	var padding = 8;
-	var maxfont = 24;
 	var minfont = 12;
 	
 	state.text.setAttribute('font-size', maxfont);
-	while (state.text.getComputedTextLength() > circleSize * 2 - padding && state.text.getAttribute('font-size') > minfont)
+	while (state.text.getComputedTextLength() > circleSize * 2 - padding && parseInt(state.text.getAttribute('font-size')) > minfont)
 	{
-		state.text.setAttribute('font-size', state.text.getAttribute('font-size') - 1);
+		state.text.setAttribute('font-size', parseInt(state.text.getAttribute('font-size')) - 1);
 	}
 	while (state.text.getComputedTextLength() > circleSize * 2 - padding)
 	{
@@ -2322,7 +2317,7 @@ function adjustStateWidth(state)
 		shortened = true;
 	}
 	if (shortened)
-		state.text.node.nodeValue = state.text.node.nodeValue.substring(0, state.text.node.nodeValue.length - 2) + "..";
+		state.text.node.nodeValue = state.text.node.nodeValue.substring(0, state.text.node.nodeValue.length - 1) + "..";
 }
 
 function adjustTransitionWidth(line)
@@ -2347,7 +2342,6 @@ function renameState(state, str)
 }
 
 function deselectElement(svg) {
-	//stopTyping();
 	svg.rect.buttonInitState.disabled = false;
 	svg.rect.buttonEndState.style.borderStyle = "outset";
     if (svg.selectedElement !== 0) {
@@ -2551,47 +2545,12 @@ function repositionMarker(line)
 	line.markerline.setAttribute("d", "M" + x0 + "," + y0 + " L" + pathPoint.x +","+ pathPoint.y);
 }
 
-function toggleCursor()
-{
-	var str = renamingTransition.line.name;
-	if (renamingTransition.line.text.node.nodeValue.indexOf("|") != -1)
-	{
-		renamingTransition.line.text.node.nodeValue = str.replace("|", " ");
-	}
-	else
-	{
-		renamingTransition.line.text.node.nodeValue = str;
-	}
-}
-function stopTyping()
-{
-	if (renamingTransition !== 0)
-	{
-		renamingTransition.setAttribute("fill", "white");
-		renameTransition(renamingTransition.line, renamingTransition.line.name.replace("|", ""));
-		if (renamingTransition.line.name == "")
-		{
-			if (renamingTransition.parentSvg.wp.realtype == "EFA")
-			{
-				renameTransition(renamingTransition.line, "ε");
-			}
-			else
-			{
-				renameTransition(renamingTransition.line, transitionPrevName);
-			}
-		}
-		renamingTransition.setAttribute("stroke", "black");
-		renamingTransition.setAttribute('class', '');
-		renamingTransition = 0;
-	}
-}
 function transitionDblClick(evt)
 {
 	var rect = evt.target;
 	var line = rect.line;
 	var svg = rect.parentSvg;
 	$(document.activeElement).blur();
-	renamingTransition = rect;
 	rect.setAttribute("stroke", "lightgreen");
 	stopMovingElement(evt);
 	var name = getValidTransitionName(line.start, line.end, line.name);
@@ -2600,7 +2559,21 @@ function transitionDblClick(evt)
 	{
 		renameTransition(line, name);
 	}
-	stopTyping();
+	
+	rect.setAttribute("fill", "white");
+	if (rect.line.name == "")
+	{
+		if (rect.parentSvg.wp.realtype == "EFA")
+		{
+			renameTransition(rect.line, "ε");
+		}
+		else
+		{
+			renameTransition(rect.line, transitionPrevName);
+		}
+	}
+	rect.setAttribute("stroke", "black");
+	rect.setAttribute('class', '');
 }
 function stopMovingElement(evt) {
 	evt.preventDefault();
