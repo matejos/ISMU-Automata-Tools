@@ -875,6 +875,9 @@ function tableAddRowHeader(row, value)
 	$(div).focusout(tableRhChangedFinal);
 
 	$(div).keypress(function (e) {
+		var code = e.keyCode || e.which;
+		if(code == 13)
+			return false;
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
@@ -1332,6 +1335,9 @@ function tableAddColumnHeader(row, value)
 	else
 		regex = DFATransitionSyntax();
 	$(div).keypress(function (e) {
+		var code = e.keyCode || e.which;
+		if(code == 13)
+			return false;
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
@@ -1370,6 +1376,9 @@ function tableAddCell(row)
 	else
 		regex = /[^ =(){},|]/;
 	$(div).keypress(function (e) {
+		var code = e.keyCode || e.which;
+		if(code == 13)
+			return false;
 		var kc = e.charCode;
 		if (kc == 0)
 			return true;
