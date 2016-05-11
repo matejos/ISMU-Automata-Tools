@@ -434,7 +434,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 	
 	for (i = 0; i < str.length; i++)
 	{
-		if (/^init=[^ ]+$/.test(str[i]))
+		if (/^init=[a-zA-Z0-9]+$/.test(str[i]))
 		{
 			str[i] = str[i].substring(5, str[i].length);
 			console.log("found init state " + str[i]);
@@ -442,7 +442,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 			if (table.states.indexOf(str[i]) == -1)
 				table.states.push(str[i]);
 		}
-		else if (/^F={[^ ,]+(,[^ ,]+)*}$/.test(str[i]))
+		else if (/^F={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i]))
 		{
 			str[i] = str[i].substring(3, str[i].length - 1);
 			var exits = str[i].split(",");
@@ -455,7 +455,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 		}
 		else
 		{
-			if ((wp.type == "DFA") && (/^\([^ ,]+,[^ ,]+\)=[^ ]+$/.test(str[i])))	// DFA
+			if ((wp.type == "DFA") && (/^\([a-zA-Z0-9]+,[a-zA-Z0-9]+\)=[a-zA-Z0-9]+$/.test(str[i])))	// DFA
 			{
 				var state1 = str[i].substring(1, str[i].indexOf(","));
 				var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -469,10 +469,13 @@ function updateTableTabFromText(wp, pure)	// not finished
 				if (table.symbols.indexOf(symb) == -1)
 					table.symbols.push(symb);
 			}
-			else if ((wp.type == "NFA") && (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i])))	// NFA
+			else if ( ((wp.type == "NFA") && (/^\([a-zA-Z0-9]+,[a-zA-Z0-9]+\)={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i])))	// NFA
+			|| ((wp.realtype == "EFA") && (/^\([a-zA-Z0-9]+,(([a-zA-Z0-9])+|(\\e))\)={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i]))) )	// EFA
 			{
 				var state1 = str[i].substring(1, str[i].indexOf(","));
 				var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
+				if (symb == "\\e")
+					symb = "ε";
 				var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
 				if (table.states.indexOf(state1) == -1)
 					table.states.push(state1);
@@ -507,11 +510,8 @@ function updateTableTabFromText(wp, pure)	// not finished
 	table.symbols.sort();
 	for (i = 0; i < table.symbols.length; i++)
 	{
-		var symbout = table.symbols[i];
-		if (symbout == "\\e")
-			symbout = "ε";
 		tableAddColumnDeleteButton(row, table);
-		tableAddColumnHeader(row2, symbout);
+		tableAddColumnHeader(row2, table.symbols[i]);
 	}
 	
 	// column add button
@@ -549,11 +549,10 @@ function updateTableTabFromText(wp, pure)	// not finished
 	
 	// row add button
 	tableAddRowAddButton(table);
-	
 	// filling transitions
 	for (i = 0; i < str.length; i++)
 	{
-		if ((wp.type == "DFA") && (/^\([^ ,]+,[^ ,]+\)=[^ ,]+$/.test(str[i])))	// DFA
+		if ((wp.type == "DFA") && (/^\([a-zA-Z0-9]+,[a-zA-Z0-9]+\)=[a-zA-Z0-9]+$/.test(str[i])))	// DFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
@@ -565,12 +564,14 @@ function updateTableTabFromText(wp, pure)	// not finished
 			cell.myDiv.value += state2;
 			cell.myDiv.prevValue = cell.myDiv.value;
 		}
-		else if ((wp.type == "NFA") && (/^\([^ ,]+,[^ ,]+\)={[^ ,]+(,[^ ,]+)*}$/.test(str[i])))	// NFA
+		else if ( ((wp.type == "NFA") && (/^\([a-zA-Z0-9]+,[a-zA-Z0-9]+\)={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i])))	// NFA
+			|| ((wp.realtype == "EFA") && (/^\([a-zA-Z0-9]+,(([a-zA-Z0-9])+|(\\e))\)={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i]))) )	// EFA
 		{
 			var state1 = str[i].substring(1, str[i].indexOf(","));
 			var symb = str[i].substring(str[i].indexOf(",") + 1, str[i].indexOf(")"));
 			var states2 = str[i].substring(str[i].indexOf("=") + 2, str[i].length - 1).split(",");
-			console.log(states2);
+			if (symb == "\\e")
+					symb = "ε";
 			var cell = table.rows[table.states.indexOf(state1) + 2].cells[table.symbols.indexOf(symb) + 2];
 			cell.myDiv.value = cell.myDiv.value.substring(0, cell.myDiv.value.length - 1);
 			for (j = 0; j < states2.length; j++)
@@ -580,6 +581,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 				cell.myDiv.value += states2[j];
 			}
 			cell.myDiv.value += '}';
+			console.log("added tr " + state1 + " through " + symb + " to " + cell.myDiv.value);
 			cell.myDiv.prevValue = cell.myDiv.value;
 		}
 	}
@@ -2626,7 +2628,7 @@ function incorrectGraphTransitionsCharsSyntax(val)
 
 function graphTransitionsSyntax()
 {
-	return /^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/;
+	return /^(([a-zA-Z0-9]+)|(ε)|(\\e))(,(([a-zA-Z0-9]+)|(ε)|(\\e)))*$/;
 }
 
 function incorrectGraphTransitionsSyntax(val)
