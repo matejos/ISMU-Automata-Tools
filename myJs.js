@@ -958,7 +958,12 @@ function tableRhChanged()
 	var ri = this.parentElement.parentElement.rowIndex;
 	state = removePrefixFromState(state);
 	if (incorrectStateSyntax(state))
+	{
 		$(this).addClass("incorrect", fadeTime);
+		table.tableTab.statusText.innerHTML = "Chyba v syntaxi názvu stavu. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.style.display = "";
+		lockTable(table, this);
+	}
 	else if (tableStateExists(this, state) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
@@ -1098,7 +1103,12 @@ function tableChChanged()
 	
 	if ( (table.wp.realtype == "EFA" && incorrectEFATransitionSyntax(this.value)) ||
 		(table.wp.realtype != "EFA" && (incorrectDFATransitionSyntax(this.value) || this.value == "\\e")) )
+		{
 		$(this).addClass("incorrect", fadeTime);
+		table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.style.display = "";
+		lockTable(table, this);
+		}
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
@@ -1167,9 +1177,22 @@ function tableCellChanged()
 	var table = this.parentElement.parentElement.parentElement.parentElement;
 	if ( (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
+		{
 		$(this).addClass("incorrect", fadeTime);
+		table.tableTab.statusText.innerHTML = "Chyba v syntaxi výsledku přechodové funkce. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.style.display = "";
+		lockTable(table, this);
+		}
 	else
+	{
 		$(this).removeClass("incorrect", fadeTime);
+		if (table.locked)
+		{
+			table.tableTab.statusText.innerHTML = "";
+			table.tableTab.statusText.style.display = "none";
+			unlockTable(table);
+		}
+	}
 }
 
 function tableCellChangedFinal()
@@ -1195,7 +1218,7 @@ function tableCellChangedFinal()
 		var stateName = table.rows[div.myCell.parentElement.rowIndex].cells[1].myDiv.value;
 		stateName = removePrefixFromState(stateName);
 		var state = findState(table.wp.svg.rect, stateName);
-		var symbol = table.rows[1].cells[div.myCell.cellIndex].myDiv.value;
+		var symbol = table.rows[1].cells[div.myCell.cellIndex].myDiv.prevValue;
 		
 		var prevStates = prevName.split(",");
 		var newStates = newName.split(",");
@@ -2611,7 +2634,7 @@ function incorrectGraphTransitionsSyntax(val)
 
 function tableNFATransitionsSyntax()
 {
-	return /^\{\}$|^\{[^ ,]+(,[^ ,]+)*\}$/;
+	return /^\{\}$|^\{[^ ,()]+(,[^ ,()]+)*\}$/;
 }
 
 function incorrectTableNFATransitionsSyntax(val)
