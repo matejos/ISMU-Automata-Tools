@@ -367,6 +367,8 @@ function updateGraphTab(wp, target)
 			adjustTransitionWidth(wp.svg.rect.states[i].lines1[j]);
 		}
 	}
+	
+	deselectElement(wp.svg);
 }
 
 function updateTableTab(wp, target)
@@ -1395,9 +1397,9 @@ function tableAddCell(row)
 	
 	var regex;
 	if (table.wp.type == "NFA")
-		regex = /[^ =()|]/;
+		regex = /[a-zA-Z0-9{},]/;
 	else
-		regex = /[^ =(){},|]/;
+		regex = /[a-zA-Z0-9\-]/;
 	$(div).keypress(function (e) {
 		var code = e.keyCode || e.which;
 		if(code == 13)
@@ -2614,7 +2616,7 @@ function stopMovingElement() {
 
 function graphTransitionsCharsSyntax()
 {
-	return /[^ =()]/;
+	return /[a-zA-Z0-9]/;
 }
 
 function incorrectGraphTransitionsCharsSyntax(val)
@@ -2624,7 +2626,7 @@ function incorrectGraphTransitionsCharsSyntax(val)
 
 function graphTransitionsSyntax()
 {
-	return /^[^ =(),]+(,[^ =(),]+)*$/;
+	return /^[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*$/;
 }
 
 function incorrectGraphTransitionsSyntax(val)
@@ -2634,7 +2636,7 @@ function incorrectGraphTransitionsSyntax(val)
 
 function tableNFATransitionsSyntax()
 {
-	return /^\{\}$|^\{[^ ,()]+(,[^ ,()]+)*\}$/;
+	return /^\{\}$|^\{[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*\}$/;
 }
 
 function incorrectTableNFATransitionsSyntax(val)
@@ -2644,7 +2646,7 @@ function incorrectTableNFATransitionsSyntax(val)
 
 function tableDFATransitionsSyntax()
 {
-	return /^$|^-$|^[^ ,{}()=\\-]+$/;
+	return /^$|^-$|^[a-zA-Z0-9]+$/;
 }
 
 function incorrectTableDFATransitionsSyntax(val)
@@ -2654,7 +2656,7 @@ function incorrectTableDFATransitionsSyntax(val)
 
 function EFATransitionSyntax()
 {
-	return /^[^ =(),]+$/;
+	return /^[a-zA-Z0-9ε]+$/;
 }
 
 function incorrectEFATransitionSyntax(val)
@@ -2664,7 +2666,7 @@ function incorrectEFATransitionSyntax(val)
 
 function DFATransitionSyntax()
 {
-	return /^[^ =(),ε]+$/;
+	return /^[a-zA-Z0-9]+$/;
 }
 
 function incorrectDFATransitionSyntax(val)
@@ -2674,7 +2676,7 @@ function incorrectDFATransitionSyntax(val)
 
 function stateSyntax()
 {
-	return /^[^ =(),↔←→]+$/;
+	return /^[a-zA-Z0-9]+$/;
 }
 function incorrectStateSyntax(val)
 {
