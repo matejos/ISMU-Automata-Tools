@@ -2547,12 +2547,7 @@ function repositionMarker(line)
 	var pathLength = line.getTotalLength();
 	var pathPoint = line.getPointAtLength(pathLength - circleSize - 15);
 	var pathPoint2 = line.getPointAtLength(pathLength - circleSize - 15.01);
-
-	var slope = (pathPoint.y - pathPoint2.y)/(pathPoint.x - pathPoint2.x);
-	var x0 = pathPoint2.x + (pathPoint2.x - pathPoint.x);
-	var y0 = slope*(x0 - pathPoint.x) + pathPoint.y;
-
-	line.markerline.setAttribute("d", "M" + x0 + "," + y0 + " L" + pathPoint.x +","+ pathPoint.y);
+	line.markerline.setAttribute("d", "M" + pathPoint2.x + " " + pathPoint2.y + " L " + pathPoint.x +" "+ pathPoint.y);
 }
 
 function transitionDblClick()
