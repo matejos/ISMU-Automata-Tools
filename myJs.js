@@ -2314,7 +2314,11 @@ function deleteState(state)
 		state.text.removeChild(state.text.node);
 		//svg.removeChild(state.text);		// this line causes all transitions on Microsoft Edge to disappear until resize of the window
 		if (state.end) svg.removeChild(state.end);
-		if (state.init) svg.removeChild(state.init);
+		if (state.init) 
+		{
+			svg.removeChild(state.init);
+			state.parentRect.initState = null;
+		}
 		svg.removeChild(state);
 		state.parentRect.states.splice(index, 1);
 		deselectElement(svg);
