@@ -692,6 +692,8 @@ function updateTableTabFromText(wp, pure)	// not finished
 			toggleEndStateOn(findState(table.wp.svg.rect, table.exitStates[i]));
 	}
 	wp.tableTab.removeChild(oldTable);
+	wp.tableTab.removeChild(wp.tableTab.statusText);
+	wp.tableTab.appendChild(wp.tableTab.statusText);
 }
 function tableDeselectCell(table)
 {
