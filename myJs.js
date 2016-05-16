@@ -69,6 +69,10 @@ function init(id, type) {
 		additionalControls.href = "#";
 		additionalControls.innerHTML = "Další ovládací prvky";
 		
+		var buttonRenameState = document.createElement("input");
+		buttonRenameState.type = "button";
+		buttonRenameState.value = "Přejmenovat stav";
+		
 		var buttonRenameTransition = document.createElement("input");
 		buttonRenameTransition.type = "button";
 		buttonRenameTransition.value = "Změnit znaky přechodu";
@@ -85,6 +89,7 @@ function init(id, type) {
 		graph.appendChild(document.createElement("div"));
 		graph.appendChild(additionalControls);
 		graph.appendChild(document.createElement("div"));
+		graph.appendChild(buttonRenameState);
 		graph.appendChild(buttonRenameTransition);
 		graph.appendChild(buttonDeleteSelected);
 
@@ -129,6 +134,7 @@ function init(id, type) {
 		rect.buttonAddTransitions = buttonAddTransitions;
 		rect.buttonInitState = buttonInitState;
 		rect.buttonEndState = buttonEndState;
+		rect.buttonRenameState = buttonRenameState;
 		rect.buttonRenameTransition = buttonRenameTransition;
 		rect.buttonDeleteSelected = buttonDeleteSelected;
 		$(rect).dblclick(rectDblClick);
@@ -188,6 +194,7 @@ function init(id, type) {
 		buttonAddTransitions.rect = rect;
 		buttonInitState.rect = rect;
 		buttonEndState.rect = rect;
+		buttonRenameState.rect = rect;
 		buttonRenameTransition.rect = rect;
 		buttonDeleteSelected.rect = rect;
 		additionalControls.rect = rect;
@@ -197,6 +204,7 @@ function init(id, type) {
 		buttonInitState.setAttributeNS(null, "onclick", 'buttonInitStateClick(rect);');
 		buttonEndState.setAttributeNS(null, "onclick", 'buttonEndStateClick(rect);');
 		buttonRenameTransition.setAttributeNS(null, "onclick", 'buttonRenameTransitionClick(rect);');
+		buttonRenameState.setAttributeNS(null, "onclick", 'buttonRenameStateClick(rect);');
 		buttonDeleteSelected.setAttributeNS(null, "onclick", 'buttonDeleteSelectedClick(rect);');
 		$(additionalControls).click(additionalControlsClick);
 		
@@ -204,6 +212,7 @@ function init(id, type) {
 		buttonAddTransitions.style.borderStyle = "outset";
 		buttonInitState.style.borderStyle = "outset";
 		buttonEndState.style.borderStyle = "outset";
+		buttonRenameState.style.borderStyle = "outset";
 		buttonRenameTransition.style.borderStyle = "outset";
 		buttonDeleteSelected.style.borderStyle = "outset";
 		additionalControls.shown = true;
@@ -1709,11 +1718,10 @@ function toggleEndStateOn(state)
 {
 	if (state && !state.end) 
 	{
-		var shape = document.createElementNS(svgns, "ellipse");
+		var shape = document.createElementNS(svgns, "circle");
 		shape.setAttributeNS(null, "cx", state.getAttribute("cx"));
 		shape.setAttributeNS(null, "cy", state.getAttribute("cy"));
-		shape.setAttributeNS(null, "rx", state.getAttribute("rx") - 5);
-		shape.setAttributeNS(null, "ry", circleSize - 5);
+		shape.setAttributeNS(null, "r", circleSize - 5);
 		if (state.parentSvg.selectedElement == state)
 			shape.setAttributeNS(null, "fill", "lightgreen");
 		else
@@ -1752,7 +1760,7 @@ function toggleEndState(state)
 
 function buttonInitStateClick(rect) {
     var svg = rect.parentSvg;
-    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
 		rect.buttonInitState.disabled = true;
 		toggleInitState(svg.selectedElement);
     }
@@ -1760,7 +1768,7 @@ function buttonInitStateClick(rect) {
 
 function buttonEndStateClick(rect) {
     var svg = rect.parentSvg;
-    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "ellipse")) {
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
 		toggleEndState(svg.selectedElement);
     }
 }
@@ -1769,17 +1777,26 @@ function additionalControlsClick() {
 	if (this.shown)
 	{
 		this.setAttribute("class", "nedurazne rozbal");
+		$(this.rect.buttonRenameState).hide();
 		$(this.rect.buttonRenameTransition).hide();
 		$(this.rect.buttonDeleteSelected).hide();
 	}
 	else
 	{
 		this.setAttribute("class", "nedurazne sbal");
+		$(this.rect.buttonRenameState).show();
 		$(this.rect.buttonRenameTransition).show();
 		$(this.rect.buttonDeleteSelected).show();
 	}
 	this.shown = !this.shown;
 	return false;
+}
+
+function buttonRenameStateClick(rect) {
+    var svg = rect.parentSvg;
+    if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
+		$(svg.selectedElement).trigger("dblclick");
+    }
 }
 
 function buttonRenameTransitionClick(rect) {
@@ -1795,7 +1812,7 @@ function buttonDeleteSelectedClick(rect) {
 	{
 		switch (svg.selectedElement.tagName)
 		{
-			case "ellipse":
+			case "circle":
 				deleteState(svg.selectedElement);
 				break;
 			case "path":
@@ -1881,7 +1898,7 @@ function createStateAbs(rect, x, y, name)
 {
 	console.log("creating state " + name);
 	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
-	var shape = document.createElementNS(svgns, "ellipse");
+	var shape = document.createElementNS(svgns, "circle");
 	var width = rect.parentSvg.div.offsetWidth;
 	var height = rect.parentSvg.div.offsetHeight;
 	if (width == 0)
@@ -1894,8 +1911,7 @@ function createStateAbs(rect, x, y, name)
 	if (y > height - circleSize) y = height - circleSize;
 	shape.setAttributeNS(null, "cx", x);
 	shape.setAttributeNS(null, "cy", y);
-	shape.setAttributeNS(null, "rx", circleSize);
-	shape.setAttributeNS(null, "ry", circleSize);
+	shape.setAttributeNS(null, "r", circleSize);
 	shape.setAttributeNS(null, "fill", "white");
 	shape.setAttributeNS(null, "stroke", "black");
 	shape.setAttributeNS(null, "stroke-width", 1);
@@ -2007,11 +2023,17 @@ function selectStateForTransition(state)
 function stateDblClick(evt)
 {
 	evt.preventDefault();
-	var state = evt.target;
-	var rect = state.parentRect;
-	//rect.buttonAddTransitions.style.borderStyle = "inset";
-	rect.mode = modeEnum.ADD_TRANSITION;
-	selectStateForTransition(state);
+	var svg = this.parentSvg;
+	this.setAttribute("stroke", "green");
+	stopMovingElement();
+	var name = getValidStateName(this, this.name);
+	console.log(name);
+	if (name != null)
+	{
+		renameState(this, name);
+	}
+
+	this.setAttribute("stroke", "black");
 }
 function createTransition(state1, state2, symbols)
 {
@@ -2125,6 +2147,30 @@ function createTransition(state1, state2, symbols)
 	adjustTransitionWidth(aLine);
 }
 
+function getValidStateName(state, sname)
+{
+	var name = prompt("Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", sname);
+	if (name == null)
+		return null;
+	do
+	{
+		incorrect = false;
+		if (incorrectStateSyntax(name))
+		{
+			name = prompt("Chyba: Nevyhovující syntax! Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", name);
+			incorrect = true;
+		}
+		for (var i = 0; i < state.parentRect.states.length; i++)
+			if (state.parentRect.states[i].name == name && state.parentRect.states[i] != state)
+			{
+				name = prompt("Chyba: Takto pojmenovaný stav již existuje! Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", name);
+				incorrect = true;
+			}
+	}
+	while (incorrect && name != null);
+	return name;
+}
+
 function getValidTransitionName(state1, state2, sname)
 {
 	var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", sname);
@@ -2233,19 +2279,22 @@ function whitenState(state) {
 function selectElement(evt) {
 	evt.preventDefault();
 	var svg = evt.target.parentSvg;
+	if (svg.rect.mode != modeEnum.SELECT)
+		return;
     deselectElement(svg);
     svg.selectedElement = evt.target;
 	svg.makingTransition = 0;
-	svg.rect.mode = modeEnum.SELECT;
     movingElement = svg.selectedElement;
 	svg.rect.buttonDeleteSelected.disabled = false;
+	svg.rect.buttonRenameState.disabled = true;
 	svg.rect.buttonRenameTransition.disabled = false;
     switch (svg.selectedElement.tagName)
     {
-        case "ellipse":
+        case "circle":
             svg.selectedElement.setAttributeNS(null, "fill", "lightgreen");
 			svg.rect.buttonInitState.disabled = false;
 			svg.rect.buttonEndState.disabled = false;
+			svg.rect.buttonRenameState.disabled = false;
 			svg.rect.buttonRenameTransition.disabled = true;
     		if (svg.selectedElement.end)
 			{
@@ -2271,7 +2320,7 @@ function selectElement(evt) {
 		{
 			switch (svg.selectedElement.tagName)
 			{
-				case "ellipse":
+				case "circle":
 					deleteState(svg.selectedElement);
 					break;
 				case "path":
@@ -2358,6 +2407,7 @@ function adjustStateWidth(state)
 	}
 	if (shortened)
 		state.text.node.nodeValue = state.text.node.nodeValue.substring(0, state.text.node.nodeValue.length - 1) + "..";
+	state.text.setAttribute("dy", "0.3em");
 }
 
 function adjustTransitionWidth(line)
@@ -2385,12 +2435,13 @@ function deselectElement(svg) {
 	svg.rect.buttonInitState.disabled = true;
 	svg.rect.buttonEndState.style.borderStyle = "outset";
 	svg.rect.buttonEndState.disabled = true;
+	svg.rect.buttonRenameState.disabled = true;
 	svg.rect.buttonRenameTransition.disabled = true;
 	svg.rect.buttonDeleteSelected.disabled = true;
     if (svg.selectedElement !== 0) {
         switch (svg.selectedElement.tagName)
     	{
-        	case "ellipse":
+        	case "circle":
         		whitenState(svg.selectedElement);
                 break;
             case "path":
@@ -2420,7 +2471,7 @@ function moveElement(evt) {
         movingElement.setAttribute('class', 'movable');
         switch (svg.selectedElement.tagName)
     	{
-            case "ellipse":
+            case "circle":
                 var str, temp, tx;
 				var width = svg.div.offsetWidth;
 				var height = svg.div.offsetHeight;
@@ -2588,7 +2639,6 @@ function transitionDblClick()
 	var rect = this;
 	var line = rect.line;
 	var svg = rect.parentSvg;
-	$(document.activeElement).blur();
 	rect.setAttribute("stroke", "lightgreen");
 	stopMovingElement();
 	var name = getValidTransitionName(line.start, line.end, line.name);
