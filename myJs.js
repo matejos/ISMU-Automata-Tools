@@ -511,6 +511,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 	var cell = row2.insertCell(1);
 	cell.innerHTML = "";
 	cell.setAttribute("class", "myCell noselect tc");
+	$(cell).resizable({handles: 'e'});
 	var div = document.createElement("div");
 	div.setAttribute("class", "tc");
 	cell.appendChild(div);
@@ -886,7 +887,6 @@ function tableAddRowHeader(row, value)
 	$(div).click(tableCellClick);
 
 	$(div).on('input',tableRhChanged);
-	
 	$(div).focusout(tableRhChangedFinal);
 
 	$(div).keypress(function (e) {
@@ -1366,6 +1366,7 @@ function tableAddColumnHeader(row, value)
 	
 	$(div).on('input',tableChChanged);
 	$(div).focusout(tableChChangedFinal);
+	$(cell).resizable({handles: 'e'});
 	
 	var regex;
 	if (table.wp.realtype == "EFA")
