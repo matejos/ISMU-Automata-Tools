@@ -312,6 +312,7 @@ function initTableTab(wp) {
 	table.symbols = [];
 	table.initState = null;
 	table.exitStates = [];
+	tableDeselectCell(table);
 	
 	
 	wp.tableTab.statusText = document.createElement("p");
@@ -329,10 +330,6 @@ function initTableTab(wp) {
 }
 
 function initTextTab(wp) {
-	/*
-	var x = parseInt(wp.svg.divId.substring(1, wp.svg.divId.length)) - 1;
-	wp.textTab.textArea = document.getElementsByTagName('textarea')[x];
-	*/
 	wp.textTab.textArea = vysledkovePole(wp.svg.divId, "_e_a_1");
 	// only for testing in local html
 	if(!wp.textTab.textArea)
@@ -712,9 +709,10 @@ function tableDeselectCell(table)
 		var div = table.selectedCell;
 		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
-		table.wp.tableTab.buttonInit.disabled = false;
-		table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 	}
+	table.wp.tableTab.buttonInit.disabled = true;
+	table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
+	table.wp.tableTab.buttonEnd.disabled = true;
 }
 function tableEditCellClick(evt)
 {
@@ -739,6 +737,9 @@ function tableCellClick(evt)
 			$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		}
 		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
+		
+		table.wp.tableTab.buttonInit.disabled = false;
+		table.wp.tableTab.buttonEnd.disabled = false;
 		
 		var name = cell.prevValue;
 		if (name[0] == '↔')
