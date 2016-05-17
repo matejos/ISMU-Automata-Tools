@@ -2000,11 +2000,12 @@ function putOnTop(state) {
     state.parentSvg.appendChild(state.text);
 }
 function cubicControlPoints(x, y, d){
-	var mult = 120;
-    var x1 = +x + (Math.cos(d + Math.PI / 4) * mult);
-	var y1 = +y - (Math.sin(d + Math.PI / 4) * mult);
-	var x2 = +x + (Math.cos(d - Math.PI / 4) * mult);
-	var y2 = +y - (Math.sin(d - Math.PI / 4) * mult);
+	var mult = 100;
+	var div = 8;
+    var x1 = +x + (Math.cos(d + Math.PI / div) * mult);
+	var y1 = +y - (Math.sin(d + Math.PI / div) * mult);
+	var x2 = +x + (Math.cos(d - Math.PI / div) * mult);
+	var y2 = +y - (Math.sin(d - Math.PI / div) * mult);
     var str = x1 + " " + y1 + " " + x2 + " " + y2;
     return str;
 }
