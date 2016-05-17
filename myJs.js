@@ -976,7 +976,7 @@ function tableRhChanged()
 	if (incorrectStateSyntax(state))
 	{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Chyba v syntaxi názvu stavu. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.innerHTML = "Chyba v syntaxi názvu stavu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
@@ -1121,7 +1121,10 @@ function tableChChanged()
 		(table.wp.realtype != "EFA" && (incorrectDFATransitionSyntax(this.value) || this.value == "\\e")) )
 		{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu. Tabulka je uzamčena dokud nebude chyba opravena.";
+		if (table.wp.realtype == "EFA")
+			table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9} nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
+		else
+			table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 		}
@@ -1195,7 +1198,17 @@ function tableCellChanged()
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 		{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Chyba v syntaxi výsledku přechodové funkce. Tabulka je uzamčena dokud nebude chyba opravena.";
+		var statusmsg = "Chyba v syntaxi výsledku přechodové funkce. ";
+		if (table.wp.type == "DFA")
+		{
+			statusmsg += "Očekávané řetězce znaků z {a-z,A-Z,0-9} oddělené čárkami. ";
+		}
+		else if (table.wp.type == "NFA")
+		{
+			statusmsg += "Očekávané řetězce znaků z {a-z,A-Z,0-9} oddělené čárkami, uzavřeny do složených závorek. "
+		}
+		statusmsg += "Tabulka je uzamčena dokud nebude chyba opravena."
+		table.tableTab.statusText.innerHTML = statusmsg;
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 		}
@@ -1968,14 +1981,13 @@ function createState(evt)
 }
 function rectDblClick(evt) {
 	evt.preventDefault();
+	evt.target.buttonAddTransitions.style.borderStyle = "outset";
 	createState(evt);
 }
 
 function rectClick(evt, rect) {
 	if (evt)
 		evt.preventDefault();
-	//rect.buttonInitState.disabled = false;
-	//rect.buttonEndState.style.borderStyle = "outset";
     switch (rect.mode) {
         case modeEnum.ADD_STATE:
             createState(evt);
@@ -2152,7 +2164,8 @@ function createTransition(state1, state2, symbols)
 
 function getValidStateName(state, sname)
 {
-	var name = prompt("Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", sname);
+	var promptmsg = "Zadej nový název stavu (řetězec znaků z {a-z,A-Z,0-9}).";
+	var name = prompt(promptmsg, sname);
 	if (name == null)
 		return null;
 	do
@@ -2160,13 +2173,13 @@ function getValidStateName(state, sname)
 		incorrect = false;
 		if (incorrectStateSyntax(name))
 		{
-			name = prompt("Chyba: Nevyhovující syntax! Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", name);
+			name = prompt("Chyba: Nevyhovující syntax! " + promptmsg, name);
 			incorrect = true;
 		}
 		for (var i = 0; i < state.parentRect.states.length; i++)
 			if (state.parentRect.states[i].name == name && state.parentRect.states[i] != state)
 			{
-				name = prompt("Chyba: Takto pojmenovaný stav již existuje! Zadej nový název stavu (řeťezec znaků, s výjimkou speciálních znaků a mezery).", name);
+				name = prompt("Chyba: Takto pojmenovaný stav již existuje! " + promptmsg, name);
 				incorrect = true;
 			}
 	}
@@ -2176,7 +2189,13 @@ function getValidStateName(state, sname)
 
 function getValidTransitionName(state1, state2, sname)
 {
-	var name = prompt("Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", sname);
+	var promptmsg = "Zadej symboly přechodu (řetězce znaků z {a-z,A-Z,0-9}";
+	if (state1.parentSvg.wp.realtype == "EFA")
+	{
+		promptmsg += " nebo \\e";
+	}
+	promptmsg += ") oddělené čárkou.";
+	var name = prompt(promptmsg, sname);
 	if (name == null)
 		return null;
 	do
@@ -2195,7 +2214,7 @@ function getValidTransitionName(state1, state2, sname)
 		{
 			if ((name == "") || (names.indexOf("ε") != -1))
 			{
-				name = prompt("Chyba: Nelze přidat prázdný přechod! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+				name = prompt("Chyba: Nelze přidat prázdný přechod! " + promptmsg, name);
 				incorrect = true;
 			}
 		}
@@ -2203,7 +2222,7 @@ function getValidTransitionName(state1, state2, sname)
 		{
 			if (incorrectGraphTransitionsSyntax(name))
 			{
-				name = prompt("Chyba: Nevyhovující syntax! Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+				name = prompt("Chyba: Nevyhovující syntax! " + promptmsg, name);
 				incorrect = true;
 			}
 			else
@@ -2219,7 +2238,7 @@ function getValidTransitionName(state1, state2, sname)
 							var temp = state1.lines1[j].name.split(",");
 							if (temp.indexOf(names[i]) != -1)
 							{
-								name = prompt("Chyba: Existuje přechod z tohoto stavu pod alespoň jedním z těchto symbolů do jiného stavu, zadání vyžaduje determinizmus. Zadej symboly přechodu (řeťezce znaků, s výjimkou speciálních znaků a mezery) oddělené čárkou.", name);
+								name = prompt("Chyba: Existuje přechod z tohoto stavu pod alespoň jedním z těchto symbolů do jiného stavu, zadání vyžaduje determinizmus. " + promptmsg, name);
 								incorrect = true;
 								// break
 								j = state1.lines1.length;
@@ -2717,7 +2736,7 @@ function incorrectTableDFATransitionsSyntax(val)
 
 function EFATransitionSyntax()
 {
-	return /^[a-zA-Z0-9ε]+$/;
+	return /^ε$|^[a-zA-Z0-9]+$/;
 }
 
 function incorrectEFATransitionSyntax(val)
