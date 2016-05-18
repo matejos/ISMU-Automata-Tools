@@ -253,7 +253,10 @@ function init(id, type) {
 			for (i = 0; i < rect.states.length; i++)
 			{
 				if (!rect.states[i].init && !rect.states[i].end && rect.states[i].lines1.length == 0 && rect.states[i].lines2.length == 0)
+				{
 					deleteState(rect.states[i]);
+					i--;
+				}
 			}
 		});
 		deselectElement(svg);
@@ -263,7 +266,7 @@ function init(id, type) {
 function initGraphTab(wp)
 {
 	console.log("init graph tab");
-	var initState = createStateAbs(wp.svg.rect, 70, 50);
+	var initState = createStateAbs(wp.svg.rect, 70, 70);
 	toggleInitState(initState);
 }
 
@@ -358,6 +361,20 @@ function initTextTab(wp) {
 	}
 }
 
+function invalidStatePosition(state)
+{
+	console.log("testing " + state.name + " " + state.getAttribute("cx") + " " + state.getAttribute("cy"));
+	for (var i = 0; i < state.parentRect.states.length; i++) 
+	{
+		if (state.parentRect.states[i] == state)
+			continue;
+		if ((Math.abs(state.parentRect.states[i].getAttribute("cx") - state.getAttribute("cx")) < circleSize * 2)
+			&& (Math.abs(state.parentRect.states[i].getAttribute("cy") - state.getAttribute("cy")) < circleSize * 2))
+		return true;
+	}
+	return false;
+}
+
 function updateGraphTab(wp, target)
 {
 	var t = target.getAttribute("data-target");
@@ -372,6 +389,60 @@ function updateGraphTab(wp, target)
 		{
 			adjustTransitionWidth(wp.svg.rect.states[i].lines1[j]);
 		}
+	}
+	
+	var states = wp.svg.rect.states;
+	var minx = 70;
+	var x = minx;
+	var y = 70;
+	var dist = 6;
+	for (var v = 0; v < states.length; v++) 
+	{
+		if (states[v].isNew)
+		{
+			states[v].setAttribute("cx", x);
+			states[v].setAttribute("cy", y);
+			
+			while (invalidStatePosition(states[v]))
+			{
+				console.log("testing " + x + " " + y + "is invalid!");
+				x += circleSize * dist;
+				if (x > wp.svg.div.offsetWidth)
+				{
+					x = minx;
+					y += circleSize * dist;
+				}
+				if (y > wp.svg.div.offsetHeight)
+				{
+					console.log("height more");
+					wp.svg.div.style.height = wp.svg.div.offsetHeight + circleSize * dist;
+				}
+				states[v].setAttribute("cx", x);
+				states[v].setAttribute("cy", y);
+				console.log(x + " " + y);
+			}
+			
+			moveState(states[v]);
+			states[v].isNew = false;
+			x += circleSize * dist;
+			if (x > wp.svg.div.offsetWidth)
+			{
+				x = minx;
+				y += circleSize * dist;
+			}
+			if (y > wp.svg.div.offsetHeight)
+				{
+					console.log("height more");
+					wp.svg.div.style.height = wp.svg.div.offsetHeight + circleSize * dist;
+				}
+		}
+	}
+	for (var v = 0; v < states.length; v++) 
+	{
+		for (var e = 0; e < states[v].lines1.length; e++)
+			{
+				repositionTransition(states[v].lines1[e]);
+			}
 	}
 	
 	deselectElement(wp.svg);
@@ -535,7 +606,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 		tableAddRowDeleteButton(row, table);
 		
 		var headerval = "";
-		if (table.initState.indexOf(state) != -1)
+		if (table.initState == state)
 		{
 			if (table.exitStates.indexOf(state) != -1)
 				headerval += '↔';
@@ -676,7 +747,10 @@ function updateTableTabFromText(wp, pure)	// not finished
 			if (oldStates.indexOf(state) == -1)
 			{
 				if (!findState(table.wp.svg.rect, state))
-					createStateAbs(table.wp.svg.rect, 300, 300, state);
+				{
+					var newState = createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, state);
+					newState.isNew = true;
+				}
 				nullify = true;
 			}
 			for (var l = 2; l < table.rows[j].cells.length; l++)
@@ -1508,7 +1582,9 @@ function tableAddRow(table, name)
 		
 		// Add state to graph
 		console.log(table.wp.svg.rect);
-		return createStateAbs(table.wp.svg.rect, 200, 100, name);
+		var newState = createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, name);
+		newState.isNew = true;
+		return newState;
 	}
 }
 
@@ -1934,6 +2010,7 @@ function createStateAbs(rect, x, y, name)
 	shape.parentRect = rect;
 	shape.init = null;
 	shape.end = null;
+	shape.isNew = false;
 	shape.lines1 = [];
 	shape.lines2 = [];
 	if (!name)
@@ -2050,17 +2127,17 @@ function stateDblClick(evt)
 
 	this.setAttribute("stroke", "black");
 }
-function createTransition(state1, state2, symbols)
+
+function repositionTransition(line)
 {
-	var x1 = +state1.getAttribute("cx");
-	var y1 = +state1.getAttribute("cy");
-	var aLine = document.createElementNS(svgns, 'path');
+	var x1 = +line.start.getAttribute("cx");
+	var y1 = +line.start.getAttribute("cy");
 	var att;
-	if (state1 == state2)
+	if (line.start == line.end)
 	{
-		aLine.angle = 0;
+		line.angle = 0;
 		att = "M " + x1 + " " + y1 + " C "
-			+ cubicControlPoints(x1, y1, aLine.angle)
+			+ cubicControlPoints(x1, y1, line.angle)
 			+ " " + x1 +" " + y1;
 			
 		var atts = att.split(" ");
@@ -2069,9 +2146,11 @@ function createTransition(state1, state2, symbols)
 	}
 	else
 	{
-		var z = 50;
-		var x2 = +state2.getAttribute("cx");
-		var y2 = +state2.getAttribute("cy");
+		var x2 = +line.end.getAttribute("cx");
+		var y2 = +line.end.getAttribute("cy");
+		
+		var z = Math.max(50, Math.sqrt(sqr(x2-x1) + sqr(y2-y1)) / 2);
+		console.log(line.start.name + "->" + line.end.name + " " + z);
 		var sqrtt = Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) );
 		if (sqrtt == 0)
 			sqrtt = 0.001;
@@ -2079,10 +2158,10 @@ function createTransition(state1, state2, symbols)
 		if (y2 > y1)
 			angle = -angle;
 		angle += Math.PI/2;
-		aLine.dx = (Math.cos(angle) * z);
-		aLine.dy = (-Math.sin(angle) * z);
-		var cpx = ((x1 + x2)/2) + aLine.dx;
-		var cpy = ((y1 + y2)/2) + aLine.dy;
+		line.dx = (Math.cos(angle) * z);
+		line.dy = (-Math.sin(angle) * z);
+		var cpx = ((x1 + x2)/2) + line.dx;
+		var cpy = ((y1 + y2)/2) + line.dy;
 		att = "M "+x1+" "+y1+" Q "
 			+ cpx + " " + cpy
 			+ " " + x2 + " " + y2;
@@ -2090,7 +2169,16 @@ function createTransition(state1, state2, symbols)
 		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
 		var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
 	}
-	aLine.setAttribute('d', att);
+	line.setAttribute('d', att);
+	line.text.setAttributeNS(null, "x", tx);
+	line.text.setAttributeNS(null, "y", ty);
+	moveTextRect(line.rect, tx, ty);
+	repositionMarker(line);
+}
+
+function createTransition(state1, state2, symbols)
+{
+	var aLine = document.createElementNS(svgns, 'path');
 	aLine.setAttribute('stroke', 'black');
 	aLine.setAttribute('stroke-width', 3);
 	aLine.setAttribute('fill', 'none');
@@ -2109,12 +2197,9 @@ function createTransition(state1, state2, symbols)
 	
 	
 	aLine.markerline = line;
-	repositionMarker(aLine);
 	
 	
 	var newText = document.createElementNS(svgns, 'text');
-	newText.setAttributeNS(null, "x", tx);
-	newText.setAttributeNS(null, "y", ty);
 	newText.setAttribute('pointer-events', 'none');
 	newText.setAttribute('cursor', 'default');
 	newText.setAttribute('font-size', 20);
@@ -2131,7 +2216,6 @@ function createTransition(state1, state2, symbols)
 	newRect.setAttribute("fill", "#ffffff");
 	newRect.setAttribute("width", 30);
 	newRect.setAttribute("height", 30);
-	moveTextRect(newRect, tx, ty);
 	newRect.setAttributeNS(null, "stroke", "black");
 	newRect.setAttributeNS(null, "stroke-width", 1);
 	newRect.parentSvg = state2.parentSvg;
@@ -2144,6 +2228,8 @@ function createTransition(state1, state2, symbols)
 	aLine.text = newText;
 	aLine.rect = newRect;
 	newText.line = aLine;
+	
+	repositionTransition(aLine);
 	
 	state2.parentSvg.appendChild(aLine);
 	state2.parentSvg.appendChild(newRect);
@@ -2494,90 +2580,7 @@ function moveElement(evt) {
         switch (svg.selectedElement.tagName)
     	{
             case "circle":
-                var str, temp, tx;
-				var width = svg.div.offsetWidth;
-				var height = svg.div.offsetHeight;
-				if (mouseX < circleSize)
-					mouseX = circleSize;
-				else if (mouseX > width - circleSize)
-					mouseX = width - circleSize;
-				if (mouseY < circleSize)
-					mouseY = circleSize;
-				else if (mouseY > height - circleSize)
-					mouseY = height - circleSize;
-				svg.selectedElement.setAttribute("cx", mouseX);
-				svg.selectedElement.text.setAttribute("x", mouseX);
-				svg.selectedElement.setAttribute("cy", mouseY);
-				svg.selectedElement.text.setAttribute("y", mouseY);
-				if (svg.selectedElement.end) 
-				{
-					svg.selectedElement.end.setAttribute("cx", mouseX);
-					svg.selectedElement.end.setAttribute("cy", mouseY);
-				}
-				if (svg.selectedElement.init) 
-				{
-					var x2 = mouseX;
-					var x1 = x2 - circleSize * 2.5;
-					var y = mouseY;
-					var att = "M "+x1+" "+y+" L ";
-					att += x2+" "+y;
-					svg.selectedElement.init.setAttribute("d", att);
-				}
-				for (i = 0; i < svg.selectedElement.lines1.length; i++)
-				{
-					str = svg.selectedElement.lines1[i].getAttribute("d").split(" ");
-					if (svg.selectedElement.lines1[i].start == svg.selectedElement.lines1[i].end)
-					{
-						var att = "M " + mouseX + " " + mouseY + " C "
-							+ cubicControlPoints(mouseX, mouseY, svg.selectedElement.lines1[i].angle)
-							+ " " + mouseX +" " + mouseY;
-						var atts = att.split(" ");
-						var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
-						var ty = (+atts[5] + +atts[7] + +atts[2]) / 3;
-						svg.selectedElement.lines1[i].text.setAttributeNS(null, "x", tx);
-						svg.selectedElement.lines1[i].text.setAttributeNS(null, "y", ty);
-						moveTextRect(svg.selectedElement.lines1[i].rect, tx, ty);
-						str = att;
-					}
-					else
-					{
-						str[1] = mouseX;
-						str[2] = mouseY;
-						
-						str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines1[i].dx;
-						str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines1[i].dy;
-						
-						tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-						ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-						svg.selectedElement.lines1[i].text.setAttributeNS(null, "x", tx);
-						svg.selectedElement.lines1[i].text.setAttributeNS(null, "y", ty);
-						moveTextRect(svg.selectedElement.lines1[i].rect, tx, ty);
-						str = str.join(" ");
-					}
-					svg.selectedElement.lines1[i].setAttribute("d", str);
-					repositionMarker(svg.selectedElement.lines1[i]);
-				}
-				for (i = 0; i < svg.selectedElement.lines2.length; i++)
-				{
-					if (svg.selectedElement.lines2[i].start != svg.selectedElement.lines2[i].end)
-					{
-					str = svg.selectedElement.lines2[i].getAttribute("d").split(" ");
-					str[6] = mouseX;
-					str[7] = mouseY;
-
-					str[4] = ((+str[1] + (+str[6]))/2) + svg.selectedElement.lines2[i].dx;
-					str[5] = ((+str[2] + (+str[7]))/2) + svg.selectedElement.lines2[i].dy;
-					
-					tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
-					ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
-					svg.selectedElement.lines2[i].text.setAttributeNS(null, "x", tx);
-					svg.selectedElement.lines2[i].text.setAttributeNS(null, "y", ty);
-					moveTextRect(svg.selectedElement.lines2[i].rect, tx, ty);
-					str = str.join(" ");
-					svg.selectedElement.lines2[i].setAttribute("d", str);
-					repositionMarker(svg.selectedElement.lines2[i]);
-					}
-				}
+                moveState(svg.selectedElement, mouseX, mouseY);
                 break;
             case "path":
 				svg.selectedElement.rect.setAttribute('class', 'movable');
@@ -2585,6 +2588,99 @@ function moveElement(evt) {
                 break;
         }
     }
+}
+
+function moveState(state, x, y)
+{
+	var svg = state.parentSvg;
+	var str, temp, tx;
+	var width = svg.div.offsetWidth;
+	var height = svg.div.offsetHeight;
+	if (!x)
+		x = state.getAttribute("cx");
+	if (!y)
+		y = state.getAttribute("cy");
+	if (x < circleSize)
+		x = circleSize;
+	else if (x > width - circleSize)
+		x = width - circleSize;
+	if (y < circleSize)
+		y = circleSize;
+	else if (y > height - circleSize)
+		y = height - circleSize;
+	state.setAttribute("cx", x);
+	state.text.setAttribute("x", x);
+	state.setAttribute("cy", y);
+	state.text.setAttribute("y", y);
+	if (state.end) 
+	{
+		state.end.setAttribute("cx", x);
+		state.end.setAttribute("cy", y);
+	}
+	if (state.init) 
+	{
+		var x2 = x;
+		var x1 = x2 - circleSize * 2.5;
+		var y = y;
+		var att = "M "+x1+" "+y+" L ";
+		att += x2+" "+y;
+		state.init.setAttribute("d", att);
+	}
+	for (i = 0; i < state.lines1.length; i++)
+	{
+		str = state.lines1[i].getAttribute("d").split(" ");
+		if (state.lines1[i].start == state.lines1[i].end)
+		{
+			var att = "M " + x + " " + y + " C "
+				+ cubicControlPoints(x, y, state.lines1[i].angle)
+				+ " " + x +" " + y;
+			var atts = att.split(" ");
+			var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
+			var ty = (+atts[5] + +atts[7] + +atts[2]) / 3;
+			state.lines1[i].text.setAttributeNS(null, "x", tx);
+			state.lines1[i].text.setAttributeNS(null, "y", ty);
+			moveTextRect(state.lines1[i].rect, tx, ty);
+			str = att;
+		}
+		else
+		{
+			str[1] = x;
+			str[2] = y;
+			
+			str[4] = ((+str[1] + (+str[6]))/2) + state.lines1[i].dx;
+			str[5] = ((+str[2] + (+str[7]))/2) + state.lines1[i].dy;
+			
+			tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+			ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+			state.lines1[i].text.setAttributeNS(null, "x", tx);
+			state.lines1[i].text.setAttributeNS(null, "y", ty);
+			moveTextRect(state.lines1[i].rect, tx, ty);
+			str = str.join(" ");
+		}
+		state.lines1[i].setAttribute("d", str);
+		repositionMarker(state.lines1[i]);
+	}
+	for (i = 0; i < state.lines2.length; i++)
+	{
+		if (state.lines2[i].start != state.lines2[i].end)
+		{
+		str = state.lines2[i].getAttribute("d").split(" ");
+		str[6] = x;
+		str[7] = y;
+
+		str[4] = ((+str[1] + (+str[6]))/2) + state.lines2[i].dx;
+		str[5] = ((+str[2] + (+str[7]))/2) + state.lines2[i].dy;
+		
+		tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
+		ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
+		state.lines2[i].text.setAttributeNS(null, "x", tx);
+		state.lines2[i].text.setAttributeNS(null, "y", ty);
+		moveTextRect(state.lines2[i].rect, tx, ty);
+		str = str.join(" ");
+		state.lines2[i].setAttribute("d", str);
+		repositionMarker(state.lines2[i]);
+		}
+	}
 }
 
 function moveTextRect(rect, x, y) {
