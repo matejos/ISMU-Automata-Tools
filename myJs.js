@@ -4,6 +4,9 @@ var transitionPrevName;
 var circleSize = 25;
 var fadeTime = 100;
 var maxfont = 24;
+var minx = 100;
+var miny = 100;
+var dist = 6;
 var modeEnum = Object.freeze({
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
@@ -266,7 +269,7 @@ function init(id, type) {
 function initGraphTab(wp)
 {
 	console.log("init graph tab");
-	var initState = createStateAbs(wp.svg.rect, 70, 70);
+	var initState = createStateAbs(wp.svg.rect, minx, miny);
 	toggleInitState(initState);
 }
 
@@ -392,10 +395,12 @@ function updateGraphTab(wp, target)
 	}
 	
 	var states = wp.svg.rect.states;
-	var minx = 70;
 	var x = minx;
-	var y = 70;
-	var dist = 6;
+	var y = miny;
+	var w = 2 * minx + (Math.ceil(Math.sqrt(states.length)) - 1) * (circleSize * dist);
+	if (wp.svg.div.offsetWidth < w)
+		wp.svg.div.style.width = w;
+	console.log("w is " + w);
 	for (var v = 0; v < states.length; v++) 
 	{
 		if (states[v].isNew)
@@ -412,10 +417,10 @@ function updateGraphTab(wp, target)
 					x = minx;
 					y += circleSize * dist;
 				}
-				if (y > wp.svg.div.offsetHeight)
+				if (y + circleSize + miny > wp.svg.div.offsetHeight)
 				{
 					console.log("height more");
-					wp.svg.div.style.height = wp.svg.div.offsetHeight + circleSize * dist;
+					wp.svg.div.style.height = y + circleSize + miny;
 				}
 				states[v].setAttribute("cx", x);
 				states[v].setAttribute("cy", y);
@@ -430,10 +435,10 @@ function updateGraphTab(wp, target)
 				x = minx;
 				y += circleSize * dist;
 			}
-			if (y > wp.svg.div.offsetHeight)
+			if (y + circleSize + miny > wp.svg.div.offsetHeight)
 				{
 					console.log("height more");
-					wp.svg.div.style.height = wp.svg.div.offsetHeight + circleSize * dist;
+					wp.svg.div.style.height = y + circleSize + miny;
 				}
 		}
 	}
