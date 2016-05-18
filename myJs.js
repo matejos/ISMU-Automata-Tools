@@ -319,7 +319,7 @@ function initTableTab(wp) {
 	
 	
 	wp.tableTab.statusText = document.createElement("p");
-	$(wp.tableTab.statusText).addClass("incorrect statusText", fadeTime);
+	$(wp.tableTab.statusText).addClass("alert alert-danger", fadeTime);
 	wp.tableTab.statusText.style.display = "none";
 	wp.tableTab.appendChild(wp.tableTab.statusText);
 
@@ -1050,14 +1050,14 @@ function tableRhChanged()
 	if (incorrectStateSyntax(state))
 	{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Chyba v syntaxi názvu stavu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax názvu stavu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else if (tableStateExists(this, state) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Duplicitní název stavu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Duplicitní název stavu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
@@ -1197,16 +1197,16 @@ function tableChChanged()
 		{
 		$(this).addClass("incorrect", fadeTime);
 		if (table.wp.realtype == "EFA")
-			table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9} nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
+			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9} nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
 		else
-			table.tableTab.statusText.innerHTML = "Chyba v syntaxi symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
+			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 		}
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
 		$(this).addClass("incorrect", fadeTime);
-		table.tableTab.statusText.innerHTML = "Duplicitní název symbolu přechodu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
+		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Duplicitní název symbolu přechodu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
@@ -1289,10 +1289,10 @@ function tableCellChangedFinal()
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 		{
 		$(this).addClass("incorrect", fadeTime);
-		var statusmsg = "Chyba v syntaxi výsledku přechodové funkce. ";
+		var statusmsg = "<strong>Chyba!</strong> Nevyhovující syntax výsledku přechodové funkce. ";
 		if (table.wp.type == "DFA")
 		{
-			statusmsg += "Očekávané řetězce znaků z {a-z,A-Z,0-9} oddělené čárkami. ";
+			statusmsg += "Očekávaný řetězec znaků z {a-z,A-Z,0-9}. ";
 		}
 		else if (table.wp.type == "NFA")
 		{
