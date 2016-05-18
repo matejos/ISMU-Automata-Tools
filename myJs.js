@@ -1113,10 +1113,11 @@ function tableRhChanged()
 
 function tableRhChangedFinal()
 {
-	if ($(this).hasClass("incorrect") == false)
+	var table = this.parentElement.parentElement.parentElement.parentElement;
+	if ($(this).hasClass("incorrect") == false && !table.locked)
 	{
 		// Rename the state in graph
-		var table = this.parentElement.parentElement.parentElement.parentElement;
+		
 		var div = this;
 		var prevName = div.prevValue;
 		prevName = removePrefixFromState(prevName);
@@ -1224,9 +1225,9 @@ function tableChChanged()
 
 function tableChChangedFinal()
 {
-	if ($(this).hasClass("incorrect") == false)
+	var table = this.parentElement.parentElement.parentElement.parentElement;
+	if ($(this).hasClass("incorrect") == false && !table.locked)
 	{
-		var table = this.parentElement.parentElement.parentElement.parentElement;
 		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
@@ -1268,6 +1269,22 @@ function tableChChangedFinal()
 function tableCellChanged()
 {
 	var table = this.parentElement.parentElement.parentElement.parentElement;
+	if (! (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
+		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
+	{
+		$(this).removeClass("incorrect", fadeTime);
+		if (table.locked)
+		{
+			table.tableTab.statusText.innerHTML = "";
+			table.tableTab.statusText.style.display = "none";
+			unlockTable(table);
+		}
+	}
+}
+
+function tableCellChangedFinal()
+{
+	var table = this.parentElement.parentElement.parentElement.parentElement;
 	if ( (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 		{
@@ -1288,21 +1305,6 @@ function tableCellChanged()
 		}
 	else
 	{
-		$(this).removeClass("incorrect", fadeTime);
-		if (table.locked)
-		{
-			table.tableTab.statusText.innerHTML = "";
-			table.tableTab.statusText.style.display = "none";
-			unlockTable(table);
-		}
-	}
-}
-
-function tableCellChangedFinal()
-{
-	if ($(this).hasClass("incorrect") == false)
-	{
-		var table = this.parentElement.parentElement.parentElement.parentElement;
 		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
