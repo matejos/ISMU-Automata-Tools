@@ -890,7 +890,7 @@ function tableDeleteColumn(table, index)
 	{
 		tableDeselectCell(table);
 		var symbol = table.rows[1].cells[index].myDiv.value;
-		console.log(symbol);
+		table.symbols.splice(table.symbols.indexOf(symbol), 1);
 		
 		// Delete transitions of this symbol in graph
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
@@ -1121,12 +1121,15 @@ function tableRhChangedFinal()
 	var table = this.parentElement.parentElement.parentElement.parentElement;
 	if ($(this).hasClass("incorrect") == false && !table.locked)
 	{
-		// Rename the state in graph
-		
 		var div = this;
 		var prevName = div.prevValue;
 		prevName = removePrefixFromState(prevName);
 		var newName = div.value;
+		
+		table.states.splice(table.states.indexOf(prevName), 1);
+		table.states.push(removePrefixFromState(newName));
+		
+		// Rename the state in graph
 		
 		var state = findState(table.wp.svg.rect, prevName);
 		console.log(state);
@@ -1236,6 +1239,8 @@ function tableChChangedFinal()
 		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
+		table.symbols.splice(table.symbols.indexOf(prevName), 1);
+		table.symbols.push(newName);
 		if (prevName != newName)
 		{
 			console.log("CH changed, correct");
@@ -1538,12 +1543,19 @@ function tableAddColumn(table, symb)
 		
 		if (!symb)
 		{
-			var names = [];
-			for (k = 'a'.charCodeAt(0); k < 'z'.charCodeAt(0); k++)
-				names.push(String.fromCharCode(k));
-			for (k = 0; k < table.symbols.length; k++)
-				names.splice(names.indexOf(table.symbols[k]), 1);
-			symb = names[0];
+			var k = 'a'.charCodeAt(0);
+			var symbprefix = "";
+			do
+			{
+				if (k > 'z'.charCodeAt(0))
+				{
+					symbprefix += "a";
+					k = 'a'.charCodeAt(0);
+				}
+				symb = symbprefix + String.fromCharCode(k);
+				k++;
+			}
+			while (table.symbols.indexOf(symb) != -1)
 		}
 		
 		table.symbols.push(symb);
@@ -1561,31 +1573,34 @@ function tableAddRow(table, name)
 	{
 		if (!name)
 		{
-			var names = [];
-			for (k = 65; k < 91; k++)
-				names.push(String.fromCharCode(k));
-			for (k = 0; k < table.wp.svg.rect.states.length; k++)
-				names.splice(names.indexOf(table.wp.svg.rect.states[k].name), 1);
-			name = names[0];
+			var k = 'A'.charCodeAt(0);
+			var nameprefix = "";
+			do
+			{
+				if (k > 'Z'.charCodeAt(0))
+				{
+					nameprefix += "A";
+					k = 'A'.charCodeAt(0);
+				}
+				name = nameprefix + String.fromCharCode(k);
+				k++;
+			}
+			while (table.states.indexOf(name) != -1)
 		}
 		
-		if (table.states.indexOf(name) == -1)
+		tableDeselectCell(table);
+		console.log("adding row");
+		table.rows[table.rows.length - 1].deleteCell(0);
+		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
+		
+		table.states.push(name);
+		
+		tableAddRowHeader(table.rows[table.rows.length - 1], name);
+		for (i = 2; i < table.rows[0].cells.length - 1; i++)
 		{
-			tableDeselectCell(table);
-			console.log("adding row");
-			table.rows[table.rows.length - 1].deleteCell(0);
-			tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
-			
-			
-			table.states.push(name);
-			
-			tableAddRowHeader(table.rows[table.rows.length - 1], name);
-			for (i = 2; i < table.rows[0].cells.length - 1; i++)
-			{
-				tableAddCell(table.rows[table.rows.length - 1]);
-			}
-			tableAddRowAddButton(table);
+			tableAddCell(table.rows[table.rows.length - 1]);
 		}
+		tableAddRowAddButton(table);
 		
 		// Add state to graph
 		console.log(table.wp.svg.rect);
