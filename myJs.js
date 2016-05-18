@@ -886,19 +886,27 @@ function tableDeleteRow(table, index)
 			for (j = 2; j < table.rows[i].cells.length; j++)
 			{
 				var val = table.rows[i].cells[j].myDiv.value;
-				val = val.replace(/{|}/g, "");
-				var vals = val.split(",");
-				var q = vals.indexOf(state);
-				if (q != -1)
+				if (table.wp.type == "NFA")
 				{
-					vals.splice(q, 1);
-					val = vals.toString();
-					if (table.wp.type == "NFA")
+					val = val.replace(/{|}/g, "");
+					var vals = val.split(",");
+					var q = vals.indexOf(state);
+					if (q != -1)
+					{
+						vals.splice(q, 1);
+						val = vals.toString();
 						table.rows[i].cells[j].myDiv.value = "{" + val + "}";
-					else
-						table.rows[i].cells[j].myDiv.value = val;
-					table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+						table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+					}
 				}
+				else
+				{
+					if (state == val)
+					{
+						table.rows[i].cells[j].myDiv.value = "-";
+						table.rows[i].cells[j].myDiv.prevValue = table.rows[i].cells[j].myDiv.value;
+					}
+				}	
 			}
 		}
 		
