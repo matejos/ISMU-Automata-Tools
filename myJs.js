@@ -4,6 +4,7 @@ var transitionPrevName;
 var circleSize = 25;
 var fadeTime = 100;
 var maxfont = 24;
+var minCellW = 50;
 var minx = 100;
 var miny = 100;
 var dist = 6;
@@ -356,6 +357,7 @@ function initTextTab(wp) {
 			updateTableTabFromText(wp, true);
 			wp.textTab.textArea.value = textval;
 			updateTableTabFromText(wp);
+			updateGraphTab(wp);
 		}
 		else
 		{
@@ -380,10 +382,13 @@ function invalidStatePosition(state)
 
 function updateGraphTab(wp, target)
 {
-	var t = target.getAttribute("data-target");
-	var x = t.substr(t.length - 1, 1);
-	if (x == "c")
-		updateTableTabFromText(wp);
+	if (target)
+	{
+		var t = target.getAttribute("data-target");
+		var x = t.substr(t.length - 1, 1);
+		if (x == "c")
+			updateTableTabFromText(wp);
+	}
 	
 	for (i = 0; i < wp.svg.rect.states.length; i++)
 	{
@@ -446,7 +451,11 @@ function updateGraphTab(wp, target)
 	{
 		for (var e = 0; e < states[v].lines1.length; e++)
 			{
-				repositionTransition(states[v].lines1[e]);
+				if (states[v].lines1[e].isNew)
+				{
+					repositionTransition(states[v].lines1[e]);
+					states[v].lines1[e].isNew = false;
+				}
 			}
 	}
 	
@@ -584,7 +593,22 @@ function updateTableTabFromText(wp, pure)	// not finished
 	var cell = row2.insertCell(1);
 	cell.innerHTML = "";
 	cell.setAttribute("class", "myCell noselect tc");
-	$(cell).resizable({handles: 'e'});
+	cell.myTable = table;
+	$(cell).resizable({
+		handles: 'e',
+		resize: function() 
+		{
+			if (parseInt(this.style.width) >= minCellW) 
+			{
+				this.style.minWidth = this.style.width;
+				var ci = this.cellIndex;
+				console.log(ci);
+				for (var i = 2; i < this.myTable.rows.length - 1; i++)
+					this.myTable.rows[i].cells[ci].myDiv.style.width = this.style.width;
+			}
+		},
+	});
+	cell.style.minWidth = minCellW;
 	var div = document.createElement("div");
 	div.setAttribute("class", "tc");
 	cell.appendChild(div);
@@ -753,8 +777,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 			{
 				if (!findState(table.wp.svg.rect, state))
 				{
-					var newState = createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, state);
-					newState.isNew = true;
+					createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, state);
 				}
 				nullify = true;
 			}
@@ -957,10 +980,11 @@ function tableAddRowDeleteButton(row, table)
 function tableAddRowHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
+	var table = cell.parentElement.parentElement.parentElement;
 	var div = document.createElement("input");
 	div.value = value;
 	div.prevValue = value;
-	div.setAttribute("size", 1);
+	div.style.width = table.rows[1].cells[cell.cellIndex].style.minWidth;
 	div.defaultClass = "rh";
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv " + div.defaultClass);
@@ -1454,19 +1478,34 @@ function tableAddColumnDeleteButton(row, table)
 function tableAddColumnHeader(row, value)
 {
 	var cell = row.insertCell(row.cells.length);
-	var table = cell.parentElement.parentElement.parentElement.parentElement;
+	var table = cell.parentElement.parentElement.parentElement;
 	
 	var div = document.createElement("input");
 	div.value = value;
 	div.prevValue = value;
-	div.setAttribute("size", 1);
+	div.style.width = minCellW;
 	cell.setAttribute("class", "myCell ch");
 	div.setAttribute("class", "myCellDiv");
 	$(div).click(tableEditCellClick);
 	
 	$(div).on('input',tableChChanged);
 	$(div).focusout(tableChChangedFinal);
-	$(cell).resizable({handles: 'e'});
+	cell.myTable = table;
+	$(cell).resizable({
+		handles: 'e',
+		resize: function() 
+		{
+			if (parseInt(this.style.width) >= minCellW) 
+			{
+				this.style.minWidth = this.style.width;
+				var ci = this.cellIndex;
+				console.log(ci);
+				for (var i = 1; i < this.myTable.rows.length - 1; i++)
+					this.myTable.rows[i].cells[ci].myDiv.style.width = this.style.width;
+			}
+		},
+	});
+	cell.style.minWidth = minCellW;
 	
 	var regex;
 	if (table.wp.realtype == "EFA")
@@ -1493,14 +1532,15 @@ function tableAddColumnHeader(row, value)
 function tableAddCell(row)
 {
 	var cell = row.insertCell(row.cells.length);
-	var table = cell.parentElement.parentElement.parentElement.parentElement;
+	var table = cell.parentElement.parentElement.parentElement;
 	var div = document.createElement("input");
 	if (table.wp.type == "NFA")
 		div.value = "{}";
 	else
 		div.value = "-";
 	div.prevValue = div.value;
-	div.setAttribute("size", 3);
+	div.style.width = table.rows[1].cells[cell.cellIndex].style.minWidth;
+	console.log(table.rows[1].cells[cell.cellIndex].style.minWidth);
 	$(div).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv");
@@ -1604,9 +1644,7 @@ function tableAddRow(table, name)
 		
 		// Add state to graph
 		console.log(table.wp.svg.rect);
-		var newState = createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, name);
-		newState.isNew = true;
-		return newState;
+		return createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, name);
 	}
 }
 
@@ -2032,7 +2070,7 @@ function createStateAbs(rect, x, y, name)
 	shape.parentRect = rect;
 	shape.init = null;
 	shape.end = null;
-	shape.isNew = false;
+	shape.isNew = true;
 	shape.lines1 = [];
 	shape.lines2 = [];
 	if (!name)
@@ -2076,7 +2114,8 @@ function createState(evt)
 	var rect = evt.target;
 	var x = evt.offsetX;
 	var y = evt.offsetY;
-	createStateAbs(rect, x, y);
+	var state = createStateAbs(rect, x, y);
+	state.isNew = false;
 }
 function rectDblClick(evt) {
 	evt.preventDefault();
@@ -2210,6 +2249,7 @@ function createTransition(state1, state2, symbols)
 	aLine.name = symbols;
 	aLine.start = state1;
 	aLine.end = state2;
+	aLine.isNew = true;
 	
 	var line = document.createElementNS(svgns, 'path');
 	line.setAttribute('stroke-width', 3);
@@ -2268,6 +2308,8 @@ function createTransition(state1, state2, symbols)
 	deselectElement(state2.parentSvg);
 	
 	adjustTransitionWidth(aLine);
+	
+	return aLine;
 }
 
 function getValidStateName(state, sname)
@@ -2385,7 +2427,8 @@ function clickState(evt) {
 				
 				if (name != null)
 				{
-					createTransition(state.parentSvg.makingTransition, state, name);
+					var line = createTransition(state.parentSvg.makingTransition, state, name);
+					line.isNew = false;
 				}
 				else
 					rectClick(null, state.parentRect);
