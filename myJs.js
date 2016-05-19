@@ -1359,7 +1359,6 @@ function tableCellChangedFinal()
 		{
 			if (newName == "")
 				newName = "-";
-			div.value = newName;
 		}
 		
 		var stateName = table.rows[div.myCell.parentElement.rowIndex].cells[1].myDiv.value;
@@ -1369,6 +1368,7 @@ function tableCellChangedFinal()
 		
 		var prevStates = prevName.split(",");
 		var newStates = newName.split(",");
+		newStates = newStates.filter(function(item, pos) {return newStates.indexOf(item) == pos;});
 		
 		// Delete the transitions in graph
 		for (var i = 0; i < prevStates.length; i++)
@@ -1441,7 +1441,14 @@ function tableCellChangedFinal()
 				}
 			}
 		}
-
+		div.value = newStates;
+		if (table.wp.type == "NFA")
+			div.value = "{" + div.value + "}";
+		else
+		{
+			if (div.value == "")
+				div.value = "-";
+		}
 		div.prevValue = div.value;
 	}
 }
