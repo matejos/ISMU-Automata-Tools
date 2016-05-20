@@ -269,7 +269,7 @@ function init(id, type) {
 
 function initGraphTab(wp)
 {
-	console.log("init graph tab");
+	//console.log("init graph tab");
 	var initState = createStateAbs(wp.svg.rect, minx, miny);
 	toggleInitState(initState);
 }
@@ -352,7 +352,7 @@ function initTextTab(wp) {
 		if (wp.textTab.textArea.value != "")
 		{
 			var textval = wp.textTab.textArea.value
-			console.log("generating from text " + textval);
+			//console.log("generating from text " + textval);
 			wp.textTab.textArea.value = "";
 			updateTableTabFromText(wp, true);
 			wp.textTab.textArea.value = textval;
@@ -368,7 +368,7 @@ function initTextTab(wp) {
 
 function invalidStatePosition(state)
 {
-	console.log("testing " + state.name + " " + state.getAttribute("cx") + " " + state.getAttribute("cy"));
+	//console.log("testing " + state.name + " " + state.getAttribute("cx") + " " + state.getAttribute("cy"));
 	for (var i = 0; i < state.parentRect.states.length; i++) 
 	{
 		if (state.parentRect.states[i] == state)
@@ -405,7 +405,7 @@ function updateGraphTab(wp, target)
 	var w = 2 * minx + (Math.ceil(Math.sqrt(states.length)) - 1) * (circleSize * dist);
 	if (wp.svg.div.offsetWidth < w)
 		wp.svg.div.style.width = w;
-	console.log("w is " + w);
+	//console.log("w is " + w);
 	for (var v = 0; v < states.length; v++) 
 	{
 		if (states[v].isNew)
@@ -415,7 +415,7 @@ function updateGraphTab(wp, target)
 			
 			while (invalidStatePosition(states[v]))
 			{
-				console.log("testing " + x + " " + y + "is invalid!");
+				//console.log("testing " + x + " " + y + "is invalid!");
 				x += circleSize * dist;
 				if (x > wp.svg.div.offsetWidth)
 				{
@@ -424,12 +424,12 @@ function updateGraphTab(wp, target)
 				}
 				if (y + circleSize + miny > wp.svg.div.offsetHeight)
 				{
-					console.log("height more");
+					//console.log("height more");
 					wp.svg.div.style.height = y + circleSize + miny;
 				}
 				states[v].setAttribute("cx", x);
 				states[v].setAttribute("cy", y);
-				console.log(x + " " + y);
+				//console.log(x + " " + y);
 			}
 			
 			moveState(states[v]);
@@ -442,7 +442,7 @@ function updateGraphTab(wp, target)
 			}
 			if (y + circleSize + miny > wp.svg.div.offsetHeight)
 				{
-					console.log("height more");
+					//console.log("height more");
 					wp.svg.div.style.height = y + circleSize + miny;
 				}
 		}
@@ -528,7 +528,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 		if (/^init=[a-zA-Z0-9]+$/.test(str[i]))
 		{
 			str[i] = str[i].substring(5, str[i].length);
-			console.log("found init state " + str[i]);
+			//console.log("found init state " + str[i]);
 			table.initState = str[i];
 			if (table.states.indexOf(str[i]) == -1)
 				table.states.push(str[i]);
@@ -602,7 +602,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 			{
 				this.style.minWidth = this.style.width;
 				var ci = this.cellIndex;
-				console.log(ci);
+				//console.log(ci);
 				for (var i = 2; i < this.myTable.rows.length - 1; i++)
 					this.myTable.rows[i].cells[ci].myDiv.style.width = this.style.width;
 			}
@@ -629,7 +629,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 	for (i = 0; i < table.states.length; i++)
 	{
 		var state = table.states[i];
-		console.log(state);
+		//console.log(state);
 		var row = table.insertRow(table.rows.length);
 		
 		tableAddRowDeleteButton(row, table);
@@ -688,7 +688,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 				cell.myDiv.value += states2[j];
 			}
 			cell.myDiv.value += '}';
-			console.log("added tr " + state1 + " through " + symb + " to " + cell.myDiv.value);
+			//console.log("added tr " + state1 + " through " + symb + " to " + cell.myDiv.value);
 			cell.myDiv.prevValue = cell.myDiv.value;
 		}
 	}
@@ -755,7 +755,7 @@ function updateTableTabFromText(wp, pure)	// not finished
 						{
 							if (table.rows[1].cells[l].myDiv.value == symbol)
 							{
-								console.log("OLD: " + oldTable.rows[i].cells[k].myDiv.value + "NEW: " + table.rows[j].cells[l].myDiv.value);
+								//console.log("OLD: " + oldTable.rows[i].cells[k].myDiv.value + "NEW: " + table.rows[j].cells[l].myDiv.value);
 								table.rows[j].cells[l].myDiv.prevValue = oldTable.rows[i].cells[k].myDiv.value;
 								$(table.rows[j].cells[l].myDiv).trigger("input");
 								$(table.rows[j].cells[l].myDiv).trigger("focusout");
@@ -829,7 +829,7 @@ function tableEditCellClick(evt)
 function tableCellClick(evt)
 {
 	var cell = evt.target;
-	console.log(cell);
+	//console.log(cell);
 	var table = cell.parentElement.parentElement.parentElement.parentElement;
 	if (!table.locked && table.selectedCell != cell)
 	{
@@ -1052,7 +1052,7 @@ function tableSymbolExists(div, symbol)
 
 function lockTable(table, exc)
 {
-	console.log("locking table");
+	//console.log("locking table");
 	for (var i = 1; i < table.rows.length - 1; i++)
 	{
 		for (var j = 1; j < table.rows[i].cells.length; j++)
@@ -1067,7 +1067,7 @@ function lockTable(table, exc)
 
 function unlockTable(table)
 {
-	console.log("unlocking table");
+	//console.log("unlocking table");
 	for (var i = 1; i < table.rows.length - 1; i++)
 	{
 		for (var j = 1; j < table.rows[i].cells.length; j++)
@@ -1164,7 +1164,7 @@ function tableRhChangedFinal()
 		// Rename the state in graph
 		
 		var state = findState(table.wp.svg.rect, prevName);
-		console.log(state);
+		//console.log(state);
 		if (newName[0] == '↔')
 		{
 			toggleInitStateOn(state);
@@ -1188,7 +1188,7 @@ function tableRhChangedFinal()
 					
 		newName = removePrefixFromState(newName);
 		
-		console.log(prevName + "   " + newName);
+		//console.log(prevName + "   " + newName);
 		// Rename state in graph
 		for (i = 0; i < table.wp.svg.rect.states.length; i++)
 		{
@@ -1260,7 +1260,7 @@ function tableChChanged()
 			unlockTable(table);
 		}
 	}
-	console.log("CH: " + this.value);
+	//console.log("CH: " + this.value);
 }
 
 function tableChChangedFinal()
@@ -1275,7 +1275,7 @@ function tableChChangedFinal()
 		table.symbols.push(newName);
 		if (prevName != newName)
 		{
-			console.log("CH changed, correct");
+			//console.log("CH changed, correct");
 			// Rename the symbol in graph
 			for (i = 0; i < table.wp.svg.rect.states.length; i++)
 			{
@@ -1388,10 +1388,10 @@ function tableCellChangedFinal()
 						}
 						else
 						{
-							console.log("renaming " + state.name + " from " + state.lines1[j].name);
+							//console.log("renaming " + state.name + " from " + state.lines1[j].name);
 							trs.splice(trs.indexOf(symbol), 1);
 							renameTransition(state.lines1[j], trs.toString());
-							console.log("to " + state.lines1[j].name);
+							//console.log("to " + state.lines1[j].name);
 						}
 						break;
 					}
@@ -1409,11 +1409,11 @@ function tableCellChangedFinal()
 			if (prevStates.indexOf(newStates[i]) == -1)
 			{
 				var state2Name = newStates[i];
-				console.log("searching for " + state2Name);
+				//console.log("searching for " + state2Name);
 				var state2 = findState(table.wp.svg.rect, state2Name);
 				if (!state2)
 				{
-					console.log("adding state " + state2Name + " and transition " + symbol);
+					//console.log("adding state " + state2Name + " and transition " + symbol);
 					state2 = tableAddRow(table, state2Name);
 					createTransition(state, state2, symbol);
 				}
@@ -1514,7 +1514,7 @@ function tableAddColumnHeader(row, value)
 			{
 				this.style.minWidth = this.style.width;
 				var ci = this.cellIndex;
-				console.log(ci);
+				//console.log(ci);
 				for (var i = 1; i < this.myTable.rows.length - 1; i++)
 					this.myTable.rows[i].cells[ci].myDiv.style.width = this.style.width;
 			}
@@ -1555,7 +1555,7 @@ function tableAddCell(row)
 		div.value = "-";
 	div.prevValue = div.value;
 	div.style.width = table.rows[1].cells[cell.cellIndex].style.minWidth;
-	console.log(table.rows[1].cells[cell.cellIndex].style.minWidth);
+	//console.log(table.rows[1].cells[cell.cellIndex].style.minWidth);
 	$(div).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv");
@@ -1644,7 +1644,7 @@ function tableAddRow(table, name)
 		}
 		
 		tableDeselectCell(table);
-		console.log("adding row");
+		//console.log("adding row");
 		table.rows[table.rows.length - 1].deleteCell(0);
 		tableAddRowDeleteButton(table.rows[table.rows.length - 1], table);
 		
@@ -1658,7 +1658,7 @@ function tableAddRow(table, name)
 		tableAddRowAddButton(table);
 		
 		// Add state to graph
-		console.log(table.wp.svg.rect);
+		//console.log(table.wp.svg.rect);
 		return createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, name);
 	}
 }
@@ -1676,7 +1676,7 @@ function tableButtonInitClick(tableTab) {
 				cell.value = '←' + state;
 			else
 				cell.value = state;
-			console.log(state + " is now not an init state");
+			//console.log(state + " is now not an init state");
 			on = false;
 		}
 		else
@@ -1685,7 +1685,7 @@ function tableButtonInitClick(tableTab) {
 				cell.value = '↔' + state;
 			else
 				cell.value = '→' + state;
-			console.log(state + " is now an init state");
+			//console.log(state + " is now an init state");
 			on = true;
 		}
 		cell.prevValue = cell.value;
@@ -1713,7 +1713,7 @@ function tableButtonEndClick(tableTab) {
 				cell.value = '→' + state;
 			else
 				cell.value = state;
-			console.log(state + " is now not an exit state");
+			//console.log(state + " is now not an exit state");
 			on = false;
 		}
 		else
@@ -1722,7 +1722,7 @@ function tableButtonEndClick(tableTab) {
 				cell.value = '↔' + state;
 			else
 				cell.value = '←' + state;
-			console.log(state + " is now an exit state");
+			//console.log(state + " is now an exit state");
 			on = true;
 		}
 		cell.prevValue = cell.value;
@@ -1784,7 +1784,7 @@ function updateTextTab(wp)
 		initTextTab(wp);
 	var textArea = wp.textTab.textArea;
 	textArea.value = generateAnswer(wp.svg.rect);
-	console.log("updated " + wp.svg.divId + "  to " + textArea.value);
+	//console.log("updated " + wp.svg.divId + "  to " + textArea.value);
 	updateTableTabFromText(wp, true);
 	textArea.focus();
 	textArea.blur();
@@ -2062,7 +2062,7 @@ function generateAnswer(rect)
 
 function createStateAbs(rect, x, y, name)
 {
-	console.log("creating state " + name);
+	//console.log("creating state " + name);
 	if (rect.parentSvg.selectedElement !== 0) deselectElement(rect.parentSvg);
 	var shape = document.createElementNS(svgns, "circle");
 	var width = rect.parentSvg.div.offsetWidth;
@@ -2195,7 +2195,7 @@ function stateDblClick(evt)
 	this.setAttribute("stroke", "green");
 	stopMovingElement();
 	var name = getValidStateName(this, this.name);
-	console.log(name);
+	//console.log(name);
 	if (name != null)
 	{
 		renameState(this, name);
@@ -2226,7 +2226,7 @@ function repositionTransition(line)
 		var y2 = +line.end.getAttribute("cy");
 		
 		var z = Math.max(50, Math.sqrt(sqr(x2-x1) + sqr(y2-y1)) / 2);
-		console.log(line.start.name + "->" + line.end.name + " " + z);
+		//console.log(line.start.name + "->" + line.end.name + " " + z);
 		var sqrtt = Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) );
 		if (sqrtt == 0)
 			sqrtt = 0.001;
@@ -2534,7 +2534,7 @@ function deleteState(state)
 {
 	if (state)
 	{
-		console.log("deleting state " + state.name);
+		//console.log("deleting state " + state.name);
 		var svg = state.parentSvg;
 		var target = state.lines1.length;
 		
@@ -2566,7 +2566,7 @@ function deleteState(state)
 
 function deleteTransition(tr)
 {
-	console.log("deleting tr " + tr);
+	//console.log("deleting tr " + tr);
 	var svg = tr.parentSvg;
 	tr.start.lines1.splice(tr.start.lines1.indexOf(tr), 1);
 	tr.end.lines2.splice(tr.end.lines2.indexOf(tr), 1);
@@ -2606,7 +2606,7 @@ function adjustTransitionWidth(line)
 
 function renameTransition(line, str)
 {
-	console.log("renaming transition '"+line.name+"' to '"+str+"'");
+	//console.log("renaming transition '"+line.name+"' to '"+str+"'");
 	line.name = str;
 	line.text.node.nodeValue = str;
 	adjustTransitionWidth(line);
