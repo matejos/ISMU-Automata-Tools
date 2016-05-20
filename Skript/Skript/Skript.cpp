@@ -10,6 +10,7 @@
 using namespace std;
 
 const string prefixContentFileName = "Skript_prefix.txt";
+const string parsersLocationFileName = "Skript_parsers.txt";
 
 string trim(string& str)
 {
@@ -29,7 +30,21 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	string s, s2, prefixContent;
+	string s, s2, parsersLocation, prefixContent;
+
+	ifstream parsersLocationInput(parsersLocationFileName);
+	if (parsersLocationInput.is_open())
+	{
+		getline(parsersLocationInput, s);
+		parsersLocation += s;
+		parsersLocationInput.close();
+	}
+	else
+	{
+		cout << "ERROR: Could not read parsers location from file " << parsersLocationFileName << endl;
+		cout << "Exporting aborted." << endl;
+		return 0;
+	}
 
 	ifstream prefixContentInput(prefixContentFileName);
 	if (prefixContentInput.is_open())
@@ -57,7 +72,7 @@ int main(int argc, char* argv[])
 		string inputName = argv[i];
 		string outputName = inputName;
 		outputName.insert(outputName.find_last_of('.'), suffix);
-		if (outputName == prefixContentFileName)
+		if (outputName == prefixContentFileName || outputName == parsersLocationFileName)
 		{
 			cout << "ERROR: Forbidden name! Cannot convert " << inputName << " to " << outputName << ". Skipping..." << endl;
 			continue;
@@ -68,7 +83,9 @@ int main(int argc, char* argv[])
 		{
 			int q = 0;
 			ofstream output(outputName);
-			output << prefixContent;
+			output << "++" << endl << prefixContent
+				<< "<script src=\"" << parsersLocation << "utilIS.js\" type=\"text/javascript\">< / script>" << endl
+				<< "<style type=\"text/css\">@import \"" << parsersLocation << "parser_style.css\"; </style>" << endl << "--" << endl;
 			while (!input.eof())
 			{
 				getline(input, s);
@@ -94,7 +111,7 @@ int main(int argc, char* argv[])
 						if (formtype == "DFA" || formtype == "NFA" || formtype == "EFA")
 						{
 							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />"
-								 << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/" << formtypelower << "parserN.js\" type=\"text/javascript\"></script>"
+								 << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" << parsersLocation << formtypelower << "parserN.js\" type=\"text/javascript\"></script>"
 								 << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
 							output << "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" << q
 								<< "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q
@@ -105,7 +122,7 @@ int main(int argc, char* argv[])
 						else
 						{
 							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />" << endl;
-							output << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/" << formtypelower << "parserN.js\" type=\"text/javascript\"></script>" << endl;
+							output << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" << parsersLocation << formtypelower << "parserN.js\" type=\"text/javascript\"></script>" << endl;
 							output << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
 						}
 					}
