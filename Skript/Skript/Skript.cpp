@@ -84,8 +84,8 @@ int main(int argc, char* argv[])
 			int q = 0;
 			ofstream output(outputName);
 			output << "++" << endl << prefixContent
-				<< "<script src=\"" << parsersLocation << "utilIS.js\" type=\"text/javascript\">< / script>" << endl
-				<< "<style type=\"text/css\">@import \"" << parsersLocation << "parser_style.css\"; </style>" << endl << "--" << endl;
+				<< "<script src=\"" << parsersLocation << "utilIS.js\" type=\"text/javascript\"></script>" << endl
+				<< "<style type=\"text/css\">@import \"" << parsersLocation << "parser_style.css\";</style>" << endl << "--" << endl;
 			while (!input.eof())
 			{
 				getline(input, s);

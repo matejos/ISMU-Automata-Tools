@@ -1,1 +1,1 @@
-//is.muni.cz/auth/el/1433/podzim2015/IB102/odp/support/
+//cdn.rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/
