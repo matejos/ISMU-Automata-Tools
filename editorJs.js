@@ -31,6 +31,7 @@ function sqr(x)
 function init(id, type) {
     var wp = document.getElementById(id);
 	wp.realtype = type;
+	wp.textTabShown = false;
 	switch (type) 
 	{
 		case "NFA":
@@ -247,17 +248,21 @@ function init(id, type) {
 		initTextTab(wp);
 		
 		$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
+			wp.textTabShown = false;
 			updateGraphTab(wp, e.relatedTarget);
 		});
 		$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
+			wp.textTabShown = false;
 			updateTableTab(wp, e.relatedTarget);
 		});
 		$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
+			wp.textTabShown = true;
 			updateTextTab(wp);
 		});
 		
 		$( "form" ).submit(function (e) {
-			updateTextTab(wp);
+			if (!wp.textTabShown)
+				updateTextTab(wp);
 		});
 		
 		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
