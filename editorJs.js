@@ -1,19 +1,33 @@
-var svgns = "http://www.w3.org/2000/svg";
-var movingElement = 0;
-var transitionPrevName;
-var circleSize = 25;
-var fadeTime = 100;
-var maxfont = 24;
-var minCellW = 50;
-var minx = 100;
-var miny = 100;
-var dist = 6;
-var modeEnum = Object.freeze({
+/*
+* Automata Editor for questionaires of IS MUNI
+* Wrote by Matej Poklemba as a Bachelor's thesis at FI MUNI Brno, in Spring 2016
+*/
+
+var svgns = "http://www.w3.org/2000/svg";	// SVG namespace declaration
+var movingElement = 0;	// Reference to element that is being moved by mouse
+var circleSize = 25;	// Graph state circle size
+var fadeTime = 100;	// Animations time
+var padding = 8;	// Padding on sides of state name
+var minfont = 12;	// Minimal font size
+var maxfont = 24;	// Maximal font size
+var minCellW = 50;	// Minimal table cell width
+var minx = 100;	// Starting x of graph state
+var miny = 100;	// Starting y of graph state
+var dist = 6;	// Circlesize multiplier in distance between generated states
+
+// Click mode enum
+var modeEnum = Object.freeze({	
     ADD_STATE: 1,
     ADD_TRANSITION: 2,
     SELECT: 3
 });
 
+function sqr(x)
+{
+	return (x * x);
+}
+
+// Initialization function
 function init(id, type) {
     var wp = document.getElementById(id);
 	wp.realtype = type;
@@ -225,7 +239,6 @@ function init(id, type) {
 		wp.appendChild(graph);
 		
 		// TABLE TAB
-		
 		initTableTab(wp);
 		
 		
@@ -366,20 +379,6 @@ function initTextTab(wp) {
 	}
 }
 
-function invalidStatePosition(state)
-{
-	//console.log("testing " + state.name + " " + state.getAttribute("cx") + " " + state.getAttribute("cy"));
-	for (var i = 0; i < state.parentRect.states.length; i++) 
-	{
-		if (state.parentRect.states[i] == state)
-			continue;
-		if ((Math.abs(state.parentRect.states[i].getAttribute("cx") - state.getAttribute("cx")) < circleSize * 2)
-			&& (Math.abs(state.parentRect.states[i].getAttribute("cy") - state.getAttribute("cy")) < circleSize * 2))
-		return true;
-	}
-	return false;
-}
-
 function updateGraphTab(wp, target)
 {
 	if (target)
@@ -478,18 +477,10 @@ function updateTableTabFromGraph(wp)
 	updateTableTabFromText(wp);
 }
 
-function updateTableTabFromText(wp, pure)	// not finished
+function updateTableTabFromText(wp, pure)
 {
 	// saving old data
 	var oldTable = wp.tableTab.table;
-	
-	/*
-	// clearing previous table
-	var l = table.rows.length;
-	for (i = 0; i < l; i++)
-	{
-		table.deleteRow(0);
-	}*/
 	
 	var table = document.createElement("table");
 	table.setAttribute("class", "myTable");
@@ -804,6 +795,11 @@ function updateTableTabFromText(wp, pure)	// not finished
 	wp.tableTab.removeChild(wp.tableTab.statusText);
 	wp.tableTab.appendChild(wp.tableTab.statusText);
 }
+
+//--------------------
+// Table tab functions
+//--------------------
+
 function tableDeselectCell(table)
 {
 	if (table.selectedCell != 0)
@@ -816,6 +812,7 @@ function tableDeselectCell(table)
 	table.wp.tableTab.buttonEnd.style.borderStyle = "outset";
 	table.wp.tableTab.buttonEnd.disabled = true;
 }
+
 function tableEditCellClick(evt)
 {
 	var cell = evt.target;
@@ -1453,16 +1450,6 @@ function tableCellChangedFinal()
 	}
 }
 
-
-
-function removePrefixFromState(state)
-{
-	var first = state.charAt(0);
-	if (first == '→' || first == '←' || first == '↔')
-		state = state.substring(1, state.length);
-	return state;
-}
-
 function tableAddColumnAddButton(row, table)
 {
 	var cell = row.insertCell(row.cells.length);
@@ -1737,35 +1724,6 @@ function tableButtonEndClick(tableTab) {
 	}
 }
 
-function doGetCaretPosition (oField) {
-
-  // Initialize
-  var iCaretPos = 0;
-
-  // IE Support
-  if (document.selection) {
-
-    // Set focus on the element
-    oField.focus();
-
-    // To get cursor position, get empty selection range
-    var oSel = document.selection.createRange();
-
-    // Move selection start to 0 position
-    oSel.moveStart('character', -oField.value.length);
-
-    // The caret position is selection length
-    iCaretPos = oSel.text.length;
-  }
-
-  // Firefox support
-  else if (oField.selectionStart || oField.selectionStart == '0')
-    iCaretPos = oField.selectionStart;
-
-  // Return results
-  return iCaretPos;
-}
-
 function tableButtonEpsilonClick()
 {
 	var table = this.tableTab.table;
@@ -1776,6 +1734,14 @@ function tableButtonEpsilonClick()
 	}
 	this.disabled = true;
 	tableAddColumn(table, 'ε');
+}
+
+function removePrefixFromState(state)
+{
+	var first = state.charAt(0);
+	if (first == '→' || first == '←' || first == '↔')
+		state = state.substring(1, state.length);
+	return state;
 }
 
 function updateTextTab(wp)
@@ -1790,13 +1756,9 @@ function updateTextTab(wp)
 	textArea.blur();
 }
 
-function textButtonEpsilonClick(textTab)
-{
-	var pos = doGetCaretPosition (textTab.textArea);
-	var val = textTab.textArea.value;
-	var str = val.substring(0, pos) + 'ε' + val.substring(pos, val.length);
-	textTab.textArea.value = str;
-}
+//--------------------
+// Graph tab functions
+//--------------------
 
 function buttonAddStatesClick(rect) {
     if (rect.buttonAddStates.style.borderStyle == "inset") {
@@ -1829,11 +1791,6 @@ function buttonAddTransitionsClick(rect) {
         rect.mode = modeEnum.ADD_TRANSITION;
         deselectElement(rect.parentSvg);
     }
-}
-
-function regTextChanged()
-{
-	checkSyntax(this, this.syntax);
 }
 
 function toggleInitStateOn(state)
@@ -2175,12 +2132,7 @@ function cubicControlPoints(x, y, d){
     var str = x1 + " " + y1 + " " + x2 + " " + y2;
     return str;
 }
-function controlPoint(x1, y1, x2, y2){
-    var x = ((+x2 + (+x1))/2) + ((+y2 - +y1)/5);
-    var y = ((+y2 + (+y1))/2) - ((+x2 - +x1)/5);
-    var str = x + " " + y;
-    return str;
-}
+
 function selectStateForTransition(state)
 {
 	state.setAttributeNS(null, "fill", "lightblue");
@@ -2188,6 +2140,7 @@ function selectStateForTransition(state)
 		state.end.setAttributeNS(null, "fill", "lightblue");
 	state.parentSvg.makingTransition = state;
 }
+
 function stateDblClick(evt)
 {
 	evt.preventDefault();
@@ -2325,6 +2278,20 @@ function createTransition(state1, state2, symbols)
 	adjustTransitionWidth(aLine);
 	
 	return aLine;
+}
+
+function invalidStatePosition(state)
+{
+	//console.log("testing " + state.name + " " + state.getAttribute("cx") + " " + state.getAttribute("cy"));
+	for (var i = 0; i < state.parentRect.states.length; i++) 
+	{
+		if (state.parentRect.states[i] == state)
+			continue;
+		if ((Math.abs(state.parentRect.states[i].getAttribute("cx") - state.getAttribute("cx")) < circleSize * 2)
+			&& (Math.abs(state.parentRect.states[i].getAttribute("cy") - state.getAttribute("cy")) < circleSize * 2))
+		return true;
+	}
+	return false;
 }
 
 function getValidStateName(state, sname)
@@ -2580,8 +2547,6 @@ function deleteTransition(tr)
 function adjustStateWidth(state)
 {
 	var shortened = false;
-	var padding = 8;
-	var minfont = 12;
 	
 	state.text.setAttribute('font-size', maxfont);
 	while (state.text.getComputedTextLength() > circleSize * 2 - padding && parseInt(state.text.getAttribute('font-size')) > minfont)
@@ -2775,10 +2740,7 @@ function moveTextRect(rect, x, y) {
 		rect.setAttributeNS(null, "y", y-(h / 2));
 	}
 }
-function sqr(x)
-{
-	return (x * x);
-}
+
 function movePath(line, mouseX, mouseY) {
 	var str = line.getAttribute("d").split(" ");
 	if (line.start == line.end)
@@ -2847,17 +2809,6 @@ function transitionDblClick()
 	}
 	
 	rect.setAttribute("fill", "white");
-	if (rect.line.name == "")
-	{
-		if (rect.parentSvg.wp.realtype == "EFA")
-		{
-			renameTransition(rect.line, "ε");
-		}
-		else
-		{
-			renameTransition(rect.line, transitionPrevName);
-		}
-	}
 	rect.setAttribute("stroke", "black");
 	rect.setAttribute('class', '');
 }
@@ -2869,6 +2820,10 @@ function stopMovingElement() {
         movingElement = 0;
     }
 }
+
+//-----------------
+// Syntax checkings
+//-----------------
 
 function graphTransitionsCharsSyntax()
 {
@@ -2934,6 +2889,7 @@ function stateSyntax()
 {
 	return /^[a-zA-Z0-9]+$/;
 }
+
 function incorrectStateSyntax(val)
 {
 	return (!stateSyntax().test(val));
