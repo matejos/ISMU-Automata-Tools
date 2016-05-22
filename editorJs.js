@@ -160,10 +160,9 @@ function init(id, type) {
 		svg.rect = rect;
 		svg.appendChild(rect);
 		
-		
 		var defs = document.createElementNS(svgns, 'defs');
 		var marker = document.createElementNS(svgns, 'marker');
-		marker.setAttribute('id', 'Triangle');
+		marker.setAttribute('id', 'Triangle' + id);
 		marker.setAttribute('viewBox', '0 0 10 10');
 		//marker.setAttribute('refX', '22');
 		marker.setAttribute('refY', '5');
@@ -178,7 +177,7 @@ function init(id, type) {
 		defs.appendChild(marker);
 		
 		var marker = document.createElementNS(svgns, 'marker');
-		marker.setAttribute('id', 'TriangleSel');
+		marker.setAttribute('id', 'TriangleSel' + id);
 		marker.setAttribute('viewBox', '0 0 10 10');
 		marker.setAttribute('refY', '5');
 		marker.setAttribute('markerUnits', 'strokeWidth');
@@ -192,7 +191,7 @@ function init(id, type) {
 		defs.appendChild(marker);
 		
 		var marker = document.createElementNS(svgns, 'marker');
-		marker.setAttribute('id', 'TriangleInit');
+		marker.setAttribute('id', 'TriangleInit' + id);
 		marker.setAttribute('viewBox', '0 0 10 10');
 		marker.setAttribute('refX', '22');
 		marker.setAttribute('refY', '5');
@@ -207,7 +206,6 @@ function init(id, type) {
 		defs.appendChild(marker);
 		
 		svg.appendChild(defs);
-		
 
 		buttonAddStates.rect = rect;
 		buttonAddTransitions.rect = rect;
@@ -1813,7 +1811,7 @@ function toggleInitStateOn(state)
 		aLine.setAttribute('stroke-width', 3);
 		aLine.setAttribute('fill', 'none');
 		aLine.parentSvg = state.parentSvg;
-		aLine.setAttribute('marker-end', 'url(#TriangleInit)');
+		aLine.setAttribute('marker-end', 'url(#TriangleInit' + state.parentSvg.divId + ')');
 		
 		state.parentSvg.appendChild(aLine);
 		putOnTop(state);
@@ -2227,7 +2225,7 @@ function createTransition(state1, state2, symbols)
 	var line = document.createElementNS(svgns, 'path');
 	line.setAttribute('stroke-width', 3);
 	line.setAttribute('pointer-events', 'none');
-	line.setAttribute('marker-end', 'url(#Triangle)');
+	line.setAttribute('marker-end', 'url(#Triangle' + aLine.parentSvg.divId + ')');
 	state2.parentSvg.appendChild(line);
 	
 	
@@ -2470,7 +2468,7 @@ function selectElement(evt) {
 			svg.selectedElement = svg.selectedElement.line;
         case "path":
             svg.selectedElement.setAttribute('stroke',"green");
-			svg.selectedElement.markerline.setAttribute('marker-end', "url(#TriangleSel)");
+			svg.selectedElement.markerline.setAttribute('marker-end', 'url(#TriangleSel' + svg.divId + ')');
             break;
     }
 	$(document).unbind("keydown");
@@ -2604,7 +2602,7 @@ function deselectElement(svg) {
                 break;
             case "path":
                 svg.selectedElement.setAttribute('stroke',"black");
-				svg.selectedElement.markerline.setAttribute('marker-end', "url(#Triangle)");
+				svg.selectedElement.markerline.setAttribute('marker-end', 'url(#Triangle' + svg.divId + ')');
                 break;
             case "text":
                 svg.selectedElement.line.setAttribute('stroke',"black");
