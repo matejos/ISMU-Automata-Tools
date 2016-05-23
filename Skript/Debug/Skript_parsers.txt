@@ -1,1 +1,1 @@
-//cdn.rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/
+//rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/
