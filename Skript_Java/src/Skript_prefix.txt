@@ -1,0 +1,7 @@
+<noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript>
+<script type="text/javascript">document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");</script>
+<script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<style type="text/css">@import "//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css";</style>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//rawgit.com/matejos/ISMU-Automata-Editor/master/editorJs.js"></script>
+<style type="text/css">@import "//rawgit.com/matejos/ISMU-Automata-Editor/master/editorCss.css";</style>
