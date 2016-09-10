@@ -1237,7 +1237,7 @@ function tableChChanged()
 		{
 		$(this).addClass("incorrect", fadeTime);
 		if (table.wp.realtype == "EFA")
-			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9} nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
+			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}, \\e nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
 		else
 			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
@@ -1271,6 +1271,11 @@ function tableChChangedFinal()
 		var div = this;
 		var prevName = div.prevValue;
 		var newName = div.value;
+		if (table.wp.realtype == "EFA" && newName == "\\e")
+			{
+				div.value = 'ε';
+				newName = div.value;
+			}
 		table.symbols.splice(table.symbols.indexOf(prevName), 1);
 		table.symbols.push(newName);
 		if (prevName != newName)
@@ -2870,7 +2875,7 @@ function incorrectTableDFATransitionsSyntax(val)
 
 function EFATransitionSyntax()
 {
-	return /^ε$|^[a-zA-Z0-9]+$/;
+	return /^ε$|^\\e$|^[a-zA-Z0-9]+$/;
 }
 
 function incorrectEFATransitionSyntax(val)
