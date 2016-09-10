@@ -1229,6 +1229,8 @@ function tableRhChangedFinal()
 function tableChChanged()
 {
 	var symbol = this.value;
+	if (symbol == "\\e")
+		symbol = "ε";
 	var table = this.parentElement.parentElement.parentElement.parentElement;
 	var ci = this.parentElement.cellIndex;
 	
