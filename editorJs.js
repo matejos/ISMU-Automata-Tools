@@ -1519,7 +1519,7 @@ function tableAddColumnHeader(row, value)
 	
 	var regex;
 	if (table.wp.realtype == "EFA")
-		regex = EFATransitionSyntax();
+		regex = tableEFATransitionSyntax();
 	else
 		regex = DFATransitionSyntax();
 	$(div).keypress(function (e) {
@@ -2871,6 +2871,11 @@ function tableDFATransitionsSyntax()
 function incorrectTableDFATransitionsSyntax(val)
 {
 	return (!tableDFATransitionsSyntax().test(val))
+}
+
+function tableEFATransitionSyntax()
+{
+	return /^ε$|^\\$|^[a-zA-Z0-9]+$/;
 }
 
 function EFATransitionSyntax()
