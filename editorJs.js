@@ -1421,7 +1421,19 @@ function tableCellChangedFinal()
 				if (!state2)
 				{
 					//console.log("adding state " + state2Name + " and transition " + symbol);
-					state2 = tableAddRow(table, state2Name);
+					var addRowBool = true;
+					for (var j = 2; j < table.rows.length - 1; j++)
+					{
+						if (table.rows[j].cells[1].myDiv.value == state2Name)
+						{
+							addRowBool = false;
+							break;
+						}
+					}
+					if (addRowBool)
+						state2 = tableAddRow(table, state2Name);
+					else
+						state2 = createStateAbs(table.wp.svg.rect, -2 * circleSize, -2 * circleSize, state2Name);
 					createTransition(state, state2, symbol);
 				}
 				else
