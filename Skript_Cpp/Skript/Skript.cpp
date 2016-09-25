@@ -1,7 +1,11 @@
 ﻿// Skript.cpp : Defines the entry point for the console application.
 //
 
+#ifdef _WIN32
 #include "stdafx.h"
+#else
+#include <stdio.h>
+#endif
 #include <iostream>
 #include <fstream>
 #include <algorithm>
