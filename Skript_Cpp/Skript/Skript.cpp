@@ -1,15 +1,12 @@
 ﻿// Skript.cpp : Defines the entry point for the console application.
 //
 
-#ifdef _WIN32
-#include "stdafx.h"
-#else
 #include <stdio.h>
-#endif
 #include <iostream>
 #include <fstream>
 #include <algorithm>
 #include <string>
+#include <ctime>
 
 using namespace std;
 
@@ -70,10 +67,12 @@ int main(int argc, char* argv[])
 	string suffix;
 	cout << "Enter suffix of the export name: ";
 	cin >> suffix;
+
+	time_t t = time(0);
 	
-	for (int i = 1; i < argc; i++)
+	for (int fileNumber = 1; fileNumber < argc; fileNumber++)
 	{
-		string inputName = argv[i];
+		string inputName = argv[fileNumber];
 		string outputName = inputName;
 		outputName.insert(outputName.find_last_of('.'), suffix);
 		if (outputName == prefixContentFileName || outputName == parsersLocationFileName)
@@ -85,7 +84,7 @@ int main(int argc, char* argv[])
 		ifstream input(inputName);
 		if (input.is_open())
 		{
-			int q = 0;
+			int questionNumber = 0;
 			ofstream output(outputName);
 			output << "++" << endl << prefixContent
 				<< "<script src=\"" << parsersLocation << "utilIS.js\" type=\"text/javascript\"></script>" << endl
@@ -109,25 +108,26 @@ int main(int argc, char* argv[])
 					}
 					if (formtype != "")
 					{
-						q++;
+						questionNumber++;
+						string idString = to_string(t) + "-" + to_string(fileNumber) + "-" + to_string(questionNumber);
 						string formtypelower = formtype;
 						std::transform(formtypelower.begin(), formtypelower.end(), formtypelower.begin(), ::tolower);
 						if (formtype == "DFA" || formtype == "NFA" || formtype == "EFA")
 						{
-							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />"
+							output << "<input name=\"q" << idString << "\" type=\"hidden\" value=\"\" />"
 								 << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" << parsersLocation << formtypelower << "parserN.js\" type=\"text/javascript\"></script>"
-								 << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
-							output << "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" << q
-								<< "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q
-								<< "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << q
+								 << "<div id=\"q" << idString << "-div\" class=\"parser_text_default\"> :e <span id=\"q" << idString << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << idString << "\", " << formtypelower << "Parser.parse)</script>" << endl;
+							output << "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" << idString
+								<< "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << idString
+								<< "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" << idString
 								<< "c\">Text</a></li></ul></ul>" << endl;
-							output << "<div id=\"q" << q << "\" class=\"tab-content\"><script>init(\"q" << q << "\", \"" << type << "\");</script></div>" << endl;
+							output << "<div id=\"q" << idString << "\" class=\"tab-content\"><script>init(\"q" << idString << "\", \"" << type << "\");</script></div>" << endl;
 						}
 						else
 						{
-							output << "<input name=\"q" << q << "\" type=\"hidden\" value=\"\" />" << endl;
+							output << "<input name=\"q" << idString << "\" type=\"hidden\" value=\"\" />" << endl;
 							output << "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" << parsersLocation << formtypelower << "parserN.js\" type=\"text/javascript\"></script>" << endl;
-							output << "<div id=\"q" << q << "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" << q << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << q << "\", " << formtypelower << "Parser.parse)</script>" << endl;
+							output << "<div id=\"q" << idString << "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" << idString << "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" << idString << "\", " << formtypelower << "Parser.parse)</script>" << endl;
 						}
 					}
 					output << s2 << endl;
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 					output << s << endl;
 				}
 			}
-			cout << "-Successfully converted " << q << " questions." << endl;
+			cout << "-Successfully converted " << questionNumber << " questions." << endl;
 			input.close();
 			output.close();
 		}

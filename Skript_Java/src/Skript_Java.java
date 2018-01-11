@@ -64,8 +64,11 @@ public class Skript_Java {
 	System.out.print("Enter suffix of the export name: ");
         Scanner scanner = new Scanner(System.in);
         suffix = scanner.next();
+        
+        long t = System.currentTimeMillis() / 1000;
 	
-        for (String inputName : args) {
+        for (int fileNumber = 0; fileNumber < args.length; fileNumber++) {
+            String inputName = args[fileNumber];
             String outputName = inputName;
             outputName = new StringBuilder(outputName).insert(outputName.lastIndexOf('.'), suffix).toString();
             if (outputName.equals(prefixContentFileName) || outputName.equals(parsersLocationFileName))
@@ -79,7 +82,7 @@ public class Skript_Java {
             {
                 FileWriter writer;
                 try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
-                    int q = 0;
+                    int questionNumber = 0;
                     File file = new File(outputName);
                     file.createNewFile();
                     writer = new FileWriter(file);
@@ -103,25 +106,26 @@ public class Skript_Java {
                             }
                             if (!formtype.equals(""))
                             {
-                                q++;
+                                questionNumber++;
                                 String formtypelower = formtype;
+                                String idString = t + "-" + fileNumber + "-" + questionNumber;
                                 formtypelower = formtypelower.toLowerCase();
                                 if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA"))
                                 {
-                                    writer.write( "<input name=\"q" + q + "\" type=\"hidden\" value=\"\" />"
+                                    writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                                             + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + formtypelower + "parserN.js\" type=\"text/javascript\"></script>"
-                                            + "<div id=\"q" + q + "-div\" class=\"parser_text_default\"> :e <span id=\"q" + q + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + q + "\", " + formtypelower + "Parser.parse)</script>\n");
-                                    writer.write( "<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + q
-                                            + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + q
-                                            + "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + q
+                                            + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtypelower + "Parser.parse)</script>\n");
+                                    writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
+                                            + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
+                                            + "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "c\">Text</a></li></ul></ul>\n");
-                                    writer.write("<div id=\"q" + q + "\" class=\"tab-content\"><script>init(\"q" + q + "\", \"" + type + "\");</script></div>\n");
+                                    writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + type + "\");</script></div>\n");
                                 }
                                 else
                                 {
-                                    writer.write("<input name=\"q" + q + "\" type=\"hidden\" value=\"\" />\n");
+                                    writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />\n");
                                     writer.write("<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + formtypelower + "parserN.js\" type=\"text/javascript\"></script>\n");
-                                    writer.write("<div id=\"q" + q + "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" + q + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + q + "\", " + formtypelower + "Parser.parse)</script>\n");
+                                    writer.write("<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtypelower + "Parser.parse)</script>\n");
                                 }
                             }
                             writer.write(s2 + "\n");
@@ -130,7 +134,7 @@ public class Skript_Java {
                         {
                             writer.write(s + "\n");
                         }
-                    }   System.out.println("-Successfully converted " + q + " questions.\n");
+                    }   System.out.println("-Successfully converted " + questionNumber + " questions.\n");
                 }
                 writer.flush();
                 writer.close();
