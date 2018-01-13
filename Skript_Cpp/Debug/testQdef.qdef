@@ -122,6 +122,3 @@ Napište deterministický konečný automat popisující následující jazyk na
 Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ neobsahuje dva stejné znaky bezprostředně za sebou} \}</m>
 <div id="dfa-12-div" class="parser_text_default"> :e <br><span id="dfa-12-error" class="parser_error"></span></div><script type="text/javascript">register("dfa-12",dfaParser.parse)</script>
 :e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=E(B,b)=C(B,c)=D(C,a)=B(C,b)=E(C,c)=D(D,a)=B(D,b)=C(D,c)=E(E,a)=E(E,b)=E(E,c)=E F={A,B,C,D}" ok
-
---
-

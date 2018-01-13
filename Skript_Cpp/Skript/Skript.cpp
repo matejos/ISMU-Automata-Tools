@@ -12,6 +12,7 @@ using namespace std;
 
 const string prefixContentFileName = "Skript_prefix.txt";
 const string parsersLocationFileName = "Skript_parsers.txt";
+const string endingContentFileName = "Skript_ending.txt";
 
 string trim(string& str)
 {
@@ -31,7 +32,7 @@ int main(int argc, char* argv[])
 		return 0;
 	}
 
-	string s, s2, parsersLocation, prefixContent;
+	string s, s2, parsersLocation, prefixContent, endingContent;
 
 	ifstream parsersLocationInput(parsersLocationFileName);
 	if (parsersLocationInput.is_open())
@@ -60,6 +61,23 @@ int main(int argc, char* argv[])
 	else
 	{
 		cout << "ERROR: Could not read prefix content from file " << prefixContentFileName << endl;
+		cout << "Exporting aborted." << endl;
+		return 0;
+	}
+
+	ifstream endingContentInput(endingContentFileName);
+	if (endingContentInput.is_open())
+	{
+		while (!endingContentInput.eof())
+		{
+			getline(endingContentInput, s);
+			endingContent += s + "\n";
+		}
+		endingContentInput.close();
+	}
+	else
+	{
+		cout << "ERROR: Could not read ending content from file " << endingContentFileName << endl;
 		cout << "Exporting aborted." << endl;
 		return 0;
 	}
@@ -137,6 +155,7 @@ int main(int argc, char* argv[])
 					output << s << endl;
 				}
 			}
+			output << endingContent;
 			cout << "-Successfully converted " << questionNumber << " questions." << endl;
 			input.close();
 			output.close();

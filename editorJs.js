@@ -29,6 +29,9 @@ function sqr(x)
 
 // Initialization function
 function init(id, type) {
+    if (!window.jQuery_new) {
+        jQuery_new = $;
+    }
     var wp = document.getElementById(id);
 	wp.realtype = type;
 	wp.textTabShown = false;
@@ -120,7 +123,7 @@ function init(id, type) {
 		mydiv.setAttribute("style", "background-color: pink;");
 		mydiv.setAttribute("class", "canvas");
 		mydiv.setAttributeNS(null, "id", "mydiv");
-		$(mydiv).resizable({minHeight: 400, minWidth: 400});
+		jQuery_new(mydiv).resizable({minHeight: 400, minWidth: 400});
 		graph.appendChild(mydiv);
 		
 		
@@ -156,7 +159,7 @@ function init(id, type) {
 		rect.buttonRenameState = buttonRenameState;
 		rect.buttonRenameTransition = buttonRenameTransition;
 		rect.buttonDeleteSelected = buttonDeleteSelected;
-		$(rect).dblclick(rectDblClick);
+		jQuery_new(rect).dblclick(rectDblClick);
 		svg.rect = rect;
 		svg.appendChild(rect);
 		
@@ -223,7 +226,7 @@ function init(id, type) {
 		buttonRenameTransition.setAttributeNS(null, "onclick", 'buttonRenameTransitionClick(rect);');
 		buttonRenameState.setAttributeNS(null, "onclick", 'buttonRenameStateClick(rect);');
 		buttonDeleteSelected.setAttributeNS(null, "onclick", 'buttonDeleteSelectedClick(rect);');
-		$(additionalControls).click(additionalControlsClick);
+		jQuery_new(additionalControls).click(additionalControlsClick);
 		
 		buttonAddStates.style.borderStyle = "outset";
 		buttonAddTransitions.style.borderStyle = "outset";
@@ -233,7 +236,7 @@ function init(id, type) {
 		buttonRenameTransition.style.borderStyle = "outset";
 		buttonDeleteSelected.style.borderStyle = "outset";
 		additionalControls.shown = true;
-		$(additionalControls).trigger("click");
+		jQuery_new(additionalControls).trigger("click");
 		
 		wp.appendChild(graph);
 		
@@ -245,30 +248,30 @@ function init(id, type) {
 		wp.appendChild(textTab);
 		initTextTab(wp);
 		
-		$('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
+		jQuery_new('a[data-target="#' + id + 'a"]').on('shown.bs.tab', function (e) {
 			wp.textTabShown = false;
 			updateGraphTab(wp, e.relatedTarget);
 		});
-		$('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
+		jQuery_new('a[data-target="#' + id + 'b"]').on('shown.bs.tab', function (e) {
 			wp.textTabShown = false;
 			updateTableTab(wp, e.relatedTarget);
 		});
-		$('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
+		jQuery_new('a[data-target="#' + id + 'c"]').on('shown.bs.tab', function (e) {
 			wp.textTabShown = true;
 			updateTextTab(wp);
 		});
 		
-		$( "form" ).submit(function (e) {
+		jQuery_new( "form" ).submit(function (e) {
 			if (!wp.textTabShown)
 				updateTextTab(wp);
 		});
 		
-		$('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
+		jQuery_new('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
 			wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
 			wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
 		});
 		
-		$('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
+		jQuery_new('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
 			deselectElement(svg);
 			for (i = 0; i < rect.states.length; i++)
 			{
@@ -315,7 +318,7 @@ function initTableTab(wp) {
 		tableButtonEpsilon.type = "button";
 		tableButtonEpsilon.value = "Přidat epsilon";
 		tableButtonEpsilon.tableTab = wp.tableTab;
-		$(tableButtonEpsilon).click(tableButtonEpsilonClick);
+		jQuery_new(tableButtonEpsilon).click(tableButtonEpsilonClick);
 		tableButtonEpsilon.style.borderStyle = "outset";
 		wp.tableTab.appendChild(tableButtonEpsilon);
 		wp.tableTab.buttonEpsilon = tableButtonEpsilon;
@@ -339,13 +342,13 @@ function initTableTab(wp) {
 	
 	
 	wp.tableTab.statusText = document.createElement("p");
-	$(wp.tableTab.statusText).addClass("alert alert-danger", fadeTime);
+	jQuery_new(wp.tableTab.statusText).addClass("alert alert-danger", fadeTime);
 	wp.tableTab.statusText.style.display = "none";
 	wp.tableTab.appendChild(wp.tableTab.statusText);
 
 	wp.appendChild(wp.tableTab);
 	
-	$('a[data-target="#' + wp.svg.divId + 'b"]').on('hidden.bs.tab', function (e) {
+	jQuery_new('a[data-target="#' + wp.svg.divId + 'b"]').on('hidden.bs.tab', function (e) {
 			tableButtonInit.style.borderStyle = "outset";
 			tableButtonEnd.style.borderStyle = "outset";
 			wp.tableTab.statusText.style.display = "none";
@@ -588,7 +591,7 @@ function updateTableTabFromText(wp, pure)
 	cell.innerHTML = "";
 	cell.setAttribute("class", "myCell noselect tc");
 	cell.myTable = table;
-	$(cell).resizable({
+	jQuery_new(cell).resizable({
 		handles: 'e',
 		resize: function() 
 		{
@@ -751,8 +754,8 @@ function updateTableTabFromText(wp, pure)
 							{
 								//console.log("OLD: " + oldTable.rows[i].cells[k].myDiv.value + "NEW: " + table.rows[j].cells[l].myDiv.value);
 								table.rows[j].cells[l].myDiv.prevValue = oldTable.rows[i].cells[k].myDiv.value;
-								$(table.rows[j].cells[l].myDiv).trigger("input");
-								$(table.rows[j].cells[l].myDiv).trigger("focusout");
+								jQuery_new(table.rows[j].cells[l].myDiv).trigger("input");
+								jQuery_new(table.rows[j].cells[l].myDiv).trigger("focusout");
 							}
 						}
 					}
@@ -782,8 +785,8 @@ function updateTableTabFromText(wp, pure)
 					nullify = true;
 				if (nullify)
 					table.rows[j].cells[l].myDiv.prevValue = "{}";
-				$(table.rows[j].cells[l].myDiv).trigger("input");
-				$(table.rows[j].cells[l].myDiv).trigger("focusout");
+				jQuery_new(table.rows[j].cells[l].myDiv).trigger("input");
+				jQuery_new(table.rows[j].cells[l].myDiv).trigger("focusout");
 			}
 		}
 		
@@ -808,7 +811,7 @@ function tableDeselectCell(table)
 	if (table.selectedCell != 0)
 	{
 		var div = table.selectedCell;
-		$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
+		jQuery_new(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		table.selectedCell = 0;
 	}
 	table.wp.tableTab.buttonInit.disabled = true;
@@ -836,9 +839,9 @@ function tableCellClick(evt)
 		var div = table.selectedCell;
 		if (table.selectedCell != 0)
 		{
-			$(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
+			jQuery_new(div).switchClass(div.defaultClass + "s", div.defaultClass, fadeTime);
 		}
-		$(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
+		jQuery_new(cell).switchClass(cell.defaultClass, cell.defaultClass + "s", fadeTime);
 		
 		table.wp.tableTab.buttonInit.disabled = false;
 		table.wp.tableTab.buttonEnd.disabled = false;
@@ -996,12 +999,12 @@ function tableAddRowHeader(row, value)
 	div.defaultClass = "rh";
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv " + div.defaultClass);
-	$(div).click(tableCellClick);
+	jQuery_new(div).click(tableCellClick);
 
-	$(div).on('input',tableRhChanged);
-	$(div).focusout(tableRhChangedFinal);
+	jQuery_new(div).on('input',tableRhChanged);
+	jQuery_new(div).focusout(tableRhChangedFinal);
 
-	$(div).keypress(function (e) {
+	jQuery_new(div).keypress(function (e) {
 		var code = e.keyCode || e.which;
 		if(code == 13)
 			return false;
@@ -1059,7 +1062,7 @@ function lockTable(table, exc)
 		{
 			if (table.rows[i].cells[j].myDiv == exc)
 				continue;
-			$(table.rows[i].cells[j].myDiv).prop('readonly', true);
+			jQuery_new(table.rows[i].cells[j].myDiv).prop('readonly', true);
 		}
 	}
 	table.locked = true;
@@ -1072,7 +1075,7 @@ function unlockTable(table)
 	{
 		for (var j = 1; j < table.rows[i].cells.length; j++)
 		{
-			$(table.rows[i].cells[j].myDiv).prop('readonly', false);
+			jQuery_new(table.rows[i].cells[j].myDiv).prop('readonly', false);
 		}
 	}
 	table.locked = false;
@@ -1086,21 +1089,21 @@ function tableRhChanged()
 	state = removePrefixFromState(state);
 	if (incorrectStateSyntax(state))
 	{
-		$(this).addClass("incorrect", fadeTime);
+		jQuery_new(this).addClass("incorrect", fadeTime);
 		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax názvu stavu (řetězec znaků z {a-z,A-Z,0-9}). Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else if (tableStateExists(this, state) != -1)
 	{
-		$(this).addClass("incorrect", fadeTime);
+		jQuery_new(this).addClass("incorrect", fadeTime);
 		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Duplicitní název stavu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else
 	{
-		$(this).removeClass("incorrect", fadeTime);
+		jQuery_new(this).removeClass("incorrect", fadeTime);
 		if (table.locked)
 		{
 			unlockTable(table);
@@ -1151,7 +1154,7 @@ function tableRhChanged()
 function tableRhChangedFinal()
 {
 	var table = this.parentElement.parentElement.parentElement.parentElement;
-	if ($(this).hasClass("incorrect") == false && !table.locked)
+	if (jQuery_new(this).hasClass("incorrect") == false && !table.locked)
 	{
 		var div = this;
 		var prevName = div.prevValue;
@@ -1237,7 +1240,7 @@ function tableChChanged()
 	if ( (table.wp.realtype == "EFA" && incorrectEFATransitionSyntax(this.value)) ||
 		(table.wp.realtype != "EFA" && (incorrectDFATransitionSyntax(this.value) || this.value == "\\e")) )
 		{
-		$(this).addClass("incorrect", fadeTime);
+		jQuery_new(this).addClass("incorrect", fadeTime);
 		if (table.wp.realtype == "EFA")
 			table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Nevyhovující syntax symbolu přechodu (řetězec znaků z {a-z,A-Z,0-9}, \\e nebo ε). Tabulka je uzamčena dokud nebude chyba opravena.";
 		else
@@ -1247,14 +1250,14 @@ function tableChChanged()
 		}
 	else if (tableSymbolExists(this, symbol) != -1)
 	{
-		$(this).addClass("incorrect", fadeTime);
+		jQuery_new(this).addClass("incorrect", fadeTime);
 		table.tableTab.statusText.innerHTML = "<strong>Chyba!</strong> Duplicitní název symbolu přechodu není povolen. Tabulka je uzamčena dokud nebude chyba opravena.";
 		table.tableTab.statusText.style.display = "";
 		lockTable(table, this);
 	}
 	else
 	{
-		$(this).removeClass("incorrect", fadeTime);
+		jQuery_new(this).removeClass("incorrect", fadeTime);
 		if (table.locked)
 		{
 			table.tableTab.statusText.innerHTML = "";
@@ -1268,7 +1271,7 @@ function tableChChanged()
 function tableChChangedFinal()
 {
 	var table = this.parentElement.parentElement.parentElement.parentElement;
-	if ($(this).hasClass("incorrect") == false && !table.locked)
+	if (jQuery_new(this).hasClass("incorrect") == false && !table.locked)
 	{
 		var div = this;
 		var prevName = div.prevValue;
@@ -1321,7 +1324,7 @@ function tableCellChanged()
 	if (! (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 	{
-		$(this).removeClass("incorrect", fadeTime);
+		jQuery_new(this).removeClass("incorrect", fadeTime);
 		if (table.locked)
 		{
 			table.tableTab.statusText.innerHTML = "";
@@ -1337,7 +1340,7 @@ function tableCellChangedFinal()
 	if ( (table.wp.type == "NFA" && incorrectTableNFATransitionsSyntax(this.value)) ||
 		(table.wp.type == "DFA" && incorrectTableDFATransitionsSyntax(this.value)) )
 		{
-		$(this).addClass("incorrect", fadeTime);
+		jQuery_new(this).addClass("incorrect", fadeTime);
 		var statusmsg = "<strong>Chyba!</strong> Nevyhovující syntax výsledku přechodové funkce. ";
 		if (table.wp.type == "DFA")
 		{
@@ -1510,12 +1513,12 @@ function tableAddColumnHeader(row, value)
 	div.style.width = minCellW;
 	cell.setAttribute("class", "myCell ch");
 	div.setAttribute("class", "myCellDiv");
-	$(div).click(tableEditCellClick);
+	jQuery_new(div).click(tableEditCellClick);
 	
-	$(div).on('input',tableChChanged);
-	$(div).focusout(tableChChangedFinal);
+	jQuery_new(div).on('input',tableChChanged);
+	jQuery_new(div).focusout(tableChChangedFinal);
 	cell.myTable = table;
-	$(cell).resizable({
+	jQuery_new(cell).resizable({
 		handles: 'e',
 		resize: function() 
 		{
@@ -1536,7 +1539,7 @@ function tableAddColumnHeader(row, value)
 		regex = tableEFATransitionSyntax();
 	else
 		regex = DFATransitionSyntax();
-	$(div).keypress(function (e) {
+	jQuery_new(div).keypress(function (e) {
 		var code = e.keyCode || e.which;
 		if(code == 13)
 			return false;
@@ -1565,12 +1568,12 @@ function tableAddCell(row)
 	div.prevValue = div.value;
 	div.style.width = table.rows[1].cells[cell.cellIndex].style.minWidth;
 	//console.log(table.rows[1].cells[cell.cellIndex].style.minWidth);
-	$(div).click(tableEditCellClick);
+	jQuery_new(div).click(tableEditCellClick);
 	cell.setAttribute("class", "myCell");
 	div.setAttribute("class", "myCellDiv");
 	
-	$(div).on('input',tableCellChanged);
-	$(div).focusout(tableCellChangedFinal);
+	jQuery_new(div).on('input',tableCellChanged);
+	jQuery_new(div).focusout(tableCellChangedFinal);
 
 	
 	var regex;
@@ -1578,7 +1581,7 @@ function tableAddCell(row)
 		regex = /[a-zA-Z0-9{},]/;
 	else
 		regex = /[a-zA-Z0-9\-]/;
-	$(div).keypress(function (e) {
+	jQuery_new(div).keypress(function (e) {
 		var code = e.keyCode || e.which;
 		if(code == 13)
 			return false;
@@ -1705,7 +1708,7 @@ function tableButtonInitClick(tableTab) {
 		else
 			toggleInitStateOff(findState(table.wp.svg.rect, state));
 		
-		$(cell).trigger("input");
+		jQuery_new(cell).trigger("input");
 	}
 }
 
@@ -1742,7 +1745,7 @@ function tableButtonEndClick(tableTab) {
 		else
 			toggleEndStateOff(findState(table.wp.svg.rect, state));
 		
-		$(cell).trigger("input");
+		jQuery_new(cell).trigger("input");
 	}
 }
 
@@ -1922,16 +1925,16 @@ function additionalControlsClick() {
 	if (this.shown)
 	{
 		this.setAttribute("class", "nedurazne rozbal");
-		$(this.rect.buttonRenameState).hide();
-		$(this.rect.buttonRenameTransition).hide();
-		$(this.rect.buttonDeleteSelected).hide();
+		jQuery_new(this.rect.buttonRenameState).hide();
+		jQuery_new(this.rect.buttonRenameTransition).hide();
+		jQuery_new(this.rect.buttonDeleteSelected).hide();
 	}
 	else
 	{
 		this.setAttribute("class", "nedurazne sbal");
-		$(this.rect.buttonRenameState).show();
-		$(this.rect.buttonRenameTransition).show();
-		$(this.rect.buttonDeleteSelected).show();
+		jQuery_new(this.rect.buttonRenameState).show();
+		jQuery_new(this.rect.buttonRenameTransition).show();
+		jQuery_new(this.rect.buttonDeleteSelected).show();
 	}
 	this.shown = !this.shown;
 	return false;
@@ -1940,14 +1943,14 @@ function additionalControlsClick() {
 function buttonRenameStateClick(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "circle")) {
-		$(svg.selectedElement).trigger("dblclick");
+		jQuery_new(svg.selectedElement).trigger("dblclick");
     }
 }
 
 function buttonRenameTransitionClick(rect) {
     var svg = rect.parentSvg;
     if ((svg.selectedElement !== 0) && (svg.selectedElement.tagName == "path")) {
-		$(svg.selectedElement.rect).trigger("dblclick");
+		jQuery_new(svg.selectedElement.rect).trigger("dblclick");
     }
 }
 
@@ -1964,7 +1967,7 @@ function buttonDeleteSelectedClick(rect) {
 				deleteTransition(svg.selectedElement);
 				break;
 		}
-		$(document).unbind("keydown");
+		jQuery_new(document).unbind("keydown");
 	}
 }
 function generateAnswer(rect)
@@ -2079,7 +2082,7 @@ function createStateAbs(rect, x, y, name)
 	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
 	shape.setAttributeNS(null, "onmouseup", "stopMovingElement()");
-	$(shape).dblclick(stateDblClick);
+	jQuery_new(shape).dblclick(stateDblClick);
 
 	var newText = document.createElementNS(svgns, "text");
 	newText.setAttributeNS(null, "x", shape.getAttribute("cx"));
@@ -2275,7 +2278,7 @@ function createTransition(state1, state2, symbols)
 	newRect.setAttributeNS(null, 'onmouseup', 'stopMovingElement()');
 	newRect.setAttributeNS(null, 'onmousemove', 'prevent(evt)');
 	newRect.line = aLine;
-	$(newRect).dblclick(transitionDblClick);
+	jQuery_new(newRect).dblclick(transitionDblClick);
 
 	aLine.text = newText;
 	aLine.rect = newRect;
@@ -2490,8 +2493,8 @@ function selectElement(evt) {
 			svg.selectedElement.markerline.setAttribute('marker-end', 'url(#TriangleSel' + svg.divId + ')');
             break;
     }
-	$(document).unbind("keydown");
-	$(document).keydown(function( event ) {
+	jQuery_new(document).unbind("keydown");
+	jQuery_new(document).keydown(function( event ) {
 		var key = event.keyCode || event.which || event.charCode;
 		if (key == 46)	// delete
 		{
@@ -2504,7 +2507,7 @@ function selectElement(evt) {
 					deleteTransition(svg.selectedElement);
 					break;
 			}
-			$(document).unbind("keydown");
+			jQuery_new(document).unbind("keydown");
 		}
 	});
 }

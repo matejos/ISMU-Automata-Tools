@@ -1,0 +1,6 @@
+--
+++
+<script type="text/javascript">
+	var jQuery_new = $;
+	$ = jQuery = jQuery_old;
+</script>

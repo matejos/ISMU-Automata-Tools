@@ -15,6 +15,7 @@ import java.util.Scanner;
 public class Skript_Java {
     static String prefixContentFileName = "Skript_prefix.txt";
     static String parsersLocationFileName = "Skript_parsers.txt";
+    static String endingContentFileName = "Skript_ending.txt";
     /**
      * @param args the command line arguments 
      */
@@ -26,7 +27,7 @@ public class Skript_Java {
             return;
 	}
 
-	String s, s2, parsersLocation = "", prefixContent = "";
+	String s, s2, parsersLocation = "", prefixContent = "", endingContent = "";
         
         try
         {
@@ -56,6 +57,23 @@ public class Skript_Java {
         catch (Exception e)
         {
             System.err.format("ERROR: Could not read prefix content from file '%s'. Exporting aborted.\n", prefixContentFileName);
+            return;
+        }
+        
+        try
+        {
+            try (BufferedReader reader = new BufferedReader(new FileReader(endingContentFileName))) 
+            {
+                String line;
+                while ((line = reader.readLine()) != null)
+                {
+                    endingContent += line + "\n";
+                } 
+            }
+        }
+        catch (Exception e)
+        {
+            System.err.format("ERROR: Could not read ending content from file '%s'. Exporting aborted.\n", endingContentFileName);
             return;
         }
         
@@ -136,6 +154,7 @@ public class Skript_Java {
                         }
                     }   System.out.println("-Successfully converted " + questionNumber + " questions.\n");
                 }
+                writer.write(endingContent);
                 writer.flush();
                 writer.close();
             }
