@@ -363,7 +363,7 @@ function initTextTab(wp) {
 	}
 	else
 	{
-		wp.textTab.appendChild(wp.textTab.textArea.parentElement.parentElement);
+		wp.textTab.appendChild(wp.textTab.textArea.parentElement);
 		
 		if (wp.textTab.textArea.value != "")
 		{
