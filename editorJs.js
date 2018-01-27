@@ -132,6 +132,7 @@ function init(id, type) {
 		svg.setAttribute('height', '100%');
 		svg.selectedElement = 0;
 		svg.makingTransition = 0;
+		svg.drawingTransition = false;
 		svg.parentSvg = svg;
 		svg.setAttributeNS(null, "onmousemove", "moveElement(evt)");
 		svg.setAttributeNS(null, "onmouseleave", "stopMovingElement();");
@@ -2133,6 +2134,7 @@ function rectClick(evt, rect) {
 			if (rect.parentSvg.makingTransition !== 0) {
 				rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
 				rect.parentSvg.makingTransition = 0;
+				destroyDrawingTransition(rect.parentSvg);
 				deselectElement(rect.parentSvg);
 			}
 			break;
@@ -2142,20 +2144,17 @@ function rectClick(evt, rect) {
     }
 }
 
+function destroyDrawingTransition(svg)
+{
+    svg.drawingTransition = false;
+    svg.removeChild(svg.aLine.markerline);
+    svg.removeChild(svg.aLine);
+}
+
 function putOnTop(state) {
     state.parentSvg.appendChild(state);
     if (state.end) state.parentSvg.appendChild(state.end);
     state.parentSvg.appendChild(state.text);
-}
-function cubicControlPoints(x, y, d){
-	var mult = 100;
-	var div = 8;
-    var x1 = +x + (Math.cos(d + Math.PI / div) * mult);
-	var y1 = +y - (Math.sin(d + Math.PI / div) * mult);
-	var x2 = +x + (Math.cos(d - Math.PI / div) * mult);
-	var y2 = +y - (Math.sin(d - Math.PI / div) * mult);
-    var str = x1 + " " + y1 + " " + x2 + " " + y2;
-    return str;
 }
 
 function selectStateForTransition(state)
@@ -2164,6 +2163,7 @@ function selectStateForTransition(state)
 	if (state.end)
 		state.end.setAttributeNS(null, "fill", "lightblue");
 	state.parentSvg.makingTransition = state;
+	drawTransition(state);
 }
 
 function stateDblClick(evt)
@@ -2182,6 +2182,70 @@ function stateDblClick(evt)
 	this.setAttribute("stroke", "black");
 }
 
+// Get path definition attribute for transition from state A to itself
+function getAToAAtt(line, x1, y1, x2, y2) {
+    var dist = distBetween(x1, y1, x2, y2);
+    if (dist == 0)
+        dist = 0.001;
+    var angle;
+    if (x1 == x2 && y1 == y2)
+        angle = 0;
+    else
+        angle = Math.acos((x2 - x1) / dist);
+    if (y2 > y1)
+        angle = -angle;
+
+    att = "M " + x1 + " " + y1 + " C "
+        + cubicControlPoints(x1, y1, angle)
+        + " " + x1 + " " + y1;
+
+    line.angle = angle;
+    return att;
+}
+
+// Get path definition attribute for transition from state A to state B
+function getAToBAtt(line, x1, y1, x2, y2) {
+    var dist = distBetween(x1, y1, x2, y2);
+    var z = Math.max(50, dist / 2);
+    if (dist == 0)
+        dist = 0.001;
+    var angle = Math.acos((x2 - x1) / dist);
+    if (y2 > y1)
+        angle = -angle;
+    angle += Math.PI / 2;
+    line.dx = (Math.cos(angle) * z);
+    line.dy = (-Math.sin(angle) * z);
+    var cpx = ((x1 + x2) / 2) + line.dx;
+    var cpy = ((y1 + y2) / 2) + line.dy;
+    var att = "M " + x1 + " " + y1 + " Q "
+        + cpx + " " + cpy
+        + " " + x2 + " " + y2;
+
+    line.angle = angle;
+    return att;
+}
+
+// Repositioning transition path to mouse cursor
+function repositionTransitionTo(line, mouseX, mouseY) {
+    var x1 = +line.start.getAttribute("cx");
+    var y1 = +line.start.getAttribute("cy");
+    var x2 = mouseX;
+    var y2 = mouseY;
+    var att;
+    var dist = distBetween(x1, y1, x2, y2);
+    if (dist < circleSize) {
+        att = getAToAAtt(line, x1, y1, x2, y2);
+        line.setAttribute('d', att);
+        repositionMarker(line);
+    }
+    else {
+        att = getAToBAtt(line, x1, y1, x2, y2);
+        line.setAttribute('d', att);
+        repositionMarkerToEnd(line);
+    }
+}
+
+// Repositioning transition path to its place after added through table or text (or loaded from save)
 function repositionTransition(line)
 {
 	var x1 = +line.start.getAttribute("cx");
@@ -2189,10 +2253,7 @@ function repositionTransition(line)
 	var att;
 	if (line.start == line.end)
 	{
-		line.angle = 0;
-		att = "M " + x1 + " " + y1 + " C "
-			+ cubicControlPoints(x1, y1, line.angle)
-			+ " " + x1 +" " + y1;
+		att = getAToAAtt(line, x1, y1, x1, y1);
 			
 		var atts = att.split(" ");
 		var tx = (+atts[4] + +atts[6] + +atts[1]) / 3;
@@ -2202,23 +2263,8 @@ function repositionTransition(line)
 	{
 		var x2 = +line.end.getAttribute("cx");
 		var y2 = +line.end.getAttribute("cy");
-		
-		var z = Math.max(50, Math.sqrt(sqr(x2-x1) + sqr(y2-y1)) / 2);
-		//console.log(line.start.name + "->" + line.end.name + " " + z);
-		var sqrtt = Math.sqrt( sqr(x2 - x1) + sqr(y2 - y1) );
-		if (sqrtt == 0)
-			sqrtt = 0.001;
-		var angle = Math.acos( (x2 - x1) / sqrtt );
-		if (y2 > y1)
-			angle = -angle;
-		angle += Math.PI/2;
-		line.dx = (Math.cos(angle) * z);
-		line.dy = (-Math.sin(angle) * z);
-		var cpx = ((x1 + x2)/2) + line.dx;
-		var cpy = ((y1 + y2)/2) + line.dy;
-		att = "M "+x1+" "+y1+" Q "
-			+ cpx + " " + cpy
-			+ " " + x2 + " " + y2;
+		att = getAToBAtt(line, x1, y1, x2, y2);
+
 		var str = att.split(' ');
 		var tx = (+str[4] + (+((+str[1] + (+str[6]))/2)))/2;
 		var ty = (+str[5] + (+((+str[2] + (+str[7]))/2)))/2;
@@ -2230,28 +2276,48 @@ function repositionTransition(line)
 	repositionMarker(line);
 }
 
+// Create a transition path to draw it from a state
+function drawTransition(state1)
+{
+    var aLine = document.createElementNS(svgns, 'path');
+    aLine.setAttribute('stroke', 'black');
+    aLine.setAttribute('stroke-width', 3);
+    aLine.setAttribute('fill', 'none');
+    aLine.setAttribute('pointer-events', 'none');
+    aLine.start = state1;
+    aLine.parentSvg = state1.parentSvg;
+
+    var line = document.createElementNS(svgns, 'path');
+    line.setAttribute('stroke-width', 3);
+    line.setAttribute('pointer-events', 'none');
+    line.setAttribute('marker-end', 'url(#Triangle' + aLine.parentSvg.divId + ')');
+    state1.parentSvg.appendChild(line);
+
+    aLine.markerline = line;
+
+    state1.parentSvg.appendChild(aLine);
+    state1.parentSvg.aLine = aLine;
+    state1.parentSvg.drawingTransition = true;
+    putOnTop(state1);
+}
+
+// Establish transition between two states through symbols
 function createTransition(state1, state2, symbols)
 {
-	var aLine = document.createElementNS(svgns, 'path');
-	aLine.setAttribute('stroke', 'black');
-	aLine.setAttribute('stroke-width', 3);
-	aLine.setAttribute('fill', 'none');
+    if (!state1.parentSvg.aLine) {
+        drawTransition(state1);
+        state1.parentSvg.drawingTransition = false;
+    }
+    var aLine = state1.parentSvg.aLine;
+    aLine.setAttribute('pointer-events', 'auto');
 	aLine.setAttributeNS(null, 'onmousedown', 'selectElement(evt)');
 	aLine.setAttributeNS(null, 'onmouseup', 'stopMovingElement()');
-	aLine.parentSvg = state2.parentSvg;
 	aLine.name = symbols;
 	aLine.start = state1;
 	aLine.end = state2;
 	aLine.isNew = true;
-	
-	var line = document.createElementNS(svgns, 'path');
-	line.setAttribute('stroke-width', 3);
-	line.setAttribute('pointer-events', 'none');
-	line.setAttribute('marker-end', 'url(#Triangle' + aLine.parentSvg.divId + ')');
-	state2.parentSvg.appendChild(line);
-	
-	
-	aLine.markerline = line;
+
+	aLine.markerline.setAttribute('marker-end', 'url(#Triangle' + aLine.parentSvg.divId + ')');
 	
 	
 	var newText = document.createElementNS(svgns, 'text');
@@ -2302,6 +2368,7 @@ function createTransition(state1, state2, symbols)
 	
 	adjustTransitionWidth(aLine);
 	
+	state1.parentSvg.aLine = 0;
 	return aLine;
 }
 
@@ -2427,6 +2494,7 @@ function clickState(evt) {
 							state.parentRect.mode = modeEnum.SELECT;
 						state.parentSvg.selectedElement = state.parentSvg.makingTransition;
 						state.parentSvg.makingTransition = 0;
+						destroyDrawingTransition(state.parentSvg);
 						deselectElement(state.parentSvg);
 						return;
 					}
@@ -2436,6 +2504,7 @@ function clickState(evt) {
 				{
 					var line = createTransition(state.parentSvg.makingTransition, state, name);
 					line.isNew = false;
+					state.parentSvg.drawingTransition = false;
 				}
 				else
 					rectClick(null, state.parentRect);
@@ -2653,10 +2722,13 @@ function moveElement(evt) {
                 moveState(svg.selectedElement, mouseX, mouseY);
                 break;
             case "path":
-				svg.selectedElement.rect.setAttribute('class', 'movable');
+                svg.selectedElement.rect.setAttribute('class', 'movable');
                 movePath(svg.selectedElement, mouseX, mouseY);
                 break;
         }
+    }
+    if (svg.drawingTransition) {
+        repositionTransitionTo(svg.aLine, mouseX, mouseY);
     }
 }
 
@@ -2770,12 +2842,10 @@ function movePath(line, mouseX, mouseY) {
 	var str = line.getAttribute("d").split(" ");
 	if (line.start == line.end)
 	{
-		var dx = mouseX - str[1];
-		var dy = mouseY - str[2];
-		var sqrtt = Math.sqrt( sqr(dx) + sqr(dy) );
+		var sqrtt = distBetween(str[1], str[2], mouseX, mouseY);
 		if (sqrtt == 0)
 			sqrtt = 0.001;
-		var angle = Math.acos( dx / sqrtt );
+		var angle = Math.acos((mouseX - str[1]) / sqrtt);
 		if (mouseY > str[2])
 			angle = -angle;
 		
@@ -2811,12 +2881,22 @@ function movePath(line, mouseX, mouseY) {
 	repositionMarker(line);
 }
 
+// Reposition path marker to the end of the path
+function repositionMarkerToEnd(line) {
+    repositionMarkerTo(line, 17);
+}
+
+// Reposition path marker so that it is just before the state circle
 function repositionMarker(line)
 {
-	var pathLength = line.getTotalLength();
-	var pathPoint = line.getPointAtLength(pathLength - circleSize - 15);
-	var pathPoint2 = line.getPointAtLength(pathLength - circleSize - 15.01);
-	line.markerline.setAttribute("d", "M" + pathPoint2.x + " " + pathPoint2.y + " L " + pathPoint.x +" "+ pathPoint.y);
+    repositionMarkerTo(line, circleSize + 15);
+}
+
+function repositionMarkerTo(line, distance) {
+    var pathLength = line.getTotalLength();
+    var pathPoint = line.getPointAtLength(pathLength - distance);
+    var pathPoint2 = line.getPointAtLength(pathLength - distance - 0.01);
+    line.markerline.setAttribute("d", "M" + pathPoint2.x + " " + pathPoint2.y + " L " + pathPoint.x + " " + pathPoint.y);
 }
 
 function transitionDblClick()
@@ -2837,10 +2917,11 @@ function transitionDblClick()
 	rect.setAttribute("stroke", "black");
 	rect.setAttribute('class', '');
 }
+
 function stopMovingElement() {
     if (movingElement !== 0) {
         movingElement.setAttribute('class', 'none');
-		if (movingElement.tagName == "path")
+		if (movingElement.tagName == "path" && movingElement.rect)
 			movingElement.rect.setAttribute('class', 'none');
         movingElement = 0;
     }
@@ -2923,4 +3004,23 @@ function stateSyntax()
 function incorrectStateSyntax(val)
 {
 	return (!stateSyntax().test(val));
+}
+
+//------------------------
+// Computational functions
+//------------------------
+
+function cubicControlPoints(x, y, d) {
+    var mult = 100;
+    var div = 8;
+    var x1 = +x + (Math.cos(d + Math.PI / div) * mult);
+    var y1 = +y - (Math.sin(d + Math.PI / div) * mult);
+    var x2 = +x + (Math.cos(d - Math.PI / div) * mult);
+    var y2 = +y - (Math.sin(d - Math.PI / div) * mult);
+    var str = x1 + " " + y1 + " " + x2 + " " + y2;
+    return str;
+}
+
+function distBetween(x1, y1, x2, y2) {
+    return Math.sqrt(sqr(x1 - x2) + sqr(y1 - y2));
 }
