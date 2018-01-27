@@ -1641,19 +1641,7 @@ function tableAddRow(table, name)
 	{
 		if (!name)
 		{
-			var k = 'A'.charCodeAt(0);
-			var nameprefix = "";
-			do
-			{
-				if (k > 'Z'.charCodeAt(0))
-				{
-					nameprefix += "A";
-					k = 'A'.charCodeAt(0);
-				}
-				name = nameprefix + String.fromCharCode(k);
-				k++;
-			}
-			while (table.states.indexOf(name) != -1)
+		    name = getNewStateName(table.states);
 		}
 		
 		tableDeselectCell(table);
@@ -2043,6 +2031,22 @@ function generateAnswer(rect)
 	return out;
 }
 
+function getNewStateName(names) {
+    var k = 'A'.charCodeAt(0);
+    var nameprefix = "";
+    var name;
+    do {
+        if (k > 'Z'.charCodeAt(0)) {
+            nameprefix += "A";
+            k = 'A'.charCodeAt(0);
+        }
+        name = nameprefix + String.fromCharCode(k);
+        k++;
+    }
+    while (names.indexOf(name) != -1)
+    return name;
+}
+
 function createStateAbs(rect, x, y, name)
 {
 	//console.log("creating state " + name);
@@ -2073,12 +2077,10 @@ function createStateAbs(rect, x, y, name)
 	shape.lines2 = [];
 	if (!name)
 	{
-		var names = [];
-		for (k = 65; k < 91; k++)
-			names.push(String.fromCharCode(k));
-		for (k = 0; k < rect.states.length; k++)
-			names.splice(names.indexOf(rect.states[k].name), 1);
-		name = names[0];
+	    var names = [];
+	    for (k = 0; k < rect.states.length; k++)
+	        names.push(rect.states[k].name);
+	    name = getNewStateName(names);
 	}
 	shape.name = name;
 	shape.setAttributeNS(null, "onmousedown", "clickState(evt)");
