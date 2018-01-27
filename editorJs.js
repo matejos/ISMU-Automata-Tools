@@ -497,7 +497,7 @@ function updateTableTabFromText(wp, pure)
 	wp.tableTab.appendChild(table);
 	
 	var s = wp.textTab.textArea.value;
-	var str = s.split(" ");
+	var str = s.split(/\n| /g);
 	table.states = [];
 	table.symbols = [];
 	table.initState = null;
