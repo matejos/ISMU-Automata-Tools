@@ -2228,22 +2228,33 @@ function getAToBAtt(line, x1, y1, x2, y2) {
 }
 
 // Repositioning transition path to mouse cursor
-function repositionTransitionTo(line, mouseX, mouseY) {
+function repositionTransitionToXY(line, mouseX, mouseY) {
     var x1 = +line.start.getAttribute("cx");
     var y1 = +line.start.getAttribute("cy");
     var x2 = mouseX;
     var y2 = mouseY;
+    var att = getAToBAtt(line, x1, y1, x2, y2);
+    line.setAttribute('d', att);
+    repositionMarkerToEnd(line);
+}
+
+// Repositioning transition path to lock to a circle
+function repositionTransitionToCircle(line, state) {
+    var x1 = +line.start.getAttribute("cx");
+    var y1 = +line.start.getAttribute("cy");
+    var x2 = +state.getAttribute("cx");
+    var y2 = +state.getAttribute("cy");
     var att;
-    var dist = distBetween(x1, y1, x2, y2);
-    if (dist < circleSize) {
-        att = getAToAAtt(line, x1, y1, x2, y2);
+    if (state == line.start) {
+        att = getAToAAtt(line, x1, y1, x1, y1);
         line.setAttribute('d', att);
         repositionMarker(line);
     }
     else {
         att = getAToBAtt(line, x1, y1, x2, y2);
         line.setAttribute('d', att);
-        repositionMarkerToEnd(line);
+        repositionMarker(line);
+        putOnTop(state);
     }
 }
 
@@ -2707,14 +2718,13 @@ function deselectElement(svg) {
 
 function moveElement(evt) {
 	evt.preventDefault();
-	var svg = evt.target.parentSvg;
-	
-	var target  = evt.target.parentSvg,
-              rect    = svg.getBoundingClientRect(),
-              offsetX = evt.clientX - rect.left,
-              offsetY  = evt.clientY - rect.top;
-	var mouseX = offsetX;
-	var mouseY = offsetY;
+	var target = evt.target,
+        svg = target.parentSvg,
+        rect = svg.getBoundingClientRect(),
+        offsetX = evt.clientX - rect.left,
+        offsetY  = evt.clientY - rect.top,
+	    mouseX = offsetX,
+	    mouseY = offsetY;
 	//console.log("mousemove at "+mouseX+","+mouseY);
     if (movingElement !== 0) {
         movingElement.setAttribute('class', 'movable');
@@ -2729,8 +2739,15 @@ function moveElement(evt) {
                 break;
         }
     }
-    if (svg.drawingTransition) {
-        repositionTransitionTo(svg.aLine, mouseX, mouseY);
+    else if (svg.drawingTransition) {
+        switch (target.tagName) {
+            case "circle":
+                repositionTransitionToCircle(svg.aLine, target);
+                break;
+            default:
+                repositionTransitionToXY(svg.aLine, mouseX, mouseY);
+                break;
+        }
     }
 }
 
