@@ -116,7 +116,6 @@ function init(id, type) {
 		modeForm.appendChild(buttonAddTransitions);
 		modeForm.appendChild(document.createTextNode("Přidávat přechody"));
 
-		graph.appendChild(document.createElement("br"));
 		graph.appendChild(modeForm);
 
 		graph.appendChild(document.createElement("div"));
