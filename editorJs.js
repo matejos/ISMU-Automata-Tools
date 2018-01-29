@@ -71,13 +71,20 @@ function init(id, type) {
 		textTab.wp = wp;
 		wp.textTab = textTab;
 
+		var modeForm = document.createElement("form");
+		modeForm.action = "";
+
+		var buttonSelect = document.createElement("input");
+		buttonSelect.name = "mode" + id;
+		buttonSelect.type = "radio";
+
 		var buttonAddStates = document.createElement("input");
-		buttonAddStates.type = "button";
-		buttonAddStates.value = "Přidávat stavy";
+		buttonAddStates.name = "mode" + id;
+		buttonAddStates.type = "radio";
 
 		var buttonAddTransitions = document.createElement("input");
-		buttonAddTransitions.type = "button";
-		buttonAddTransitions.value = "Přidávat přechody";
+		buttonAddTransitions.name = "mode" + id;
+		buttonAddTransitions.type = "radio";
 
 		var buttonInitState = document.createElement("input");
 		buttonInitState.type = "button";
@@ -95,9 +102,23 @@ function init(id, type) {
 		buttonDeleteSelected.type = "button";
 		buttonDeleteSelected.value = "Smaž vybrané";
 		
+		modeForm.appendChild(document.createTextNode("Mód:"));
+		modeForm.appendChild(document.createElement("br"));
 
-		graph.appendChild(buttonAddStates);
-		graph.appendChild(buttonAddTransitions);
+		modeForm.appendChild(buttonSelect);
+		modeForm.appendChild(document.createTextNode("Výběr"));
+		modeForm.appendChild(document.createElement("br"));
+
+		modeForm.appendChild(buttonAddStates);
+		modeForm.appendChild(document.createTextNode("Přidávat stavy"));
+		modeForm.appendChild(document.createElement("br"));
+
+		modeForm.appendChild(buttonAddTransitions);
+		modeForm.appendChild(document.createTextNode("Přidávat přechody"));
+
+		graph.appendChild(document.createElement("br"));
+		graph.appendChild(modeForm);
+
 		graph.appendChild(document.createElement("div"));
 		graph.appendChild(buttonInitState);
 		graph.appendChild(buttonEndState);
@@ -139,9 +160,9 @@ function init(id, type) {
 		rect.parentSvg = svg;
 		rect.states = [];
 		rect.initState = null;
-		rect.mode = modeEnum.SELECT;
 		rect.setAttributeNS(null, "onmousedown", "rectClick(evt,this)");
 		rect.setAttributeNS(null, "onmouseup", "stopMovingElement();");
+		rect.buttonSelect = buttonSelect;
 		rect.buttonAddStates = buttonAddStates;
 		rect.buttonAddTransitions = buttonAddTransitions;
 		rect.buttonInitState = buttonInitState;
@@ -199,6 +220,7 @@ function init(id, type) {
 		
 		svg.appendChild(defs);
 
+		buttonSelect.rect = rect;
 		buttonAddStates.rect = rect;
 		buttonAddTransitions.rect = rect;
 		buttonInitState.rect = rect;
@@ -206,15 +228,14 @@ function init(id, type) {
 		buttonRename.rect = rect;
 		buttonDeleteSelected.rect = rect;
 		
-		buttonAddStates.setAttributeNS(null, "onclick", 'buttonAddStatesClick(rect);');
-		buttonAddTransitions.setAttributeNS(null, "onclick", 'buttonAddTransitionsClick(rect);');
+		buttonSelect.setAttributeNS(null, "onchange", 'buttonSelectClick(rect);');
+		buttonAddStates.setAttributeNS(null, "onchange", 'buttonAddStatesClick(rect);');
+		buttonAddTransitions.setAttributeNS(null, "onchange", 'buttonAddTransitionsClick(rect);');
 		buttonInitState.setAttributeNS(null, "onclick", 'buttonInitStateClick(rect);');
 		buttonEndState.setAttributeNS(null, "onclick", 'buttonEndStateClick(rect);');
 		buttonRename.setAttributeNS(null, "onclick", 'buttonRenameClick(rect);');
 		buttonDeleteSelected.setAttributeNS(null, "onclick", 'buttonDeleteSelectedClick(rect);');
 		
-		buttonAddStates.style.borderStyle = "outset";
-		buttonAddTransitions.style.borderStyle = "outset";
 		buttonInitState.style.borderStyle = "outset";
 		buttonEndState.style.borderStyle = "outset";
 		buttonRename.style.borderStyle = "outset";
@@ -251,7 +272,7 @@ function init(id, type) {
 		jQuery_new('a[data-target="#' + id + 'a"]').on('hide.bs.tab', function (e) {
 			wp.svg.div.lastWidth = wp.svg.div.offsetWidth;
 			wp.svg.div.lastHeight = wp.svg.div.offsetHeight;
-			resetGraphEditorState(svg);
+			svg.rect.buttonSelect.click();
 		});
 		
 		jQuery_new('a[data-target="#' + id + 'a"]').on('hidden.bs.tab', function (e) {
@@ -265,7 +286,7 @@ function init(id, type) {
 				}
 			}
 		});
-		deselectElement(svg);
+		buttonSelect.click();
 	}
 }
 
@@ -1756,39 +1777,30 @@ function updateTextTab(wp)
 // Graph tab functions
 //--------------------
 
-function buttonAddStatesClick(rect) {
-    if (rect.buttonAddStates.style.borderStyle == "inset") {
-        rect.buttonAddStates.style.borderStyle = "outset";
-        rect.mode = modeEnum.SELECT;
-    } else {
-        if (rect.buttonAddTransitions.style.borderStyle == "inset") 
-            rect.buttonAddTransitions.style.borderStyle = "outset";
-        rect.buttonAddStates.style.borderStyle = "inset";
-        rect.mode = modeEnum.ADD_STATE;
-        if (rect.parentSvg.makingTransition !== 0) {
-            rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
-            rect.parentSvg.makingTransition = 0;
-        }
-        destroyDrawingTransition(rect.parentSvg);
-        deselectElement(rect.parentSvg);
+function buttonSelectClick(rect) {
+    console.log("button select changed");
+    rect.mode = modeEnum.SELECT;
+    if (rect.parentSvg.makingTransition !== 0) {
+        rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
+        rect.parentSvg.makingTransition = 0;
     }
+    destroyDrawingTransition(rect.parentSvg);
+    deselectElement(rect.parentSvg);
+}
+
+function buttonAddStatesClick(rect) {
+    rect.mode = modeEnum.ADD_STATE;
+    if (rect.parentSvg.makingTransition !== 0) {
+        rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
+        rect.parentSvg.makingTransition = 0;
+    }
+    destroyDrawingTransition(rect.parentSvg);
+    deselectElement(rect.parentSvg);
 }
 
 function buttonAddTransitionsClick(rect) {
-    if (rect.buttonAddTransitions.style.borderStyle == "inset") {
-        rect.buttonAddTransitions.style.borderStyle = "outset";
-        rect.mode = modeEnum.SELECT;
-        if (rect.parentSvg.makingTransition !== 0) {
-            rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
-            rect.parentSvg.makingTransition = 0;
-            deselectElement(rect.parentSvg);
-        }
-    } else {
-        if (rect.buttonAddStates.style.borderStyle == "inset") rect.buttonAddStates.style.borderStyle = "outset";
-        rect.buttonAddTransitions.style.borderStyle = "inset";
-        rect.mode = modeEnum.ADD_TRANSITION;
-        deselectElement(rect.parentSvg);
-    }
+    rect.mode = modeEnum.ADD_TRANSITION;
+    deselectElement(rect.parentSvg);
 }
 
 function toggleInitStateOn(state)
@@ -2067,8 +2079,6 @@ function createStateAbs(rect, x, y, name)
 
 	rect.states.push(shape);
 	putOnTop(shape);
-	if (rect.buttonAddStates.style.borderStyle == "outset")
-		rect.mode = modeEnum.SELECT;
 	return shape;
 }
 
@@ -2082,20 +2092,17 @@ function createState(evt)
 }
 function rectDblClick(evt) {
 	evt.preventDefault();
-	evt.target.buttonAddTransitions.style.borderStyle = "outset";
 	createState(evt);
 }
 
 function rectClick(evt, rect) {
 	if (evt)
-		evt.preventDefault();
+	    evt.preventDefault();
     switch (rect.mode) {
         case modeEnum.ADD_STATE:
             createState(evt);
             break;
 		case modeEnum.ADD_TRANSITION:
-			if (rect.buttonAddTransitions.style.borderStyle == "outset")
-				rect.mode = modeEnum.SELECT;
 			if (rect.parentSvg.makingTransition !== 0) {
 				rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;
 				rect.parentSvg.makingTransition = 0;
@@ -2338,8 +2345,6 @@ function createTransition(state1, state2, symbols)
 	whitenState(state1);
 	state1.lines1.push(aLine);
 	state2.lines2.push(aLine);
-	if (state2.parentRect.buttonAddTransitions.style.borderStyle == "outset")
-		state2.parentRect.mode = modeEnum.SELECT;
 	
 	state2.parentSvg.makingTransition = 0;
 	deselectElement(state2.parentSvg);
@@ -2468,8 +2473,6 @@ function clickState(evt) {
                 for (var i = 0; i < state.parentSvg.makingTransition.lines1.length; i++)
                     if (state.parentSvg.makingTransition.lines1[i].end == state)
 					{
-						if (state.parentRect.buttonAddTransitions.style.borderStyle == "outset")
-							state.parentRect.mode = modeEnum.SELECT;
 						state.parentSvg.selectedElement = state.parentSvg.makingTransition;
 						state.parentSvg.makingTransition = 0;
 						destroyDrawingTransition(state.parentSvg);
@@ -2651,18 +2654,6 @@ function renameState(state, str)
 	state.name = str;
 	state.text.node.nodeValue = str;
 	adjustStateWidth(state);
-}
-
-function resetGraphEditorState(svg) {
-    if (svg.makingTransition !== 0) {
-        svg.selectedElement = svg.makingTransition;
-        svg.makingTransition = 0;
-    }
-    destroyDrawingTransition(svg);
-    deselectElement(svg);
-    svg.rect.buttonAddStates.style.borderStyle = "outset";
-    svg.rect.buttonAddTransitions.style.borderStyle = "outset";
-    svg.rect.mode = modeEnum.SELECT;
 }
 
 function deselectElement(svg) {
