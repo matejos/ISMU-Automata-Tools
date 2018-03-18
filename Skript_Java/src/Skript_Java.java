@@ -6,7 +6,10 @@
 
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -20,10 +23,9 @@ public class Skript_Java {
      * @param args the command line arguments 
      */
     public static void main(String[] args) {
-        if (args.length < 1) 
+        if (args.length < 1 || (args.length == 1 && args[0].equals("-?"))) 
 	{
-            System.out.println("ERROR: Use at least one file name as argument!");
-            System.out.println("Program closed.");
+            printHelp();
             return;
 	}
 
@@ -85,8 +87,33 @@ public class Skript_Java {
         
         long t = System.currentTimeMillis() / 1000;
 	
-        for (int fileNumber = 0; fileNumber < args.length; fileNumber++) {
-            String inputName = args[fileNumber];
+        ArrayList<String> files = new ArrayList<>();
+        boolean reset = false;
+        boolean keep = false;
+        
+        for (int i = 0; i < args.length; i++) {
+            boolean invalidArg = true;
+            
+            if (Pattern.matches("\\S+.qdef", args[i])) {
+                files.add(args[i]);
+                invalidArg = false;
+            }
+            else if (args[i].equals("-r") || args[i].equals("-reset")) {
+                reset = true;
+                invalidArg = false;
+            }
+            else if (args[i].equals("-k") || args[i].equals("-keep")) {
+                keep = true;
+                invalidArg = false;
+            }
+            
+            if (invalidArg) {
+                System.out.format("Argument %s invalid! Ignoring...\n", args[i]);
+            }
+        }
+        
+        for (int fileNumber = 0; fileNumber < files.size(); fileNumber++) {
+            String inputName = files.get(fileNumber);
             String outputName = inputName;
             outputName = new StringBuilder(outputName).insert(outputName.lastIndexOf('.'), suffix).toString();
             if (outputName.equals(prefixContentFileName) || outputName.equals(parsersLocationFileName))
@@ -96,6 +123,59 @@ public class Skript_Java {
             }
             System.out.format("Converting '%s' to '%s'\n", inputName, outputName);
 
+            if (reset) {
+                try
+                {
+                    FileWriter writer;
+                    String resetName = new StringBuilder(outputName).insert(outputName.lastIndexOf('.'), "Reset").toString();
+                    try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+                        File file = new File(resetName);
+                        file.createNewFile();
+                        if (!keep) {
+                            file.deleteOnExit();
+                        }
+                        writer = new FileWriter(file);
+                        boolean writeMinusMinus = false;
+                        while ((s = reader.readLine()) != null)
+                        {
+                            if (s.trim().equals("")) {
+                                continue;
+                            }
+                            if (writeMinusMinus) {
+                                writeMinusMinus = false;
+                                writer.write("--\n");
+                            }
+                            if (s.trim().equals("--")) {
+                                writeMinusMinus = true;
+                            }
+                            else {
+                                if (s.trim().equals("++")) {
+                                    while ((s = reader.readLine()) != null && !s.equals("--")) {
+                                    }
+                                }
+                                else if (s.contains(":e") && !s.contains(":e=")) {
+                                    writer.write(":e\n");
+                                }
+                                else if (!s.contains("<ul") && !s.contains("<div") 
+                                        && !s.contains("<input")
+                                        && !s.contains("</script>")){
+                                    writer.write(s+ "\n");
+                                }
+                            }
+                        }
+                    }
+                    writer.flush();
+                    writer.close();
+                    System.out.format("Successfully reseted %s to %s\n", inputName, resetName);
+                    inputName = resetName;
+                }
+                catch (Exception e)
+                {
+                    System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n%s\n", inputName, e.toString());
+                    return;
+                }
+            }
+            
             try
             {
                 FileWriter writer;
@@ -152,7 +232,8 @@ public class Skript_Java {
                         {
                             writer.write(s + "\n");
                         }
-                    }   System.out.println("-Successfully converted " + questionNumber + " questions.\n");
+                    }   
+                    System.out.format("-Successfully converted %d questions.\n", questionNumber);
                 }
                 writer.write(endingContent);
                 writer.flush();
@@ -160,7 +241,7 @@ public class Skript_Java {
             }
             catch (Exception e)
             {
-                System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
+                System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n%s", inputName, e.toString());
                 return;
             }
         }
@@ -172,5 +253,12 @@ public class Skript_Java {
         catch (IOException ex) 
         {
         }
+    }
+    
+    static void printHelp() {
+        System.out.format("Usage: %s [-options] fileName…\n", Skript_Java.class.getName());
+        System.out.format("where options include:\n");
+        System.out.format("\t-r | -reset\tperform reset on files (use if they contain older version of the editor)\n");
+        System.out.format("\t-k | -keep\tkeep reset versions of files (…Reset.qdef)\n");
     }
 }
