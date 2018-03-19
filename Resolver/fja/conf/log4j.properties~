@@ -1,0 +1,18 @@
+
+# CFG logger
+log4j.logger.cz.muni.fi.cfg=DEBUG, CONSOLE, FILE
+
+# Console appender
+log4j.appender.CONSOLE=org.apache.log4j.ConsoleAppender
+log4j.appender.CONSOLE.Encoding=UTF-8
+log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
+log4j.appender.CONSOLE.layout.ConversionPattern=%d{ABSOLUTE} %p %-5c %x: %m%n
+
+# File appenderd
+log4j.appender.FILE=org.apache.log4j.RollingFileAppender
+log4j.appender.FILE.File=log/fja.log
+log4j.appender.FILE.Append=true
+log4j.appender.FILE.Encoding=UTF-8
+log4j.appender.FILE.MaxFileSize=100KB
+log4j.appender.FILE.layout=org.apache.log4j.EnhancedPatternLayout
+log4j.appender.FILE.layout.ConversionPattern={"date":"%d{yyyy-MM-dd}T%d{HH:mm}", "level":"%p", "logger":"%c", "message"="%m", "stack"="%throwable{}"},%n

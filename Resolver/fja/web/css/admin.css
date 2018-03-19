@@ -1,0 +1,27 @@
+root { 
+    display: block;
+}
+
+TABLE {
+	border: 1px solid green;
+	padding: 5px;
+}
+
+TD {
+    text-align: center;
+    vertical-align: middle;
+}
+
+TD.bold {
+    font-weight: bold;
+}
+    
+
+
+TD.left {
+	text-align: left;
+}
+
+TD.right {
+	text-align: right;
+}

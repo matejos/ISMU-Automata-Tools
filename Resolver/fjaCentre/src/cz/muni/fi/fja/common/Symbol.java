@@ -1,0 +1,180 @@
+package cz.muni.fi.fja.common;
+
+public abstract class Symbol implements Comparable<Symbol> {
+  public static final String EPSILON_STRING = "\\e";
+  public static final char SPECIAL_MARK = '\\';
+  public static final char EPSILON_CHAR = 'e';
+
+  public static final char GRA_TERM_START = '"';
+  public static final char GRA_TERM_END = '"';
+  public static final char GRA_NONTERM_START = '<';
+  public static final char GRA_NONTERM_END = '>';
+
+  public static final String EMPTY_SET_STRING = "\\0";
+
+  public static final char REG_TERM = '"';
+  public static final char REG_EMPTY = '0';
+  public static final char REG_EMPTY2 = 'o';
+  public static final char REG_EMPTY3 = 'O';
+  public static final String REG_CLOSE_CONCAT = "";
+  public static final char REG_INDEX = '^';
+  public static final char REG_ITERATOR = '*';
+  public static final char REG_PLUS_ITERATOR = '+';
+  public static final char REG_CONCAT = '.';
+  public static final char REG_UNION = '+';
+  public static final char REG_EXPR_START = '(';
+  public static final char REG_EXPR_END = ')';
+
+  static final char[] GRAMMAR_SPECIAL = new char[] { '"', '<', '>', '|', '\\',
+      ',' };
+  static final char[] FA_SPECIAL = new char[] { '(', ')', '{', '}', '=', '\\',
+      ',', ' ' };
+  static final char[] REG_SPECIAL = new char[] { '(', ')', '^', '+', '*', '.',
+      '"', ' ' };
+
+  private String name;
+  private String fa;
+  private String grammar;
+  private String reg;
+  private int n;
+  private boolean type; // true = alphabet; false = control
+
+  public Symbol(String s, boolean t) {
+    name = s;
+    type = t;
+    n = -1;
+  }
+
+  public Symbol(int i, boolean t) {
+    type = t;
+    n = i;
+  }
+
+  public void setInt(int i) {
+    n = i;
+  }
+
+  public int getInt() {
+    return n;
+  }
+
+  public boolean isAlphabet() {
+    return type;
+  }
+
+  public boolean isControl() {
+    return !type;
+  }
+
+  public String toString() {
+    if (name == null) {
+      name = String.valueOf(n);
+    }
+    return name;
+  }
+
+  public String toFAString() {
+    if (fa == null) {
+      toString();
+      if (name.equals("")) {
+        fa = EPSILON_STRING;
+      } else {
+        fa = convertString(FA_SPECIAL);
+      }
+    }
+    return fa;
+  }
+
+  public String toGrammarString() {
+    if (grammar == null) {
+      toString();
+      if (name.equals("")) {
+        if (isAlphabet()) {
+          grammar = EPSILON_STRING;
+        } else {
+          grammar = "";
+        }
+      } else if (name.length() == 1) {
+        char c = name.charAt(0);
+        if (isControl()) {
+          if (c >= 'A' && c <= 'Z') {
+            grammar = name;
+          } else {
+            grammar = GRA_NONTERM_START + convertString(GRAMMAR_SPECIAL)
+                + GRA_NONTERM_END;
+          }
+        } else {
+          if (c >= 'A' && c <= 'Z') {
+            grammar = GRA_NONTERM_START + name + GRA_NONTERM_END;
+            grammar = name;
+          } else if (c == ' ') {
+            grammar = "" + SPECIAL_MARK + " ";
+          } else {
+            grammar = convertString(GRAMMAR_SPECIAL);
+          }
+        }
+
+      } else {
+        if (isControl()) {
+          grammar = GRA_NONTERM_START + convertString(GRAMMAR_SPECIAL)
+              + GRA_NONTERM_END;
+        } else {
+          grammar = GRA_TERM_START + convertString(GRAMMAR_SPECIAL)
+              + GRA_TERM_END;
+        }
+      }
+    }
+    return grammar;
+  }
+
+  public String toRegString() {
+    if (reg == null) {
+      toString();
+      if (isControl()) {
+        reg = name;
+      } else {
+        if (name.equals("")) {
+          reg = EPSILON_STRING;
+        } else if (name.length() == 1) {
+          reg = convertString(REG_SPECIAL);
+        } else {
+          reg = REG_TERM + convertString(REG_SPECIAL) + REG_TERM;
+        }
+      }
+    }
+    return reg;
+  }
+
+  private String convertString(char[] d) {
+    String s = "";
+    for (int i = 0, l = name.length(); i < l; i++) {
+      char c = name.charAt(i);
+      if (isSpecial(d, c)) {
+        s += "" + SPECIAL_MARK + c;
+      } else {
+        s += c;
+      }
+    }
+    return s;
+  }
+
+  private static boolean isSpecial(char[] d, char c) {
+    for (int i = 0, l = d.length; i < l; i++) {
+      if (d[i] == c) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public int compareTo(Symbol s) {
+    int i = toString().compareTo(s.toString());
+    if (i == 0)
+      i = getInt() - s.getInt();
+    return i;
+  }
+
+  public int hashCode() {
+    return toString().hashCode();
+  }
+}

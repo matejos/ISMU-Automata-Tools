@@ -1,0 +1,14 @@
+16:28:41,341 ERROR cz.muni.fi.cfg.servlet.Admin : created
+16:28:41,345 INFO cz.muni.fi.cfg.servlet.Admin : Loading default settings
+16:28:41,348 ERROR cz.muni.fi.cfg.servlet.Admin : Failed to load settings: java.io.FileNotFoundException: default.properties (No such file or directory)
+java.io.FileNotFoundException: default.properties (No such file or directory)
+	at java.io.FileInputStream.open(Native Method)
+	at java.io.FileInputStream.<init>(FileInputStream.java:138)
+	at java.io.FileInputStream.<init>(FileInputStream.java:97)
+	at cz.muni.fi.cfg.servlet.Admin.load(Admin.java:98)
+	at cz.muni.fi.cfg.servlet.Admin.<init>(Admin.java:67)
+	at cz.muni.fi.cfg.servlet.Admin.instance(Admin.java:78)
+	at cz.muni.fi.cfg.servlet.Admin.main(Admin.java:149)
+16:30:00,804 ERROR cz.muni.fi.cfg.servlet.Admin : created
+16:30:00,806 INFO cz.muni.fi.cfg.servlet.Admin : Loading default settings
+16:30:00,807 INFO cz.muni.fi.cfg.servlet.Admin : Loading app settings

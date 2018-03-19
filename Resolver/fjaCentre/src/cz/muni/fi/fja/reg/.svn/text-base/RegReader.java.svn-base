@@ -1,0 +1,246 @@
+package cz.muni.fi.xhoudek.fja.reg;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
+
+import cz.muni.fi.xhoudek.fja.common.Alphabet;
+import cz.muni.fi.xhoudek.fja.common.InStream;
+import cz.muni.fi.xhoudek.fja.common.ModelError;
+import cz.muni.fi.xhoudek.fja.common.Symbol;
+
+public class RegReader {
+  private List<Symbol> postfix;
+  private Map<String, Alphabet> alphabets;
+  private int alphabetCount = 0;
+  private Stack<Operator> stack;
+
+  private InStream is;
+
+  private ModelError error;
+
+  public RegReader(InStream is) {
+    postfix = new ArrayList<Symbol>();
+    alphabets = new HashMap<String, Alphabet>();
+    alphabetCount++;
+    alphabets.put("", Alphabet.getEpsilon());
+
+    stack = new Stack<Operator>();
+    this.is = is;
+
+    if (!isError()) {
+      start();
+    }
+    this.is = null;
+    finishedAdding();
+  }
+
+  private void start() {
+    is.skipAllWhiteSpaces();
+    boolean lastSymbolIsCorrectExpression = false; // tzn muze nasledovati bez
+                                                   // operatoru terminal
+    boolean lastSymbolIsTerminal = false;
+    boolean expressionInBracket = true;
+    while (!isError() && !is.isEOF()) {
+      if (!is.getSymbol()) {
+        getErrorFromIs();
+        return;
+      }
+      String s = is.getLastSymbol();
+      assert is.anyLastSymbol(); // kontrola, vzdy by mel byt nacten nejaky
+                                 // symbol(i prazdny) nebo epsilon tzn. ""
+      if (!is.lastSymbolIsControl()) {
+        if (lastSymbolIsTerminal) {
+          addOperator(Operator.CLOSE_CONCAT);
+        } else if (lastSymbolIsCorrectExpression) {
+          addOperator(Operator.CONCAT);
+        }
+        addTerminal(s);
+        expressionInBracket = true;
+        lastSymbolIsTerminal = true;
+        lastSymbolIsCorrectExpression = true;
+      } else { // bud zavorka nebo prisel na svet operator :)
+        lastSymbolIsTerminal = false;
+        Operator op = Operator.createOperator(s);
+        assert op != null;
+        if (op.isSubExpressionEnd()) {
+          flushExpression(expressionInBracket);
+          lastSymbolIsCorrectExpression = true;
+        } else {
+          if (op.isSubExpression() && lastSymbolIsCorrectExpression) {
+            expressionInBracket = false;
+            addOperator(Operator.CONCAT);
+          }
+          addOperator(op);
+          if (op.isBinary() || op.isSubExpression()) {
+            lastSymbolIsCorrectExpression = false;
+          } else {
+            lastSymbolIsCorrectExpression = true;
+          }
+        }
+      }
+    }
+    if (!isError()) {
+      flushAllHigherOperators(Operator.SUB_EXPRESSION);
+      if (!stack.empty()) {
+        assert stack.peek().isSubExpression();
+        setError(ModelError.overflowingBracket(Operator.SUB_EXPRESSION
+            .toString()));
+      }
+    }
+  }
+
+  private void flushAllHigherOperators(Operator op) {
+    // vyprazdni zasobnik az po operator op. nebo nizsi
+    while (!stack.empty() && stack.peek().isHigherThan(op)) {
+      postfix.add(stack.pop());
+    }
+  }
+
+  private void flushExpression(boolean exprInBracket) {
+    // vyprazdnit zasobnik po otevrenou zavorku a tez ji vyprazdnit.
+    if (!exprInBracket && stack.peek().isSubExpression()) {
+      setError(ModelError.forbiddenExpression("()"));
+    }
+    flushAllHigherOperators(Operator.SUB_EXPRESSION);
+    if (stack.empty()) {
+      setError(ModelError.overflowingBracket(Operator.SUB_EXPRESSION_END
+          .toString()));
+    } else {
+      assert stack.peek() == Operator.SUB_EXPRESSION;
+      stack.pop();
+    }
+  }
+
+  private void addOperator(Operator op) {
+    // pridej operator na zasobnik - pokud ma nizsi prioritu, nez operator na
+    // vrcholu
+    // zasobniku tak vyprazdnuj dokud nenajdes operator s nizsi prioritou
+    // pak teprve operator pridej na zasobnik
+    // jako dno ber bud dno zasobnik nebo zavorku
+    // v pripade pridavani zavorky ji jen pridej na vrchol zasobniku
+    assert !op.isSubExpressionEnd();
+
+    if (!op.isSubExpression()) {
+      flushAllHigherOperators(op);
+    }
+
+    if (op.isUnary()) {
+      postfix.add(op);
+    } else {
+      stack.push(op);
+    }
+  }
+
+  private void addTerminal(String s) {
+    Alphabet a = null;
+    if (s == null) {
+      a = Alphabet.getEmptySet();
+    } else {
+      a = alphabets.get(s);
+      if (a == null) {
+        if (s.length() == 0) {
+          a = Alphabet.getEpsilon();
+        } else {
+          a = new Alphabet(s);
+        }
+        a.setInt(alphabetCount);
+        alphabetCount++;
+        alphabets.put(s, a);
+      }
+    }
+    postfix.add(a);
+  }
+
+  // private Alphabet getAlphabet(String n) {
+  // Alphabet a = alphabets.get(n);
+  // if (a == null) {
+  // a = new Alphabet(n);
+  // alphabetCount++;
+  // alphabets.put(n, a);
+  // }
+  // return a;
+  // }
+
+  private ModelError finishedAdding() {
+    if (isError()) {
+      return error;
+    }
+    if (postfix.size() == 0) {
+      setError(ModelError.notFoundRE());
+    }
+    return null;
+  }
+
+  public Symbol[] getPostfix() {
+    if (!isError()) {
+      return postfix.toArray(new Symbol[0]);
+    }
+    return new Symbol[0];
+  }
+
+  public Alphabet[] getAllAlphabet() {
+    if (!isError()) {
+      return alphabets.values().toArray(new Alphabet[0]);
+    }
+    return new Alphabet[0];
+  }
+
+  public boolean isError() {
+    return error != null;
+  }
+
+  public ModelError getError() {
+    return error;
+  }
+
+  private ModelError setError(String s) {
+    if (is == null) {
+      return setError(ModelError.incorrectEnterDataError(0, 0, s));
+    }
+    return setError(ModelError.incorrectEnterDataError(is.getLine(), is
+        .getPositionInLine(), s));
+  }
+
+  private ModelError setError(ModelError e) {
+    if (!isError()) {
+      error = e;
+    }
+    return error;
+  }
+
+  private void getErrorFromIs() {
+    if (!isError())
+      error = is.getError();
+  }
+
+  private String stackToString() {
+    String s = "Stack.size() = " + stack.size() + "\n";
+    s += stack.toString();
+    return s;
+  }
+
+  private String postfixToString() {
+    String s = "postfix.size() = " + postfix.size() + "\n";
+    s += postfix.toString();
+    return s;
+  }
+
+  private String alphabetsToString() {
+    String s = "alphabets.size() = " + alphabets.size() + "\n";
+    s += alphabets.toString();
+    return s;
+  }
+
+  public void print() {
+    if (error != null) {
+      System.out.println("Chyba: " + error.toString());
+    }
+    System.out.println(alphabetsToString());
+    System.out.println(stackToString());
+    System.out.println(postfixToString());
+  }
+
+}

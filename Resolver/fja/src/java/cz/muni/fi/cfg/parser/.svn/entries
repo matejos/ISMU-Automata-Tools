@@ -1,0 +1,30 @@
+10
+
+dir
+0
+https://cfganalyzer.googlecode.com/svn/fja/src/java/cz/muni/fi/cfg/parser
+https://cfganalyzer.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+
+Parser.java
+file
+
+
+
+add
+
+ParserException.java
+file
+
+
+
+add
+

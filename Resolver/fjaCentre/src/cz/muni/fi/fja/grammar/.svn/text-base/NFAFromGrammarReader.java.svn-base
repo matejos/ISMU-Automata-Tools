@@ -1,0 +1,46 @@
+package cz.muni.fi.xhoudek.fja.grammar;
+
+import cz.muni.fi.xhoudek.fja.common.Alphabet;
+import cz.muni.fi.xhoudek.fja.common.Control;
+import cz.muni.fi.xhoudek.fja.common.ModelError;
+import cz.muni.fi.xhoudek.fja.common.ModelReader;
+import cz.muni.fi.xhoudek.fja.common.Rule;
+
+public class NFAFromGrammarReader implements ModelReader {
+  Rule[] rules;
+  Alphabet[] alphabets;
+  Control[] finals;
+  ModelError error;
+
+  public NFAFromGrammarReader(Rule[] r, Alphabet[] a, Control[] f) {
+    this(r, a, f, null);
+  }
+
+  public NFAFromGrammarReader(ModelError e) {
+    this(new Rule[0], new Alphabet[0], new Control[0], e);
+  }
+
+  private NFAFromGrammarReader(Rule[] r, Alphabet[] a, Control[] f, ModelError e) {
+    rules = r;
+    alphabets = a;
+    finals = f;
+    error = e;
+  }
+
+  public Rule[] getAllControl() {
+    return rules;
+  }
+
+  public Alphabet[] getAllAlphabet() {
+    return alphabets;
+  }
+
+  public Control[] getAllFinal() {
+    return finals;
+  }
+
+  public ModelError getError() {
+    return error;
+  }
+
+}

@@ -1,0 +1,65 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa
+END
+FAStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/FAStream.java
+END
+RuleDFA.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/RuleDFA.java
+END
+NFAFromDFA.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/NFAFromDFA.java
+END
+RuleEFA.java
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/RuleEFA.java
+END
+QuickEqual.java
+K 25
+svn:wc:ra_dav:version-url
+V 75
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/QuickEqual.java
+END
+DFA.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/DFA.java
+END
+EFA.java
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/EFA.java
+END
+DFAReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/DFAReader.java
+END
+FAReaderAbstract.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/FAReaderAbstract.java
+END
+EFAReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/fa/EFAReader.java
+END

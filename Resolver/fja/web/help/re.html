@@ -1,0 +1,76 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+  <title>Regularni vyrazy</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="Author" content="Bronislav Houdek">
+  <link rel="stylesheet" type="text/css" href="/fja/css/help.css">
+</head>
+<body>
+
+<a name="reg"><h1>REG - regularni vyraz</h1></a>
+<ul>
+  <li><a href="#def_re">Defnice RE</a></li>
+  <li><a href="#priority_re">Priorita operatoru RE</a></li>
+  <li><a href="#znak_re">Znaky vstupni abecedy</a></li>
+  <li><a href="#eps_re">Epsilon</a></li>
+  <li><a href="#theta_re">Prazdna mnozina</a></li>
+</ul>
+
+
+<a name="def_re"><h1>Definice regularniho vyrazu</h1></a>
+<ol type="1">
+  <lh>Vsechny pouzite operatory maji intuitivni vyznam, dle definice v predmetu Formalni jazyky a automaty. Operatory pridane navic jsou nize popsany a slouzi jen pro zjednoduseni zapisu.</lh>
+  <li>znaky vst.abecedy,  epsilon - "<span>\e</span>" a prazdna mnozina "<span>\0</span>" jsou regularni vyrazy</li>
+  <li><span>E</span>,<span>F</span> jsou RE, pak <span>(E)</span>, <span>(E+F)</span>, 
+  <span>(E.F)</span>, <span>(E^*)</span>, <span>(E^+)</span>, <span>(EF)</span> je take regularni vyraz</li>
+</ol>
+
+<a name="priority_re"><h1>Priorita operatoru a jejich vyznam</h1></a>
+<ol type="1">
+  <lh>V pripade, ze ma operator vyssi prioritu nebo stejnou jako operator predchozi, tak neni nutne zavorky uvadet.
+    (<span>a</span><span>b</span> jsou znaky vst.abecedy, <span>E</span> a <span>F</span> jsou lib.RE)</lh>
+  <li><span>E+F</span></li>
+  <li>
+    <span>E.F=EF</span> - s vyjimkou,
+    kdy <span>E</span> i <span>F</span> jsou znaky vst.abecedy (popsano nize),
+    tzn. <span>a(a+b)^+=a.(a+b)^+</span> nebo<span>a^+b^*=a^+.b^*</span>
+  </li>
+  <li><span>E^*</span>, <span>E^+</span>
+    <ul>
+      <li><span>E^*=E*</span> - klasicka iterace, mozne dva druhy zapisu</li>
+      <li><span>E^+</span> - pozitivni iterace, neni mozne zapsat <span>E+</span></li>
+    </ul>
+  </li>
+  <li>
+    <span>ab</span> - tesne zretezeni, je ekvivalentnem <span>(ab)</span>,
+    tzn. <span>ab^*=(ab)^*</span>, ale <span>a(b)^*=a.(b)^*</span>
+  </li>
+</ol>
+
+<a name="znak_re"><h1>Znaky vstupni abecedy</h1></a>
+<p>
+  Znaky vstupni abecedy jsou vsechny znaky krome bilych a specialnich znaku. Tyto specialni znaky se musi uvest symbolem "<span>\</span>".<br>
+  Specialni znaky jsou tyto: "<span>(</span>", "<span>)</span>", "<span>^</span>", "<span>+</span>", "<span>*</span>", "<span>.</span>", "<span>"</span>" a mezera.<br>
+  Pokud ma byt nazev znaku vicepismenny, musi byt uzavren do uvozovek - "<span>"AA"</span>". V uvozovkach jiz nemusi byt specialni znaky uvozeny "<span>\</span>", krome "<span>"</span>" a "<span>\</span>" (uvozeny "<span>\</span>" mohou byt take). Symbol pro prazdnou mnozinu, neni mezi uvozovky povolen.<br>
+  Par prikladu spravnych znaku abecedy v RE:<br>
+  "<span>a</span>"="<span>"a"</span>"="<span>"\ea"</span>"<br>
+  "<span>\+</span>"="<span>"\+"</span>"="<span>"+"</span>"<br>
+  "<span>"A + B + C"</span>"
+</p>
+
+<a name="eps_re"><h1>Epsilon</h1></a>
+<p>
+  "<span>\e</span>" je znakem pro epsilon. Pokud je uveden v definici znaku vst.abecedy je ignorovan - "<span>"A\eA"</span>"="<span>"AA"</span>", "<span>"\e\e"</span>"=""="<span>\e</span>"
+</p>
+
+<a name="theta_re"><h1>Prazdna mnozina</h1></a>
+<p>
+  Pokud ma byt jazyk definovany pomoci RE prazdny, tak musime uvest symbol pro prazdnu mnozinu.<br>
+  Pokud chceme pouzit symbol pro RE s prazdnou mnozinou slov, musime uvest "<span>\0</span>"="<span>\o</span>"="<span>\O</span>", to je chapano jako jazyk obsahujici prazdnou mnozinu.<br>
+  Pr.: "<span>\0</span>"="<span>\0.a</span>"<br>
+  vyraz "<span>"\0"</span>" je vyhodnocen jako chyba.
+</p>
+
+</body>
+</html>

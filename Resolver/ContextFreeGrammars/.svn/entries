@@ -1,0 +1,37 @@
+10
+
+dir
+0
+https://cfganalyzer.googlecode.com/svn/ContextFreeGrammars
+https://cfganalyzer.googlecode.com/svn
+add
+
+
+
+
+
+has-props
+has-prop-mods
+svn:special svn:externals svn:needs-lock
+
+manifest.mf
+file
+
+
+
+add
+
+src
+dir
+
+
+
+add
+
+test
+dir
+
+
+
+add
+

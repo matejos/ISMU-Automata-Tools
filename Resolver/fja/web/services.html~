@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" charset="utf-8" />
+		<title>Admin - services</title>
+		<script type="text/javascript" src="scripts/jquery.js"></script> 
+		<script type="text/javascript" src="scripts/jquery-ui.js"></script>
+		<script type="text/javascript" src="scripts/services.js"></script>
+		<link type="text/css" rel="stylesheet" href="style/admin.css" />
+		<link type="text/css" rel="stylesheet" href="style/ui-lightness/jquery-ui-1.10.3.custom.css">
+	
+	</head>
+	<body>
+
+		<div>
+
+			<h4>SERVI CES:</h4>
+
+			<table id="service">
+				<thead>
+					<th>Transformations</th>
+					<th>Comparison</th>
+				</thead>
+				<tr>
+					<td id="transformations"></td>
+					<td id="conversions"></td>
+				</tr>
+			</table>
+
+		</div>
+
+	</body>
+</html>
+

@@ -1,0 +1,16 @@
+10
+
+dir
+0
+https://cfganalyzer.googlecode.com/svn/fja/web/WEB-INF/lib
+https://cfganalyzer.googlecode.com/svn
+add
+
+
+
+
+
+
+
+svn:special svn:externals svn:needs-lock
+

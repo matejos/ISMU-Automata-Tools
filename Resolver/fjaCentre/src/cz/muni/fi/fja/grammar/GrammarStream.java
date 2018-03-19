@@ -1,0 +1,112 @@
+package cz.muni.fi.fja.grammar;
+
+import java.io.File;
+
+import cz.muni.fi.fja.common.ModelError;
+import cz.muni.fi.fja.common.StringStream;
+import cz.muni.fi.fja.common.Symbol;
+
+public class GrammarStream extends StringStream {
+
+  public GrammarStream(File f) {
+    super(f);
+  }
+
+  public GrammarStream(File f, String encoding) {
+    super(f, encoding);
+  }
+
+  public GrammarStream(char[] d, int start) {
+    super(d, start);
+  }
+
+  public boolean getSymbol() {
+    if (!super.getSymbol()) {
+      return false;
+    }
+
+    if (!isEOF()) {
+      if (isControlChar()) {
+        return true;
+      } else if (getChar() == Symbol.GRA_TERM_START) {
+        getSymbolTo(Symbol.GRA_TERM_END);
+      } else if (getChar() == Symbol.GRA_NONTERM_START) {
+        setActualIsControl();
+        getSymbolTo(Symbol.GRA_NONTERM_END);
+        if (actualSymbol.size() == 0) {
+          setError(ModelError.wrongUsingOfEpsilon());
+        }
+      } else if (getChar() == Symbol.GRA_NONTERM_END
+          || getChar() == Symbol.GRA_TERM_END) {
+        setError(ModelError.unexpectedSymbol(getChar()));
+      } else if (isSpecialMark()) {
+        writeSpecialChar();
+      } else {
+        if (getChar() >= 'A' && getChar() <= 'Z') {
+          setActualIsControl();
+        }
+        writeChar();
+      }
+      if (isError()) {
+        return false;
+      }
+      skipAllWhiteSpaces();
+    }
+    return true;
+  }
+
+  private boolean getSymbolTo(char c) {
+    consumePosition();
+    setAnyActualSymbol();
+    while (!isEOF()) {
+      if (isSpecialMark()) {
+        writeSpecialChar();
+        if (isError()) {
+          return false;
+        }
+      } else if (getChar() == c) {
+        return consumePosition();
+      } else if (isControlChar() || getChar() == Symbol.GRA_TERM_START
+          || getChar() == Symbol.GRA_TERM_END
+          || getChar() == Symbol.GRA_NONTERM_START
+          || getChar() == Symbol.GRA_NONTERM_END) {
+        setError(ModelError.unexpectedSymbol(getChar()));
+        return false;
+      } else {
+        writeChar();
+      }
+    }
+    setError(ModelError.expectedSymbol(c));
+    return false;
+  }
+
+  public boolean isFollowingSpecialMark() {
+    char c = data[position];
+    if (c == Symbol.GRA_TERM_START || c == Symbol.GRA_TERM_END
+        || c == Symbol.GRA_NONTERM_START || c == Symbol.GRA_NONTERM_END
+        || c == '|' || c == ' ' || c == Symbol.EPSILON_CHAR
+        || c == Symbol.SPECIAL_MARK || c == ',')
+      return true;
+    return false;
+  }
+
+  public boolean isControlChar() {
+    char c = data[position];
+    if (c == ',' || c == '\n' || c == '|'
+        || (position + 1 < size && c == '-' && data[position + 1] == '>'))
+      return true;
+    return false;
+  }
+
+  public boolean isSpecialMark() {
+    if (data[position] == Symbol.SPECIAL_MARK)
+      return true;
+    return false;
+  }
+
+  public boolean isWhiteSpace() {
+    char c = data[position];
+    return (c == ' ' || c == '\r' || c == '\t' || c == '\f');
+  }
+
+}

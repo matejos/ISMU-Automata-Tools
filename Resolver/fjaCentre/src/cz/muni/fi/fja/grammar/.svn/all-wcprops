@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 64
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar
+END
+GrammarStream.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar/GrammarStream.java
+END
+NFAFromGrammarReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar/NFAFromGrammarReader.java
+END
+Grammar.java
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar/Grammar.java
+END
+GrammarReader.java
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar/GrammarReader.java
+END
+RuleGrammar.java
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/fja/!svn/ver/4/fjaCentre/src/cz/muni/fi/xhoudek/fja/grammar/RuleGrammar.java
+END

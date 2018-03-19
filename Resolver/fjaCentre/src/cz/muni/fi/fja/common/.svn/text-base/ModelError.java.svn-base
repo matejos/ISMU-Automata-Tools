@@ -1,0 +1,154 @@
+package cz.muni.fi.xhoudek.fja.common;
+
+public class ModelError {
+  private String msg;
+  private int line;
+  private int charPositionInLine;
+
+  public ModelError(String s) {
+    msg = s;
+  }
+
+  public ModelError(int x, int y, String s) {
+    this(x + ".radek " + y + ".znak: " + s);
+    line = x;
+    charPositionInLine = y;
+  }
+
+  public String getMessage() {
+    return msg;
+  }
+
+  public int getLine() {
+    return line;
+  }
+
+  public int getCharPositionInLine() {
+    return charPositionInLine;
+  }
+
+  public String toString() {
+    return getMessage();
+  }
+
+  public static ModelError unrecognizedModel() {
+    return new ModelError(Messages.unrecognizedModel());
+  }
+
+  public static ModelError nonregularGrammar(int x, int y, int n) {
+    return new ModelError(x, y, "Gramatika neni regularni, je typu " + n + ".");
+  }
+
+  public static ModelError incorrectEnterDataError(int x, int y, Symbol s) {
+    return incorrectEnterDataError(x, y, "Spatne pouziti symbolu: " + s);
+  }
+
+  public static ModelError incorrectEnterDataError(int x, int y, String s) {
+    return new ModelError(x, y, "Vstupni data jsou nekorektni. " + s);
+  }
+
+  public static ModelError incorrectEnterString() {
+    return new ModelError(
+        "Vstupni retezec ucitele je spatne formalizovan. Priklad spravneho retezce: \"REG-MIN:a+b*\"");
+  }
+
+  public static ModelError startSymbolNotExist() {
+    return new ModelError("Nebyl nalezen inicialni symbol.");
+  }
+
+  public static ModelError incorrectEnterDataError(String s) {
+    return new ModelError("Vstupni data jsou nekorektni. " + s);
+  }
+
+  public static ModelError nonEqual() {
+    return new ModelError(Messages.nonequalModel());
+  }
+
+  public static ModelError nonEqualAlphabets() {
+    return new ModelError(Messages.nonequalAlphabets());
+  }
+
+  public static ModelError nonCanonic(boolean who) {
+    return new ModelError(Messages.noncanonicDFA(who));
+  }
+
+  public static ModelError nonMinimal(boolean who) {
+    return new ModelError(Messages.nonminimalDFA(who));
+  }
+
+  public static ModelError nonTotal(boolean who) {
+    return new ModelError(Messages.nontotalDFA(who));
+  }
+
+  public static ModelError containsEpsilon(boolean who) {
+    return new ModelError(Messages.nonepsilonFreeNFA(who));
+  }
+
+  public static ModelError parameter() {
+    return new ModelError(Messages.wrongParameter());
+  }
+
+  public static ModelError device(boolean who) {
+    return new ModelError(Messages.wrongDevice(who));
+  }
+
+  public static String notFoundLeftNonterminal() {
+    return "Na leve strane pravidla nebyl nalezen neterminal.";
+  }
+
+  public static String unknownSpecialChar() {
+    return "Neznamy specialni znak.";
+  }
+
+  public static String expectedSymbol(String s) {
+    return "Byl ocekavan: \'" + s + "\'.";
+  }
+
+  public static String expectedSymbol(char c) {
+    return "Byl ocekavan: \'" + c + "\'.";
+  }
+
+  public static String unexpectedSymbol(char c) {
+    return "Neocekavany symbol \'" + c + "\'.";
+  }
+
+  public static String unexpectedSymbol() {
+    return "Neocekavany symbol.";
+  }
+
+  public static String unexpectedEnd() {
+    return "Neocekavany konec vstupniho retezce.";
+  }
+
+  public static String wrongUsingOfEpsilon() {
+    return "Neocekavane pouziti epsilon.";
+  }
+
+  public static String wrongUsingOfEmpty() {
+    return "Nepovolene pouziti symbolu pro prazdnou mnozinu.";
+  }
+
+  public static String notFoundRE() {
+    return "Nebyl zadan regularni vyraz.";
+  }
+
+  public static String wrongOperator() {
+    return "Povelene operatory jsou \"^+\" a \"^*\".";
+  }
+
+  public static String overflowingBracket(String s) {
+    return "Prebytecna zavorka \"" + s + "\".";
+  }
+
+  public static String forbiddenExpression(String s) {
+    return "Nepovoleny vyraz: \"" + s + "\".";
+  }
+
+  public static String fewArguments() {
+    return "Operator nema dostatek argumentu.";
+  }
+
+  public static String tooMuchArguments() {
+    return "Prebytek argumentu.";
+  }
+}

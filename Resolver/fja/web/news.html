@@ -1,0 +1,205 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>Novinky v alpikaci FJA</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+<center>
+<h1>Novinky, updaty a upozorneni</h1>
+
+<table>
+  <tr>
+    <td class="news">
+      <span class="date">09-03-14 - 13:00</span> - 
+      <span class="title">Opraveno par preklepu v napovede</span>: 
+      <span class="description">
+          Jednalo se o stranku s napovedou pro konecne automaty - fa.html.
+      </span>
+    </td> 
+  </tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-12-27 - 12:00</span> - 
+      <span class="title">Objevena a opravena chyba ve standardnim a detailnim modu</span>: 
+      <span class="description">
+      	Ulohy zadavane ve standardnim nebo detailnim modu mohly byt nekdy v pripade 
+      	nedostupnych koncovych stavu vyhodnoceny spatne, netykalo se to ovsem modu true/false.
+      	V pripade standardniho ci detailniho modu se provadi nekolik operaci kdy byly 
+      	v autmatu nedostupne koncove stavy spatne vyhodnoceny. Pripadu true/false se to
+      	nedotklo, protoze zde nejsou potreba tyto kroky provadet.   
+      </span>
+    </td> 
+  </tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-10-03 - 23:00</span> - 
+      <span class="title">Objevena a opravena chyba v rozpoznavani uloh v modu true/false</span>: 
+      <span class="description">
+          Ulohy, ktere byly zadavany pres is nebo v modu true/false mohly byt vyjimecne 
+          vyhodnoceny spatne. Jednalo se o situace, kdy v jednom z modelu nebyly symboly 
+          vstupni abecedy uvedeny v abecednim poradi. Pak se mohlo spise vyjimecne stat,
+          ze byl model rozpoznan jako false. U uloh zadavanych mimo mod true/false tato
+          chyba nebyla, diky tomu, ze tyto mody si vzdy musely kvuli vypisu 
+          symboly seradit abecedne.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-04-30 - 11:15</span> - 
+      <span class="title">Dulezita uprava syntaxe RE vyrazu</span>: 
+      <span class="description">
+        <font color="red">zmena rozeznani TESNEHO ZRETEZENI v RE vyrazu</font> - 
+        Momentalne se zretezeni bez tecky chape jako klasicke zretezeni, krome situace, kdy
+        nasleduji znaky vst.abecedy za sebou - pak je zretezeni chapano jako novy operator - 
+        tzv. tesne zretezeni, ktere ma nejvyssi prioritu: ab*=(ab)* ale a(b)*=a.(b)*. 
+        Vice viz: <a href="help/re.html#priority_re">Napoveda</a>
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-04-27 - 13:00</span> - 
+      <span class="title">Mala oprava a upozorneni :-)</span>: 
+      <span class="description">
+        Mala oprava se tykala reg.vyrazu, vse fungovalo spravne ohledne vyhodnoceni,
+        pouze pri vypisu zadaneho reg.vyrazu se v pripadech pouziti "tesneho zretezeni"
+        (to bez tecky) a pouziti iterace mohlo stat, ze ve vypsanem reg.vyrazu nebyly
+        zavorky, ktere tam byti mely.
+        <br>
+        Dale chci upozornit, at nezapominate u reg.vyrazu na spravnou syntaxi
+        operatoru zretezeni(.) a tesne zretezeni (bez tecky). Maji rozdilnou prioritu,
+        proto vyrazy jako "a((b+c)^*) = a.(b+c)^*" jsou rozdilne od "a(b+c)^* = (a.(b+c))^*".
+        Doporucuji Vam vyuzivat tesne zretezeni opravdu jen pro ulehceni viz. "ab^*=(a.b)^*",
+        jinak se lehce muze stat, ze omylem vytvorite zcela jiny reg.vyraz, nez jste chteli.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-04-11 - 18:00</span> - 
+      <span class="title">Historie vlozenych uloh</span>: 
+      <span class="description">
+        na adrese <a href="list.jsp">http://arran.fi.muni.cz:8180/fja/list.jsp</a>,
+        jedna se o tzv. "uloziste vkladanych uloh", takova mala historie,
+        podrobnosi jsou na dane strance.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-03-12 - 10:00</span> - 
+      <span class="title">Pozmenen retezec generovany pro odpovednik</span>: 
+      <span class="description">
+        Do retezce pro odpovednik je pridana dvojtecka oddelujici definici
+        zadani od modelu ucitele definujiciho jazyk spravne odpovedi. Vice viz.
+        <a href="help.html#enterstring">Napoveda</a>
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-03-26 - 15:00</span> - 
+      <span class="title">Mensi opravy</span>: 
+      <span class="description">
+        Opraveny ruzne "vady na krase". Plus oprava chyby, vznikle pri prechodu na 
+        novy algoritmus ekvivalence, na vysledek true/false nemelo vliv. Pouze pri standardnim
+        a detailnim vypise to za jistych okolnosti vratilo chybu v programy.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-03-26 - 18:00</span> - 
+      <span class="title">Funkcni prevodnik modelu</span>: 
+      <span class="description">
+        V podstate se jedna o stejne formulare jako i Simulaci odpovedniku,
+        jen se neni treba zaobirat odpovedi studenta.
+        Prevodnik prevadi modely zadane v REG,GRA,EFA,DFA do EFA,NFA,DFA,CAN,MIN a MIC.
+        <a href="help.html#convert">Napoveda</a>
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-02-26 - 14:00</span> - 
+      <span class="title">Implementovan pravdepodobne efektivnejsi algoritmus ekvivalence DFA</span>: 
+      <span class="description">
+        Principielne se jedna o algoritmus, kdy se sjednoti abecedy obou automatu,
+        a pak se oba automaty prochazi paralelne, dokud se neprojdou vsechny
+        dosazitelne dvojice stavu. Tyto dvojice se zaroven testuji a pokud se nalezne
+        dvojice, ktera ma jeden stav konecny a druhy ne, vraci ekvivalence false.
+        
+        Algoritmus byl prevzat ze skript od I. Černá, M. Křetínský a A. Kučera: 
+        <a href="http://is.muni.cz/elportal/estud/fi/js06/ib005/Formalni_jazyky_a_automaty_I.pdf">
+        Automaty a formální jazyky I
+        </a> - algoritmus je na str. 53,54.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-02-26 - 14:00</span> - 
+      <span class="title">Pozmeneny podminky ekvivalence</span>: 
+      <span class="description">
+        Porovnani automatu probiha po sjednoceni abeced obou modelu.
+        V pripade, ze je pozadavek na model studenta TOT, TOC, MIN nebo MIC, 
+        tak se provede kontrola zda jsou abecedy shodne.
+        (Drive nebylo sjednoceni abeced implementovano. Modely se zminimalizovaly a zkanonizovaly
+        a nasledne porovnaly, pokud byly ruzne abecedy, bylo automaticky false.)
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-02-12 - 18:10</span> - 
+      <span class="title">Novy typ odpovedi "ALL"</span>: 
+      <span class="description">
+        Jedna se o automaticke rozeznani zadaneho modelu studenta.
+        Vyuzitelne v pripade, kdy nezalezi na formalizaci modelu studenta,
+        pouze je pozadovano, aby vytvoril nejaky model jakkoliv formalizovany
+        (dfa,nfa,efa,gra,reg), ekvivalentni pozadavku ucitele. PS: abych predesel
+        moznym dotazum, tak rozeznavani funguje  postupne - DFA,EFA,GRA a nakonec REG.
+        Pricemz nekdy muze byt zadany retezec vyhodnocen jako REG, pokud neni DFA, EFA ani GRA,
+        i kdyz student zadal model, ktery ma jen drobnou chybu v syntaxi (A,=)=A je 
+        spatne zadany DFA, ale je to korektni REG. <a href="help.html#all">Napoveda</a>
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-02-12 - 12:00</span> - 
+      <span class="title">Generovani retezce pro odpovedniky</span>: 
+      <span class="description">
+        po zaskrtnuti "vygenerovat retezec pro odpovednik" 
+        bude vygenerovan pri vyhodnoceni dotazu retezec pro 
+        vlozeni do odpovedniku.
+      </span>
+    </td> 
+  </tr>
+  <tr height="5"><td></td></tr>
+  <tr>
+    <td class="news">
+      <span class="date">08-02-12 - 12:00</span> - 
+      <span class="title">Novinky</span>: 
+      <span class="description">
+          Pribyla stranka Novinky - tato :-).
+      </span>
+    </td> 
+   </tr>
+</table>
+</center>
+</body>
+</html>

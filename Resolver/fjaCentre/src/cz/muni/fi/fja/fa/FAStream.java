@@ -1,0 +1,82 @@
+package cz.muni.fi.fja.fa;
+
+import java.io.File;
+
+import cz.muni.fi.fja.common.ModelError;
+import cz.muni.fi.fja.common.StringStream;
+
+/**
+ * 
+ * @author Bronek
+ */
+public class FAStream extends StringStream {
+
+  public FAStream(File f) {
+    super(f);
+  }
+
+  public FAStream(File f, String encoding) {
+    super(f, encoding);
+  }
+
+  public FAStream(char[] d, int start) {
+    super(d, start);
+  }
+
+  public boolean getSymbol() {
+    if (!super.getSymbol()) {
+      return false;
+    }
+    while (!isEOF()) {
+      if (isSpecialMark()) {
+        writeSpecialChar();
+        if (isError()) {
+          return false;
+        }
+      } else if (isControlChar() || isWhiteSpace()) {
+        break;
+      } else {
+        writeChar();
+      }
+    }
+    skipAllWhiteSpaces();
+    if (anyLastSymbol()) {
+      return true;
+    }
+    setError(ModelError.unexpectedSymbol(getChar()));
+    return false;
+  }
+
+  public boolean getControl() {
+    if (getSymbol()) {
+      setActualIsControl();
+      if (actualSymbol.size() != 0) {
+        return true;
+      }
+      setError(ModelError.wrongUsingOfEpsilon());
+    }
+    return false;
+  }
+
+  public boolean isFollowingSpecialMark() {
+    char c = data[position];
+    if (c == '(' || c == ')' || c == '=' || c == '{' || c == '}' || c == '\\'
+        || c == ',' || c == ' ' || c == 'e')
+      return true;
+    return false;
+  }
+
+  public boolean isControlChar() {
+    char c = data[position];
+    if (c == '(' || c == ')' || c == '=' || c == '{' || c == '}' || c == ',')
+      return true;
+    return false;
+  }
+
+  public boolean isSpecialMark() {
+    if (data[position] == '\\')
+      return true;
+    return false;
+  }
+
+}

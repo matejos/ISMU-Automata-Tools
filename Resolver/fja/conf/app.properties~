@@ -1,0 +1,27 @@
+# conversion
+NE1=true
+NE2=true
+RED=true
+EPS=true
+SRF=true
+PRO=true
+CNF=true
+RLR=true
+GNF=true
+ESA=true
+FSA=true
+ANA=true
+
+# C-Y-K
+CYK=false
+
+# comparison
+NE12=true
+NE22=true
+RED2=true
+EPS2=true
+SRF2=true
+PRO2=true
+CNF2=true
+RLR2=true
+GNF2=true

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" charset="utf-8" />
+		<title>Admin - logs</title>
+		<script type="text/javascript" src="scripts/jquery.js"></script> 
+		<script type="text/javascript" src="scripts/jquery-ui.js"></script>
+		<script type="text/javascript" src="scripts/logs.js"></script>
+		<link type="text/css" rel="stylesheet" href="style/admin.css" />
+		<link type="text/css" rel="stylesheet" href="style/ui-lightness/jquery-ui-1.10.3.custom.css">
+	
+	</head>
+	<body>
+
+		<div id="log">
+
+			<h4>LOG:</h4>
+
+			<table id="date">
+				<tr>
+					<td><div id="dateFrom"></div></td>
+					<td><div id="slider"/></td>
+					<td><div id="dateTo"></div></td>
+				</tr>
+			</table>
+
+			<table id="head">
+				<tr>
+					<td>Date</td>
+					<td>Level</td>
+					<td>Logger</td>
+					<td>Message</td>
+				</tr>
+			</table>
+
+			<div id="data">
+				<table>
+				</table>
+			</div>
+
+			<div id="footer">
+				<input type="checkbox" name="levels" value="DEBUG" id="debug" /><label for="debug">DEBUG</label>
+				<input type="checkbox" name="levels" value="INFO" id="info" checked="checked" /><label for="info">INFO</label>
+				<input type="checkbox" name="levels" value="WARN" id="warn" checked="checked" /><label for="warn">WARN</label>
+				<input type="checkbox" name="levels" value="ERROR" id="error" checked="checked" /><label for="error">ERROR</label>
+				<input type="checkbox" name="levels" value="FATAL" id="fatal" checked="checked" /><label for="fatal">FATAL</label>
+			</div>
+		</div>
+
+	</body>
+</html>
+
