@@ -15,7 +15,7 @@
         <link rel="STYLESHEET" type="text/css" href="./style/style_reg.css" />
         <link href="./style/favicon.gif" rel="icon" type="image/gif" />
         <script src="./js/util.js" type="text/javascript"></script>
-        <script src="./js/cfgparser.js" type="text/javascript"></script>
+        <script src="js/CFGParser.js" type="text/javascript"></script>
         <title>Bezkontextové gramatiky</title>
     </head>
     <body>

@@ -1,4 +1,4 @@
-
+﻿
 
 
 /* -OBJECT--------------------------------------------------------------------
@@ -245,7 +245,6 @@ var GRAParser = function ()
 
 	case 6:
 		state = -1;
-
    	last_state = 6;
 		match = 2;
 		match_pos = pos;
@@ -1407,8 +1406,8 @@ var regexes = new Array(
 	unescape("%22") /* Terminal symbol */,
 	unescape("%2C") /* Terminal symbol */,
 	unescape("-%3E") /* Terminal symbol */,
-	unescape("%5C%7C") /* Terminal symbol */,
-	unescape("%5C%5Ce") /* Terminal symbol */,
+	unescape("%7C") /* Terminal symbol */,
+	unescape("%5Ce") /* Terminal symbol */,
 	unescape("%5Cn") /* Terminal symbol */,
 	unescape("%5BA-Z%5D") /* Terminal symbol */,
 	unescape("%5Ba-z0-9%5D") /* Terminal symbol */,
@@ -1442,8 +1441,8 @@ var regexes = new Array(
   LANG_CS.missing = "Ještě očekávám něco z";
   LANG_CS.cont = "Můžete pokračovat v psaní";
   LANG_CS.canCont = "Můžete pokračovat něčím z";
-  LANG_CS.but_missing = ", jinak ještě očekávám něco z"; 
-  LANG_CS.forLabel = " pro "; 
+  LANG_CS.but_missing = ", jinak ještě očekávám něco z";
+  LANG_CS.forLabel = " pro ";
   LANG_CS.continueWriting = "Pokračujte psaním";
   LANG_CS.or = " nebo ";
   LANG_CS.orInsteadOf = "Případně místo";
@@ -1609,6 +1608,7 @@ var regexes = new Array(
   };
 
 }();
+
 
 
 

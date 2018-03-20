@@ -1,7 +1,4 @@
-
-
-
-/* -OBJECT--------------------------------------------------------------------
+﻿/* -OBJECT--------------------------------------------------------------------
     Object:   REGParser
     Usage:    this object contains private methods and attributes for parser 
               and public method parse
@@ -117,36 +114,29 @@ var REGParser = function ()
   // possible matches on that transitions and possible states on that transitions 
   var others = new Array();
   		others[0] = new Array();
-		others[0].push([[[0, 8], [11, 12], [14, 31], [33, 39], [44, 45], [47, 91], [93], [95, 1023]],   [8],   [1, 12]]);
-		others[0].push([[[9, 10], [13], [32]],   [8,1],   [1, 12, 2]]);
-		others[0].push([[[40]],   [2],   [3]]);
-		others[0].push([[[41]],   [3],   [4]]);
-		others[0].push([[[42]],   [5],   [5]]);
-		others[0].push([[[43]],   [7],   [6]]);
-		others[0].push([[[46]],   [6],   [7]]);
-		others[0].push([[[92]],   [8],   [1, 10, 12, 9]]);
-		others[0].push([[[94]],   [5,4],   [5, 8, 11]]);
+		others[0].push([[[9, 10], [13], [32]],   [1],   [1]]);
+		others[0].push([[[40]],   [2],   [2]]);
+		others[0].push([[[41]],   [3],   [3]]);
+		others[0].push([[[43]],   [7],   [4]]);
+		others[0].push([[[46]],   [6],   [5]]);
+		others[0].push([[[48, 57], [65, 90], [97, 122]],   [8],   [6, 9]]);
+		others[0].push([[[92]],   [8],   [6, 9]]);
+		others[0].push([[[94]],   [5,4],   [7, 8, 10]]);
 		others[1] = new Array();
-		others[1].push([[[0, 39], [44, 45], [47, 91], [93], [95, 1023]],   [8],   [1, 12]]);
-		others[1].push([[[92]],   [8],   [1, 12]]);
 		others[2] = new Array();
-		others[2].push([[[0, 39], [44, 45], [47, 91], [93], [95, 1023]],   [8],   [1, 12]]);
-		others[2].push([[[92]],   [8],   [1, 12]]);
 		others[3] = new Array();
 		others[4] = new Array();
 		others[5] = new Array();
 		others[6] = new Array();
+		others[6].push([[[48, 57], [65, 90], [97, 122]],   [8],   [6, 9]]);
+		others[6].push([[[92]],   [8],   [6, 9]]);
 		others[7] = new Array();
 		others[8] = new Array();
 		others[9] = new Array();
-		others[9].push([[[40, 43], [46], [92], [94]],   [8],   [1, 12]]);
-		others[9].push([[[48], [101]],   [8],   [10]]);
+		others[9].push([[[48], [101]],   [8],   [6, 9]]);
 		others[10] = new Array();
-		others[11] = new Array();
-		others[11].push([[[42]],   [5],   [5]]);
-		others[11].push([[[43]],   [4],   [8]]);
-		others[12] = new Array();
-		others[12].push([[[40, 43], [46], [92], [94]],   [8],   [1, 12]]);
+		others[10].push([[[42]],   [5],   [7]]);
+		others[10].push([[[43]],   [4],   [8]]);
 
   
   /* -FUNCTION------------------------------------------------------------------
@@ -197,69 +187,66 @@ var REGParser = function ()
   switch( state )
 {
 	case 0:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 8 ) || ( info.src.charCodeAt( pos ) >= 11 && info.src.charCodeAt( pos ) <= 12 ) || ( info.src.charCodeAt( pos ) >= 14 && info.src.charCodeAt( pos ) <= 31 ) || ( info.src.charCodeAt( pos ) >= 33 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (( info.src.charCodeAt( pos ) >= 9 && info.src.charCodeAt( pos ) <= 10 ) || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 2;
-		else if( (info.src.charCodeAt( pos ) == 40 )) state = 3;
-		else if( (info.src.charCodeAt( pos ) == 41 )) state = 4;
-		else if( (info.src.charCodeAt( pos ) == 42 )) state = 5;
-		else if( (info.src.charCodeAt( pos ) == 43 )) state = 6;
-		else if( (info.src.charCodeAt( pos ) == 46 )) state = 7;
+		if( (( info.src.charCodeAt( pos ) >= 9 && info.src.charCodeAt( pos ) <= 10 ) || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 1;
+		else if( (info.src.charCodeAt( pos ) == 40 )) state = 2;
+		else if( (info.src.charCodeAt( pos ) == 41 )) state = 3;
+		else if( (info.src.charCodeAt( pos ) == 43 )) state = 4;
+		else if( (info.src.charCodeAt( pos ) == 46 )) state = 5;
+		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 6;
 		else if( (info.src.charCodeAt( pos ) == 92 )) state = 9;
-		else if( (info.src.charCodeAt( pos ) == 94 )) state = 11;
+		else if( (info.src.charCodeAt( pos ) == 94 )) state = 10;
 		else state = -1;
    	last_state = 0;
 		break;
 
 	case 1:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
-		else state = -1;
+		state = -1;
    	last_state = 1;
-		match = 8;
+		match = 1;
 		match_pos = pos;
 		break;
 
 	case 2:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
-		else state = -1;
+		state = -1;
    	last_state = 2;
-		match = 1;
+		match = 2;
 		match_pos = pos;
 		break;
 
 	case 3:
 		state = -1;
    	last_state = 3;
-		match = 2;
+		match = 3;
 		match_pos = pos;
 		break;
 
 	case 4:
 		state = -1;
    	last_state = 4;
-		match = 3;
+		match = 7;
 		match_pos = pos;
 		break;
 
 	case 5:
 		state = -1;
    	last_state = 5;
-		match = 5;
+		match = 6;
 		match_pos = pos;
 		break;
 
 	case 6:
-		state = -1;
+		if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 6;
+		else if( (info.src.charCodeAt( pos ) == 92 )) state = 9;
+		else state = -1;
    	last_state = 6;
-		match = 7;
+		match = 8;
 		match_pos = pos;
 		break;
 
 	case 7:
 		state = -1;
    	last_state = 7;
-		match = 6;
+		match = 5;
 		match_pos = pos;
 		break;
 
@@ -271,30 +258,16 @@ var REGParser = function ()
 		break;
 
 	case 9:
-		if( (( info.src.charCodeAt( pos ) >= 40 && info.src.charCodeAt( pos ) <= 43 ) || info.src.charCodeAt( pos ) == 46 || info.src.charCodeAt( pos ) == 92 || info.src.charCodeAt( pos ) == 94 )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 48 || info.src.charCodeAt( pos ) == 101 )) state = 10;
+		if( (info.src.charCodeAt( pos ) == 48 || info.src.charCodeAt( pos ) == 101 )) state = 6;
 		else state = -1;
    	last_state = 9;
 		break;
 
 	case 10:
-		state = -1;
-   	last_state = 10;
-		match = 8;
-		match_pos = pos;
-		break;
-
-	case 11:
-		if( (info.src.charCodeAt( pos ) == 42 )) state = 5;
+		if( (info.src.charCodeAt( pos ) == 42 )) state = 7;
 		else if( (info.src.charCodeAt( pos ) == 43 )) state = 8;
 		else state = -1;
-   	last_state = 11;
-		break;
-
-	case 12:
-		if( (( info.src.charCodeAt( pos ) >= 40 && info.src.charCodeAt( pos ) <= 43 ) || info.src.charCodeAt( pos ) == 46 || info.src.charCodeAt( pos ) == 92 || info.src.charCodeAt( pos ) == 94 )) state = 1;
-		else state = -1;
-   	last_state = 12;
+   	last_state = 10;
 		break;
 
 }
@@ -362,69 +335,66 @@ var REGParser = function ()
   switch( state )
 {
 	case 0:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 8 ) || ( info.src.charCodeAt( pos ) >= 11 && info.src.charCodeAt( pos ) <= 12 ) || ( info.src.charCodeAt( pos ) >= 14 && info.src.charCodeAt( pos ) <= 31 ) || ( info.src.charCodeAt( pos ) >= 33 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (( info.src.charCodeAt( pos ) >= 9 && info.src.charCodeAt( pos ) <= 10 ) || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 2;
-		else if( (info.src.charCodeAt( pos ) == 40 )) state = 3;
-		else if( (info.src.charCodeAt( pos ) == 41 )) state = 4;
-		else if( (info.src.charCodeAt( pos ) == 42 )) state = 5;
-		else if( (info.src.charCodeAt( pos ) == 43 )) state = 6;
-		else if( (info.src.charCodeAt( pos ) == 46 )) state = 7;
+		if( (( info.src.charCodeAt( pos ) >= 9 && info.src.charCodeAt( pos ) <= 10 ) || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 1;
+		else if( (info.src.charCodeAt( pos ) == 40 )) state = 2;
+		else if( (info.src.charCodeAt( pos ) == 41 )) state = 3;
+		else if( (info.src.charCodeAt( pos ) == 43 )) state = 4;
+		else if( (info.src.charCodeAt( pos ) == 46 )) state = 5;
+		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 6;
 		else if( (info.src.charCodeAt( pos ) == 92 )) state = 9;
-		else if( (info.src.charCodeAt( pos ) == 94 )) state = 11;
+		else if( (info.src.charCodeAt( pos ) == 94 )) state = 10;
 		else state = -1;
    	last_state = 0;
 		break;
 
 	case 1:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
-		else state = -1;
+		state = -1;
    	last_state = 1;
-		match = 8;
+		match = 1;
 		match_pos = pos;
 		break;
 
 	case 2:
-		if( (( info.src.charCodeAt( pos ) >= 0 && info.src.charCodeAt( pos ) <= 39 ) || ( info.src.charCodeAt( pos ) >= 44 && info.src.charCodeAt( pos ) <= 45 ) || ( info.src.charCodeAt( pos ) >= 47 && info.src.charCodeAt( pos ) <= 91 ) || info.src.charCodeAt( pos ) == 93 || ( info.src.charCodeAt( pos ) >= 95 && info.src.charCodeAt( pos ) <= 1023 ) )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
-		else state = -1;
+		state = -1;
    	last_state = 2;
-		match = 1;
+		match = 2;
 		match_pos = pos;
 		break;
 
 	case 3:
 		state = -1;
    	last_state = 3;
-		match = 2;
+		match = 3;
 		match_pos = pos;
 		break;
 
 	case 4:
 		state = -1;
    	last_state = 4;
-		match = 3;
+		match = 7;
 		match_pos = pos;
 		break;
 
 	case 5:
 		state = -1;
    	last_state = 5;
-		match = 5;
+		match = 6;
 		match_pos = pos;
 		break;
 
 	case 6:
-		state = -1;
+		if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 6;
+		else if( (info.src.charCodeAt( pos ) == 92 )) state = 9;
+		else state = -1;
    	last_state = 6;
-		match = 7;
+		match = 8;
 		match_pos = pos;
 		break;
 
 	case 7:
 		state = -1;
    	last_state = 7;
-		match = 6;
+		match = 5;
 		match_pos = pos;
 		break;
 
@@ -436,30 +406,16 @@ var REGParser = function ()
 		break;
 
 	case 9:
-		if( (( info.src.charCodeAt( pos ) >= 40 && info.src.charCodeAt( pos ) <= 43 ) || info.src.charCodeAt( pos ) == 46 || info.src.charCodeAt( pos ) == 92 || info.src.charCodeAt( pos ) == 94 )) state = 1;
-		else if( (info.src.charCodeAt( pos ) == 48 || info.src.charCodeAt( pos ) == 101 )) state = 10;
+		if( (info.src.charCodeAt( pos ) == 48 || info.src.charCodeAt( pos ) == 101 )) state = 6;
 		else state = -1;
    	last_state = 9;
 		break;
 
 	case 10:
-		state = -1;
-   	last_state = 10;
-		match = 8;
-		match_pos = pos;
-		break;
-
-	case 11:
-		if( (info.src.charCodeAt( pos ) == 42 )) state = 5;
+		if( (info.src.charCodeAt( pos ) == 42 )) state = 7;
 		else if( (info.src.charCodeAt( pos ) == 43 )) state = 8;
 		else state = -1;
-   	last_state = 11;
-		break;
-
-	case 12:
-		if( (( info.src.charCodeAt( pos ) >= 40 && info.src.charCodeAt( pos ) <= 43 ) || info.src.charCodeAt( pos ) == 46 || info.src.charCodeAt( pos ) == 92 || info.src.charCodeAt( pos ) == 94 )) state = 1;
-		else state = -1;
-   	last_state = 12;
+   	last_state = 10;
 		break;
 
 }
@@ -1140,13 +1096,13 @@ parseTable[9][8] = createLL1TabEntry(false, null, [8], false, false);
 parseTable[9][13] = createLL1TabEntry(false, [8, 2], null, false, false);
 parseTable[10] = new Array();
 parseTable[10][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[10][2] = createLL1TabEntry(false, null, [11], false, false);
+parseTable[10][2] = createLL1TabEntry(false, [7, 6, 5, 4, 13, 3], null, false, false);
 parseTable[10][3] = createLL1TabEntry(false, null, [], false, false);
 parseTable[10][4] = createLL1TabEntry(false, null, [4, 12], false, false);
 parseTable[10][5] = createLL1TabEntry(false, null, [5, 12], false, false);
 parseTable[10][6] = createLL1TabEntry(false, null, [6, 11], false, false);
 parseTable[10][7] = createLL1TabEntry(false, null, [7, 11], false, false);
-parseTable[10][8] = createLL1TabEntry(false, null, [11], false, false);
+parseTable[10][8] = createLL1TabEntry(false, [7, 6, 5, 4, 13, 3], null, false, false);
 parseTable[10][13] = createLL1TabEntry(false, null, [], false, false);
 parseTable[11] = new Array();
 parseTable[11][1] = createLL1TabEntry(true, null, null, false, false);
@@ -1160,13 +1116,13 @@ parseTable[11][8] = createLL1TabEntry(false, null, [9, 10], false, false);
 parseTable[11][13] = createLL1TabEntry(false, [8, 2], null, false, false);
 parseTable[12] = new Array();
 parseTable[12][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[12][2] = createLL1TabEntry(false, null, [10], false, false);
+parseTable[12][2] = createLL1TabEntry(false, null, [11], false, false);
 parseTable[12][3] = createLL1TabEntry(false, null, [10], false, false);
 parseTable[12][4] = createLL1TabEntry(false, null, [10], false, false);
 parseTable[12][5] = createLL1TabEntry(false, null, [10], false, false);
 parseTable[12][6] = createLL1TabEntry(false, null, [10], false, false);
 parseTable[12][7] = createLL1TabEntry(false, null, [10], false, false);
-parseTable[12][8] = createLL1TabEntry(false, null, [10], false, false);
+parseTable[12][8] = createLL1TabEntry(false, null, [11], false, false);
 parseTable[12][13] = createLL1TabEntry(false, null, [10], false, false);
 parseTable[13] = new Array();
 parseTable[13][1] = createLL1TabEntry(true, null, null, false, false);
@@ -1204,13 +1160,13 @@ var labels = new Array(
 var regexes = new Array(
 	unescape("undefined") /* Non-terminal symbol */,
 	unescape("undefined") /* Terminal symbol */,
-	unescape("%5C%28") /* Terminal symbol */,
-	unescape("%5C%29") /* Terminal symbol */,
-	unescape("%5E%5C+") /* Terminal symbol */,
-	unescape("%5E%5C*%7C%5C*") /* Terminal symbol */,
-	unescape("%5C.") /* Terminal symbol */,
-	unescape("%5C+") /* Terminal symbol */,
-	unescape("%28%28%5B%5E%5C%5C%5C%29%5C%28%5C+%5C*%5C.%5C+%5E%5D%7C%5C%5C%5B%5C%5C%5C%29%5C%28%5C+%5C*%5C.%5C+%5E%5D%29+%7C%5C%5Ce%7C%5C%5C0%29") /* Terminal symbol */,
+	unescape("%28") /* Terminal symbol */,
+	unescape("%29") /* Terminal symbol */,
+	unescape("%5E+") /* Terminal symbol */,
+	unescape("%5E*") /* Terminal symbol */,
+	unescape(".") /* Terminal symbol */,
+	unescape("+") /* Terminal symbol */,
+	unescape("%28%5Ba-zA-Z0-9%5D%7C%5Ce%7C%5C0%29+") /* Terminal symbol */,
 	unescape("undefined") /* Non-terminal symbol */,
 	unescape("undefined") /* Non-terminal symbol */,
 	unescape("undefined") /* Non-terminal symbol */,
@@ -1233,8 +1189,8 @@ var regexes = new Array(
   LANG_CS.missing = "Ještě očekávám něco z";
   LANG_CS.cont = "Můžete pokračovat v psaní";
   LANG_CS.canCont = "Můžete pokračovat něčím z";
-  LANG_CS.but_missing = ", jinak ještě očekávám něco z"; 
-  LANG_CS.forLabel = " pro "; 
+  LANG_CS.but_missing = ", jinak ještě očekávám něco z";
+  LANG_CS.forLabel = " pro ";
   LANG_CS.continueWriting = "Pokračujte psaním";
   LANG_CS.or = " nebo ";
   LANG_CS.orInsteadOf = "Případně místo";
@@ -1313,7 +1269,7 @@ var regexes = new Array(
      
       while( true )
       {
-
+      
       if(parseTable[stack[stack.length-1]][la])
       {         
         //Shift - probably we are reading token, which should be ignored, just continue reading input
@@ -1400,6 +1356,3 @@ var regexes = new Array(
   };
 
 }();
-
-
-

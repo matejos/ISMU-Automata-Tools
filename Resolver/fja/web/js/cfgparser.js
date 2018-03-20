@@ -1,9 +1,9 @@
 ﻿/* -OBJECT--------------------------------------------------------------------
-    Object:   Parser
+    Object:   CFGParser
     Usage:    this object contains private methods and attributes for parser 
               and public method parse
 ----------------------------------------------------------------------------- */      
-var cfgparser = function ()
+var CFGParser = function ()
 { 
   /* -PRIVATE---------------------------------------------------------------- */
     

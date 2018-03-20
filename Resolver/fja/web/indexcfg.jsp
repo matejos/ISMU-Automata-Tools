@@ -25,7 +25,7 @@
         <link rel="STYLESHEET" type="text/css" href="./style/style_cfg.css" />
         <link href="./style/favicon.gif" rel="icon" type="image/gif" />
         <script src="./js/util.js" type="text/javascript"></script>
-        <script src="./js/cfgparser.js" type="text/javascript"></script>
+        <script src="js/CFGParser.js" type="text/javascript"></script>
         <title>Bezkontextové gramatiky</title>
     </head>
     <body>
@@ -189,10 +189,10 @@
                     form.elements["letter"+i].style.top = (-(10-word.value.length)*23)+"px";
                 }
             }
-            register('generate', cfgparser.parse, document.getElementById('generate'));
-            register('evaluate-stud', cfgparser.parse, document.getElementById('evaluate-stud'));
-            register('evaluate-teach', cfgparser.parse, document.getElementById('evaluate-teach'));
-            register('convert', cfgparser.parse, document.getElementById('convert'));
+            register('generate', CFGParser.parse, document.getElementById('generate'));
+            register('evaluate-stud', CFGParser.parse, document.getElementById('evaluate-stud'));
+            register('evaluate-teach', CFGParser.parse, document.getElementById('evaluate-teach'));
+            register('convert', CFGParser.parse, document.getElementById('convert'));
             scroll(0,0);
         </script>
     </body>

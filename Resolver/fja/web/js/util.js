@@ -73,7 +73,7 @@ function register(idTextarea, func, elem)
 
 function registerAllParser(idTextarea,elem){
         var Parsers = new Array(
-            DFAParser.parse,EFAParser.parse,GRAParser.parse,REGParser.parse,cfgparser.parse
+            DFAParser.parse,EFAParser.parse,GRAParser.parse,REGParser.parse,CFGParser.parse
         )
         var ParserNames = new Array(
             "DFA","NFA/EFA","GRA","REG", "CFG")
@@ -176,7 +176,7 @@ function invalidate(textboxinput,textboxelement ){
         case 'RLR':
         case 'GNF':
         case 'CFG':
-            register(textboxelement, cfgparser.parse,document.getElementById(textboxelement));
+            register(textboxelement, CFGParser.parse,document.getElementById(textboxelement));
             break;
         }
 }
