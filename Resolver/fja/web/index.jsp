@@ -154,7 +154,7 @@
                     <div class="modes">
                         <input type="checkbox" id ="generateISString" name="gen" value="true" class="check" /><label for="generateISString" title="V odpovědi zobrazí i řetězec pro odpovědník.">Vygenerovat řetězec pro odpovědník</label>
                         <br/>
-                        <input type="checkbox" id ="showtable" name="intable" value="true" class="check" /><label for="showtable" title="V odpovědi se zobrazí automat v tabulce.">Zobrazit automaty v tabulce</label>
+                        <input type="checkbox" id ="showtable2" name="intable" value="true" class="check" /><label for="showtable2" title="V odpovědi se zobrazí automat v tabulce.">Zobrazit automaty v tabulce</label>
                         <br/>
                         <select name="mod">
                             <option value="verbose" selected="selected">Standardní</option>
