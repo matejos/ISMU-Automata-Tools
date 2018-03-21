@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 /**
  *
- * @author Matej
+ * @author Matej Poklemba
  */
 public class Skript_Java {
     static String prefixContentFileName = "Skript_prefix.txt";
@@ -171,8 +171,14 @@ public class Skript_Java {
                 }
                 catch (Exception e)
                 {
-                    System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n%s\n", inputName, e.toString());
-                    return;
+                    if (e instanceof java.io.FileNotFoundException) {
+                        System.err.format("ERROR: Could not find file '%s'.\n", inputName);
+                    }
+                    else {
+                        System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
+                        return;
+                    }
+                    continue;
                 }
             }
             
@@ -239,18 +245,18 @@ public class Skript_Java {
             }
             catch (Exception e)
             {
-                System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n%s", inputName, e.toString());
-                return;
+                if (e instanceof java.io.FileNotFoundException) {
+                    System.err.format("ERROR: Could not find file '%s'.\n", inputName);
+                }
+                else {
+                    System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
+                    System.err.format("Does this file contains older version of editor? In that case use argument -r\n");
+                    return;
+                }
             }
         }
 	System.out.println("Finished. Press Enter to continue.");
-        try 
-        {
-            System.in.read();
-        } 
-        catch (IOException ex) 
-        {
-        }
+    return;
     }
     
     static void printHelp() {

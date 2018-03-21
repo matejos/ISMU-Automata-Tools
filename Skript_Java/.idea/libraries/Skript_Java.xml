@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Skript_Java">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/dist/Skript_Java.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

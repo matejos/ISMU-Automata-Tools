@@ -1,0 +1,102 @@
+++
+<noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript>
+<script type="text/javascript">
+	if (!window.jQuery_new) {
+		var jQuery_old = $;
+		document.write("\<script src='//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");
+	}
+	else {
+		$ = jQuery = jQuery_new;
+	}
+</script>
+<script src="//code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<style type="text/css">@import "//code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css";</style>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="//rawgit.com/matejos/ISMU-Automata-Editor/master/editorJs.js"></script>
+<style type="text/css">@import "//rawgit.com/matejos/ISMU-Automata-Editor/master/editorCss.css";</style>
+<script src="//arran.fi.muni.cz:8443/fjaq3/js/utilIS.js" type="text/javascript"></script>
+<style type="text/css">@import "//arran.fi.muni.cz:8443/fjaq3/css/parser_style.css";</style>
+--
+Napište DFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^*. \{c\} . \{ab\}^*</m>
+<input name="q1521639681-1-1" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-1-div" class="parser_text_default"> :e <span id="q1521639681-1-1-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-1", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-1a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-1c">Text</a></li></ul></ul>
+<div id="q1521639681-1-1" class="tab-content"><script>init("q1521639681-1-1", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=E(D,b)=C(D,c)=C(E,a)=C(E,b)=D(E,c)=C F={D}" ok
+--
+Napište NFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ab\}^* . \{c\} . \{ba\}^*</m>
+<input name="q1521639681-1-2" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/NFAParser.js" type="text/javascript"></script><div id="q1521639681-1-2-div" class="parser_text_default"> :e <span id="q1521639681-1-2-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-2", NFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-2a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-2c">Text</a></li></ul></ul>
+<div id="q1521639681-1-2" class="tab-content"><script>init("q1521639681-1-2", "NFA");</script></div>
+:e="b:DFA-NFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=C(D,b)=E(D,c)=C(E,a)=D(E,b)=C(E,c)=C F={D}" ok
+--
+Napište EFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{za každým výskytem podslova } ab\text{ ve slově } w \text{ bezprostředně následuje znak }c \}</m>
+<input name="q1521639681-1-3" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/EFAParser.js" type="text/javascript"></script><div id="q1521639681-1-3-div" class="parser_text_default"> :e <span id="q1521639681-1-3-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-3", EFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-3a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-3b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-3c">Text</a></li></ul></ul>
+<div id="q1521639681-1-3" class="tab-content"><script>init("q1521639681-1-3", "EFA");</script></div>
+:e="b:DFA-EFA:(A,a)=B(A,b)=A(A,c)=A(B,a)=B(B,b)=C(B,c)=A(C,a)=D(C,b)=D(C,c)=E(D,a)=D(D,b)=D(D,c)=D(E,a)=B(E,b)=E(E,c)=E F={A,B,E}" ok
+--
+Napište GRA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) + \#_b(w) = 3 \}</m>
+<input name="q1521639681-1-4" type="hidden" value="" />
+<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/GRAParser.js" type="text/javascript"></script>
+<div id="q1521639681-1-4-div" class="parser_text_default"> :e <br><span id="q1521639681-1-4-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-4", GRAParser.parse)</script>
+:e="b:DFA-GRA:(A,a)=B(A,b)=B(A,c)=A(B,a)=C(B,b)=C(B,c)=B(C,a)=D(C,b)=D(C,c)=C(D,a)=E(D,b)=E(D,c)=D(E,a)=E(E,b)=E(E,c)=E F={D}" ok
+--
+Napište REG popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \#_a(w) \bmod{2} = \#_c(w) \bmod{3} \}</m>
+<input name="q1521639681-1-5" type="hidden" value="" />
+<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/REGParser.js" type="text/javascript"></script>
+<div id="q1521639681-1-5-div" class="parser_text_default"> :e <br><span id="q1521639681-1-5-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-5", REGParser.parse)</script>
+:e="b:DFA-REG:(A,a)=B(A,b)=A(A,c)=C(B,a)=A(B,b)=B(B,c)=D(C,a)=D(C,b)=C(C,c)=E(D,a)=C(D,b)=D(D,c)=F(E,a)=F(E,b)=E(E,c)=A(F,a)=E(F,b)=F(F,c)=B F={A,D}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ začíná na } a \text{ a končí na } bc \}</m>
+<input name="q1521639681-1-6" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-6-div" class="parser_text_default"> :e <span id="q1521639681-1-6-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-6", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-6a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-6b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-6c">Text</a></li></ul></ul>
+<div id="q1521639681-1-6" class="tab-content"><script>init("q1521639681-1-6", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=C(B,a)=B(B,b)=D(B,c)=B(C,a)=C(C,b)=C(C,c)=C(D,a)=B(D,b)=D(D,c)=E(E,a)=B(E,b)=D(E,c)=B F={E}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{jestliže } w \text{ obsahuje } a, \text{ pak } w \text{ obsahuje i } b \}</m>
+<input name="q1521639681-1-7" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-7-div" class="parser_text_default"> :e <span id="q1521639681-1-7-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-7", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-7a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-7b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-7c">Text</a></li></ul></ul>
+<div id="q1521639681-1-7" class="tab-content"><script>init("q1521639681-1-7", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=A(B,a)=B(B,b)=C(B,c)=B(C,a)=C(C,b)=C(C,c)=C F={A,C}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ obsahuje } a \text{ právě tehdy, když obsahuje } b \}</m>
+<input name="q1521639681-1-8" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-8-div" class="parser_text_default"> :e <span id="q1521639681-1-8-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-8", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-8a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-8b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-8c">Text</a></li></ul></ul>
+<div id="q1521639681-1-8" class="tab-content"><script>init("q1521639681-1-8", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=A(B,a)=B(B,b)=D(B,c)=B(C,a)=D(C,b)=C(C,c)=C(D,a)=D(D,b)=D(D,c)=D F={A,D}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{každý prefix slova } w, \text{ který končí znakem } c, \text{ obsahuje znak } a \}</m>
+<input name="q1521639681-1-9" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-9-div" class="parser_text_default"> :e <span id="q1521639681-1-9-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-9", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-9a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-9b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-9c">Text</a></li></ul></ul>
+<div id="q1521639681-1-9" class="tab-content"><script>init("q1521639681-1-9", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=A(A,c)=C(B,a)=B(B,b)=B(B,c)=B(C,a)=C(C,b)=C(C,c)=C F={A,B}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{počet znaků } a \text{ a } b \text{ v každém prefixu slova } w \text{ se neliší o více než 1} \}</m>
+<input name="q1521639681-1-10" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-10-div" class="parser_text_default"> :e <span id="q1521639681-1-10-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-10", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-10a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-10b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-10c">Text</a></li></ul></ul>
+<div id="q1521639681-1-10" class="tab-content"><script>init("q1521639681-1-10", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=A(B,a)=D(B,b)=A(B,c)=B(C,a)=A(C,b)=D(C,c)=C(D,a)=D(D,b)=D(D,c)=D F={A,B,C}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{b\}^+ . \{ca\}^* . \{a\}^+</m>
+<input name="q1521639681-1-11" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-11-div" class="parser_text_default"> :e <span id="q1521639681-1-11-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-11", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-11a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-11b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-11c">Text</a></li></ul></ul>
+<div id="q1521639681-1-11" class="tab-content"><script>init("q1521639681-1-11", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=B(B,a)=B(B,b)=B(B,c)=B(C,a)=D(C,b)=C(C,c)=E(D,a)=D(D,b)=B(D,c)=B(E,a)=F(E,b)=B(E,c)=B(F,a)=D(F,b)=B(F,c)=E F={D}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{ pokud slovo } w \text{ obsahuje nějaké písmeno } b, \text{ pak počet výskytů písmene } a \text{ za prvním výskytem písmene } b \text{ je dělitelný 3 } \}</m>
+<input name="q1521639681-1-12" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-12-div" class="parser_text_default"> :e <span id="q1521639681-1-12-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-12", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-12a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-12b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-12c">Text</a></li></ul></ul>
+<div id="q1521639681-1-12" class="tab-content"><script>init("q1521639681-1-12", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=A(A,b)=B(A,c)=A(B,a)=C(B,b)=B(B,c)=B(C,a)=D(C,b)=C(C,c)=C(D,a)=B(D,b)=D(D,c)=D F={A,B}" ok
+--
+Napište deterministický konečný automat popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\}</m>:<br/><br/><m>L = \{ w \in \Sigma^* \mid \text{slovo } w \text{ neobsahuje dva stejné znaky bezprostředně za sebou} \}</m>
+<input name="q1521639681-1-13" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="//arran.fi.muni.cz:8443/fjaq3/js/DFAParser.js" type="text/javascript"></script><div id="q1521639681-1-13-div" class="parser_text_default"> :e <span id="q1521639681-1-13-error" class="parser_error"></span></div><script type="text/javascript">register("q1521639681-1-13", DFAParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1521639681-1-13a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-13b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1521639681-1-13c">Text</a></li></ul></ul>
+<div id="q1521639681-1-13" class="tab-content"><script>init("q1521639681-1-13", "DFA");</script></div>
+:e="b:DFA-DFA:(A,a)=B(A,b)=C(A,c)=D(B,a)=E(B,b)=C(B,c)=D(C,a)=B(C,b)=E(C,c)=D(D,a)=B(D,b)=C(D,c)=E(E,a)=E(E,b)=E(E,c)=E F={A,B,C,D}" ok
+--
+++
+<script type="text/javascript">
+	var jQuery_new = $;
+	$ = jQuery = jQuery_old;
+</script>
