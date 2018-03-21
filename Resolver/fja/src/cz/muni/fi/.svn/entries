@@ -1,44 +1,0 @@
-10
-
-dir
-0
-https://cfganalyzer.googlecode.com/svn/fja/src/java/cz/muni/fi
-https://cfganalyzer.googlecode.com/svn
-add
-
-
-
-
-
-
-
-svn:special svn:externals svn:needs-lock
-
-admin
-dir
-
-
-
-add
-
-cfg
-dir
-
-
-
-add
-
-fja
-dir
-
-
-
-add
-
-xpastirc
-dir
-
-
-
-add
-
