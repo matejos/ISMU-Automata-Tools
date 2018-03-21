@@ -1,0 +1,20 @@
+<component name="libraryTable">
+  <library name="lib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/fja/lib/antlr-3.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/fjaparsers.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/mysql-connector-java-5.1.16-bin.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/JPam-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/Bakalarka.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/PushDownAutomata.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/standard.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/jstl-impl.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/fjaCentre.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/commons-logging-1.1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/jstl-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/fja/lib/ContextFreeGrammars.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
