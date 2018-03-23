@@ -17,7 +17,8 @@ public class PamAuth implements AuthMethod {
 
     public boolean login(String name, String password) {
         try {
-            System.setProperty("java.library.path", "/usr/local/lib");
+            //System.setProperty("java.library.path", "/usr/local/lib");
+            System.setProperty("java.library.path", "/var/lib/tomcat6/webapps/fjaq3/WEB-INF/lib");
             Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
             fieldSysPath.setAccessible(true);
             fieldSysPath.set(null, null);
