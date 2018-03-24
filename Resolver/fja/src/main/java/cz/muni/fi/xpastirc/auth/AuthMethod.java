@@ -5,6 +5,8 @@
 
 package cz.muni.fi.xpastirc.auth;
 
+import java.io.IOException;
+
 /**
  *
  * @author Tomas Pastircak - 324693@mail.muni.cz
@@ -12,4 +14,5 @@ package cz.muni.fi.xpastirc.auth;
  */
 public interface AuthMethod {
     boolean login(String name, String password);
+    boolean authorize(String name) throws IOException;
 }

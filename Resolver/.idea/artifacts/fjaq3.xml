@@ -10,7 +10,6 @@
         <element id="directory" name="lib">
           <element id="library" level="project" name="log4j-1.2.17" />
           <element id="library" level="project" name="lib" />
-          <element id="file-copy" path="$PROJECT_DIR$/fja/lib/libjpam.so" />
         </element>
       </element>
     </root>

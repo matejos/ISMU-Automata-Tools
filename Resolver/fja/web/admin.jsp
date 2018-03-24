@@ -88,6 +88,7 @@
                 <center>
                     <h1>Administrace vkládaných úloh</h1> 
                     <form method="get" action="admin.jsp">
+                        <input type="button" class="turn_off_button" value="<%= readFromIsOnly ? "Opět spřístupni" : "Dočasně vypni"%>">
                         <table>
                             <tr>
                                 <td class="alnright">
@@ -139,7 +140,7 @@
                             </tr>
                             <tr>
                                 <td style="text-align: right;padding-right: 55px;" colspan="2"><input type=submit value="Nastav" name="set"></td>
-                            </tr>    
+                            </tr>
                         </table>
                     </form>
                     <a href="log.jsp">Výpis logů</a>
@@ -151,6 +152,16 @@
             $(document).ready(function() {
                 $('.is_add').live('click', function() {
                     $("[name=isaddress]").val("147.251.49.*");
+                });
+                $('.turn_off_button').live('click', function() {
+                    if (<%=readFromIsOnly%>) {
+                        $("[name=isOnly]").attr('checked', false);
+                    }
+                    else {
+                        $("[name=isaddress]").val("147.251.49.*");
+                        $("[name=isOnly]").attr('checked', true);
+                    }
+                    $("[name=set]").click();
                 });
             });
         </script>

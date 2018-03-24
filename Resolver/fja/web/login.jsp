@@ -7,17 +7,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
    "http://www.w3.org/TR/html4/loose.dtd">
-<%
-if(request.getLocalPort() != 8443 ){
-            response.sendRedirect("https://"+request.getServerName()+":8443"+request.getRequestURI()
-                    + "?from="+request.getParameter("from"));
-            return;
-       }
-   String err = request.getParameter("err");
-   if (err != null){
-        out.println(err);
-    }
-    %>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -50,10 +39,25 @@ if(request.getLocalPort() != 8443 ){
                 <center>
                     <br/>
                     <br/>
+                    <%
+                        if(request.getLocalPort() != 8443 ){
+                            response.sendRedirect("https://"+request.getServerName()+":8443"+request.getRequestURI()
+                                    + "?from="+request.getParameter("from"));
+                            return;
+                        }
+                        String err = request.getParameter("err");
+                        if (err != null){
+                            if (err.equals("IncorrectCredentials"))
+                                err = "Špatné heslo nebo jméno";
+                            else if (err.equals("PermissionDenied"))
+                                err = "Nemáte oprávnění spravovat nastavení";
+
+                            out.println("<p class='alert alert-danger'>");
+                            out.println(err);
+                            out.println("</p>");
+                        }
+                    %>
                     <form method="POST" action="<%= "login" %>">
-                        <%
-                        //out.println(System.getProperty("java.library.path"));
-                        %>
                         Uživatelské jméno: <br/> <input type="text" value="" name="username"><br /><br/>
                         Uživatelské heslo: <br/> <input type="password" value="" name="password"><br /><br/>
                         <input type="hidden" value="<%request.getParameter("from"); %>">

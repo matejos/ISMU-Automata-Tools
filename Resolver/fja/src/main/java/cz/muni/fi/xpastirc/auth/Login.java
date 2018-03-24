@@ -41,12 +41,17 @@ public class Login extends HttpServlet {
             response.getWriter().println(logged);
 
             if (logged){
-                session.setAttribute("Login", request.getParameter("username"));
-                response.sendRedirect(to);
+                boolean authorized = auth.authorize(request.getParameter("username"));
+                if (authorized) {
+                    session.setAttribute("Login", request.getParameter("username"));
+                    response.sendRedirect(to);
+                }
+                else {
+                    response.sendRedirect("login.jsp?err=PermissionDenied");
+                }
             }
-            else
-            {
-                response.sendRedirect("login.jsp?err=Spatne heslo nebo jmeno");
+            else {
+                response.sendRedirect("login.jsp?err=IncorrectCredentials");
             }
         } finally { 
             out.close();
