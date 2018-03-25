@@ -35,28 +35,31 @@
         </div>
         <div class="page">
             <div class="content">
+                <%
+                    if(request.getLocalPort() != 8443 ){
+                        response.sendRedirect("https://"+request.getServerName()+":8443"+request.getRequestURI()
+                                + "?from="+request.getParameter("from"));
+                        return;
+                    }
+                    String err = request.getParameter("err");
+                    if (err != null){
+                        if (err.equals("IncorrectCredentials"))
+                            err = "Špatné heslo nebo jméno";
+                        else if (err.equals("PermissionDenied"))
+                            err = "Nemáte oprávnění spravovat nastavení";
+
+                        out.println("<div class='alertWindow'>");
+                        out.println("<div class='errorMessage'>");
+                        out.println(err);
+                        out.println("</div>");
+                        out.println("</div>");
+                    }
+                %>
                 <div class="window">
                 <center>
                     <br/>
                     <br/>
-                    <%
-                        if(request.getLocalPort() != 8443 ){
-                            response.sendRedirect("https://"+request.getServerName()+":8443"+request.getRequestURI()
-                                    + "?from="+request.getParameter("from"));
-                            return;
-                        }
-                        String err = request.getParameter("err");
-                        if (err != null){
-                            if (err.equals("IncorrectCredentials"))
-                                err = "Špatné heslo nebo jméno";
-                            else if (err.equals("PermissionDenied"))
-                                err = "Nemáte oprávnění spravovat nastavení";
 
-                            out.println("<p class='alert alert-danger'>");
-                            out.println(err);
-                            out.println("</p>");
-                        }
-                    %>
                     <form method="POST" action="<%= "login" %>">
                         Uživatelské jméno: <br/> <input type="text" value="" name="username"><br /><br/>
                         Uživatelské heslo: <br/> <input type="password" value="" name="password"><br /><br/>

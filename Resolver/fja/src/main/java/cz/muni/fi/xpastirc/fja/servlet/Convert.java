@@ -83,7 +83,7 @@ public class Convert extends HttpServlet {
           out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
           out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"cs\" lang=\"cs\">");
           out.println("<head>");
-          out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
+          //out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
           out.println("<meta http-equiv=\"Content-Language\" content=\"cs\" />");
           out.println("<title>P&#345;evod</title>");
           out.println("<link rel='stylesheet' type='text/css' href='style/style_reg.css'>");
@@ -110,7 +110,7 @@ public class Convert extends HttpServlet {
                   }
             }
           out.println("<li><a href=\"./admin.jsp\" title=\"Nastavení\">Nastavení</a></li>");
-          out.println("<li><a href=\"./help.jsp\" title=\"Nápověda\">Nápov&#283;da</a></li>");
+          out.println("<li><a href=\"./help.jsp\" title=\"Nápov&#283;da\">Nápov&#283;da</a></li>");
           out.println("<li><a href=\"./author.jsp\" title=\"O aplikaci\">O aplikaci</a></li>");
           out.println("</ul>");
           out.println("</div>");
