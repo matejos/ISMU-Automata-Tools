@@ -48,7 +48,7 @@ public class Convertx extends HttpServlet {
             LanguageInformation information;
             LanguageInformation coinf;
             String formalism = request.getParameter("teach");
-            String input = request.getParameter("t");
+            String input = request.getParameter("convert");
             String to= request.getParameter("stud");
             try {
                 information = ComplexLanguageInformation.getLanguageInformation(formalism, input);

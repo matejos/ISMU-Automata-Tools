@@ -20,14 +20,14 @@ import javax.servlet.http.HttpSession;
  *         If "mod" is simple then is returned only "true"/"false".
  * "gen" - (=yes). Optional parameter if "gen" returns "yes" then generate 
  *         teacher's string.
- * "t" - Mandatory parameter. This parameter has to contain teacher's model
+ * "convert" - Mandatory parameter. This parameter has to contain teacher's model
  *       and can contain task definition.
  * "teach" - Optional parameter. When the request is comming from web interface
  *           then this parameter can contain type of teacher's model.
- *           Otherwise this should be defined in parameter "t".  
+ *           Otherwise this should be defined in parameter "convert".
  * "stud" - Optional parameter. When the request is comming from web interface
  *          then this parameter can contain type of requested student's model.
- *          Otherwise this should be defined in parameter "t".
+ *          Otherwise this should be defined in parameter "convert".
  *           
  * @author Bronek
  */
@@ -67,7 +67,7 @@ public class Convert extends HttpServlet {
       }
     }
 
-    String model = request.getParameter("t");
+    String model = request.getParameter("convert");
     String modelInfo = request.getParameter("teach");
     String convertInfo = request.getParameter("stud");
     boolean tab = Boolean.parseBoolean(request.getParameter("intable"));
