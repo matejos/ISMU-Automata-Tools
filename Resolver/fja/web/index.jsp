@@ -132,13 +132,13 @@
                 <form method="post" action="Convert" name="convert">
                     <h2 class="transformTitle">Převeď</h2>
                         <ul class="list">
-                            <li><label><input name="teach" value="DFA" type="radio" onchange="invalidate('DFA', 'convert');"><b>DFA</b></label><br>
-                            <li><label><input name="teach" value="EFA" type="radio" onchange="invalidate('EFA', 'convert');"><b>EFA</b> - NFA s epsilon kroky</label><br>
-                            <li><label><input name="teach" value="GRA" type="radio" onchange="invalidate('GRA', 'convert');"><b>GRA</b> - gramatika</label><br>
-                            <li><label><input name="teach" value="REG" type="radio" onchange="invalidate('REG', 'convert');"><b>REG</b> - Regulární výraz</label><br>
+                            <li><label><input name="teach2" value="DFA" type="radio" onchange="invalidate('DFA', 'convert');"><b>DFA</b></label><br>
+                            <li><label><input name="teach2" value="EFA" type="radio" onchange="invalidate('EFA', 'convert');"><b>EFA</b> - NFA s epsilon kroky</label><br>
+                            <li><label><input name="teach2" value="GRA" type="radio" onchange="invalidate('GRA', 'convert');"><b>GRA</b> - gramatika</label><br>
+                            <li><label><input name="teach2" value="REG" type="radio" onchange="invalidate('REG', 'convert');"><b>REG</b> - Regulární výraz</label><br>
                          </ul>
                          <div class="input">
-                             <textarea id="convert" name="t" cols="25" rows="12"></textarea>
+                             <textarea id="convert" name="convert" cols="25" rows="12"></textarea>
                          </div>
                          <ul class="list2">
                             <li><label><input name="stud" value="TOT" type="radio"><b>TOT</b> - totální DFA</label><br>
@@ -166,11 +166,20 @@
             </div>
         </div>
         </div>
-        <script type="text/javascript">
-            register('convert', DfaParser.parse, document.getElementById('convert'));
-        </script>
         <script>
             $(document).ready(function() {
+                var selector = document.querySelector('input[name="teach"]:checked');
+                if(selector) {
+                    invalidate(selector.value, 't');
+                }
+                selector = document.querySelector('input[name="stud"]:checked');
+                if(selector) {
+                    invalidate(selector.value, 's');
+                }
+                selector = document.querySelector('input[name="teach2"]:checked');
+                if(selector) {
+                    invalidate(selector.value, 'convert');
+                }
                 $('input[type=radio][name=teach]').change(function() {
                     if (document.getElementById("t").value == '') {
                         document.getElementById("t-error").innerHTML = "Zde se zobrazuje nápověda syntaxe formuláře učitele. Začněte psát do formuláře vlevo.";
