@@ -1,0 +1,70 @@
+<noscript>(Nemáte zapnutý JavaScript, ale pro správnou funkci otázky je nutný JavaScript. Jako prohlížeč je doporučený Firefox.) </noscript>
+<script type="text/javascript">document.write("\<script src='http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js' type='text/javascript'>\<\/script>");</script>
+<script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<style type="text/css">@import "http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css";</style>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+<script src="editorJs.js"></script>
+<style type="text/css">@import "editorCss.css";</style>
+<script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/utilIS.js" type="text/javascript"></script>
+<style type="text/css">@import "http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/parser_style.css";</style>
+
+<script type="text/javascript">
+$.fn.preventDoubleSubmission = function() {
+	$(this).on('submit',function(e){
+	console.log("hmm");
+		var $form = $(this);
+		if ($form.data('submitted') === true) {
+			e.preventDefault();
+		} else {
+			$form.data('submitted', true);
+			setTimeout(function() {
+				$form.find('input[type="submit"],button[type="submit"]').prop('disabled',true);
+			}, 10);
+
+			if ($form.data('submit-enable-interval')) {
+				setTimeout(function() {
+					$form.data('submitted', false);
+					$form.find('input[type="submit"],button[type="submit"]').prop('disabled',false);
+				}, $form.data('submit-enable-interval'));
+			}
+		}
+	});
+	return this;
+}
+
+$(document).ready(function(){
+	console.log("ye");
+	$('form')
+		.has('input[type="submit"][data-submit-once],button[type="submit"][data-submit-once]')
+		.preventDoubleSubmission();
+	console.log("wowow");
+});
+</script>
+
+<form method="post" name="testform">
+<!--________________________________________Příklad 1________________________________________-->
+<p>TEST:</p>
+
+<input name="test_sklad" type="hidden" value="tst_1">
+<p>Navrhněte DFA pro jazyk všech slov nad abecedou <m>\{a,b\}</m> obsahujících podslovo <m>aba</m> nebo <m>abbab</m>.</p>
+<input name="q1515687949-1-1" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/dfaparserN.js" type="text/javascript"></script>
+<div id="q1515687949-1-1-div" class="parser_text_default"> <textarea cols="80" name="tst_1_e_a_1" rows="10"></textarea> <span id="q1515687949-1-1-error" class="parser_error"></span></div><script type="text/javascript">register("q1515687949-1-1", dfaParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1515687949-1-1a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-1c">Text</a></li></ul></ul>
+<div id="q1515687949-1-1" class="tab-content"><script>init("q1515687949-1-1", "DFA");</script></div>
+<textarea cols="80" name="tst_1_e_a_1" rows="10"></textarea>
+
+<!--________________________________________Příklad 2________________________________________-->
+<p>TEST 2:</p>
+
+<input name="test_sklad" type="hidden" value="tst_2">
+<p>Navrhněte NFA (bez ε-kroků) pro jazyk všech slov nad abecedou <m>\{a,b,c\}</m> obsahujících zároveň podslova <m>baa</m> a <m>cbc</m>.</p>
+<input name="q1515687949-1-2" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/nfaparserN.js" type="text/javascript"></script><div id="q1515687949-1-2-div" class="parser_text_default"> <textarea cols="80" name="tst_2_e_a_1" rows="10"></textarea> <span id="q1515687949-1-2-error" class="parser_error"></span></div><script type="text/javascript">register("q1515687949-1-2", nfaParser.parse)</script>
+<ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1515687949-1-2a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-2c">Text</a></li></ul></ul>
+<div id="q1515687949-1-2" class="tab-content"><script>init("q1515687949-1-2", "NFA");</script></div>
+<textarea cols="80" name="tst_2_e_a_1" rows="10"></textarea>
+
+<P>
+<INPUT TYPE=submit name="uloz_str_0" VALUE="Průběžně uložit" data-submit-once="1">
+<INPUT TYPE=submit name="uloz" VALUE="Uložit" data-submit-once="1">
+
+</form>

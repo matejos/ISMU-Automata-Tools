@@ -22,11 +22,6 @@ var modeEnum = Object.freeze({
     SELECT: 3
 });
 
-function sqr(x)
-{
-	return (x * x);
-}
-
 // Initialization function
 function init(id, type) {
     if (!window.jQuery_new) {
@@ -2991,6 +2986,10 @@ function incorrectStateSyntax(val)
 //------------------------
 // Computational functions
 //------------------------
+
+function sqr(x) {
+    return (x * x);
+}
 
 function cubicControlPoints(x, y, d) {
     var mult = 100;
