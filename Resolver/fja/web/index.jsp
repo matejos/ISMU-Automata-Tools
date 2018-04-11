@@ -92,12 +92,12 @@
                             <li><label><input name="teach" value="EFA" type="radio" onchange="invalidate('EFA', 't');"><b>EFA</b> - NFA s epsilon kroky</label><br>
                             <li><label><input name="teach" value="GRA" type="radio" onchange="invalidate('GRA', 't');"><b>GRA</b> - Regulární gramatika</label><br>
                             <li><label><input name="teach" value="REG" type="radio" onchange="invalidate('REG', 't');"><b>REG</b> - Regulární výraz</label><br>
-                         </ul>
-                         <div class="input">
-                             <textarea id="t" name="t" cols="25" rows="12"></textarea>
-                         </div>
-                         <ul class="list2">
-                             Požadovaná odpověď:
+                        </ul>
+                        <div class="input">
+                            <textarea id="t" name="t" cols="25" rows="12"></textarea>
+                        </div>
+                        <ul class="list2">
+                            Požadovaná odpověď:
                             <li><label><input name="stud" value="TOT" type="radio" onchange="invalidate('TOT', 's');"><b>TOT</b> - Totální DFA</label><br>
                             <li><label><input name="stud" value="MIC" type="radio" onchange="invalidate('MIC', 's');"><b>MIC</b> - Minimální kanonický DFA</label><br>
                             <li><label><input name="stud" value="MIN" type="radio" onchange="invalidate('MIN', 's');"><b>MIN</b> - Minimalní DFA</label><br>
@@ -107,11 +107,14 @@
                             <li><label><input name="stud" value="GRA" type="radio" onchange="invalidate('GRA', 's');"><b>GRA</b> - Regulární gramatika</label><br>
                             <li><label><input name="stud" value="REG" type="radio" onchange="invalidate('REG', 's');"><b>REG</b> - Regulární výraz</label><br>
                             <li><label><input name="stud" value="ALL" type="radio" onchange="invalidate('ALL', 's');"><b>ALL</b> - cokoliv</label><br>
-                         </ul>
+                        </ul>
                     <div class="modes2">
                         <input type="checkbox" id ="showtable" name="intable" value="true" class="check" />
                         <label for="showtable" title="V odpovědi se zobrazí automaty v tabulce.">Zobrazit automaty v tabulce</label>
-                        <br/>
+                        <br>
+                        <input type="checkbox" id ="isomorphic" name="iso" value="true" class="check" />
+                        <label for="isomorphic" title="Pro testování dodržení vyžadovaného postupu.">Testovat isomorfismus</label>
+                        <br>
                             <select name="mod" title="Zvolte si mód odpovědi.">
                                 <option value="verbose" title="Podrobný popis rozdílů mezi jazyky">Detailní mód</option>
                                 <option value="tf" title="Zobrazení ekvivalence jazyků">IS mód</option>

@@ -11,10 +11,7 @@ import cz.muni.fi.RegularLanguage.Exceptions.RegLanguageException;
 import cz.muni.fi.fja.parser.AutomatonToTable;
 import cz.muni.fi.xpastirc.db.DBHandler;
 import cz.muni.fi.xpastirc.db.MySQLHandler;
-import cz.muni.fi.xpastirc.fawebinterface.comparing.AutomatonFormalismChecker;
-import cz.muni.fi.xpastirc.fawebinterface.comparing.ComplexLanguageInformation;
-import cz.muni.fi.xpastirc.fawebinterface.comparing.ENFAException;
-import cz.muni.fi.xpastirc.fawebinterface.comparing.LanguageInformation;
+import cz.muni.fi.xpastirc.fawebinterface.comparing.*;
 import cz.muni.fi.xpastirc.parsers.PreParser;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,19 +45,22 @@ public class Equal extends HttpServlet {
         try {
             String mode = request.getParameter("mod");
             if (mode==null) mode="tf";
-            String formalism_teach = request.getParameter("teach");;
-            String input_teach = PreParser.parse(request.getParameter("t"));;
-            String formalism_stud = request.getParameter("stud");;
+            String formalism_teach = request.getParameter("teach");
+            String input_teach = PreParser.parse(request.getParameter("t"));
+            String formalism_stud = request.getParameter("stud");
             String input_stud = PreParser.parse(request.getParameter("s"));
             boolean tab = Boolean.parseBoolean(request.getParameter("intable"));
+            boolean testIso = Boolean.parseBoolean(request.getParameter("iso"));
             if (!mode.equals("tf"))
                 printHeader(out, request);
             try{
                 if(request.getParameter("teach")==null){
                     String[] externalData = exparse(request.getParameter("t"));
                     formalism_teach = externalData[0];
-                    input_teach = externalData[2];
+                    input_teach = externalData[3];
                     formalism_stud = externalData[1];
+                    if ("Y".equals(externalData[2]))
+                        testIso = true;
                 }
             }catch(Exception e){
                 out.println("Vstupní formalismus nebyl správně zadán: nebyl zvolen formalismus zadání.");
@@ -97,18 +97,22 @@ public class Equal extends HttpServlet {
                     }*/
                     /*start*/
                     int epsc = 0;
+                    boolean isomorphic = false;
                     try{
                         information_teach = ComplexLanguageInformation.getLanguageInformation(formalism_teach, input_teach);
                         try{
-                        information_stud = ComplexLanguageInformation.getLanguageInformation(formalism_stud, input_stud);}
-                        catch (ENFAException e){
-                            try{
-                            information_stud = ComplexLanguageInformation.getLanguageInformation("EFA", input_stud);
-                            epsc = information_stud.getEpscount();
-                            } catch (Exception ex){
-                                out.println("false||Vstupní formalismus nebyl správně zadán. ||0%");
-                                return;
+                            information_stud = ComplexLanguageInformation.getLanguageInformation(formalism_stud, input_stud);}
+                            catch (ENFAException e){
+                                try{
+                                information_stud = ComplexLanguageInformation.getLanguageInformation("EFA", input_stud);
+                                epsc = information_stud.getEpscount();
+                                } catch (Exception ex){
+                                    out.println("false||Vstupní formalismus nebyl správně zadán. ||0%");
+                                    return;
+                                }
                             }
+                        if (testIso) {
+                            isomorphic = AutomatonIsomorphismChecker.areIsomorphic(information_teach.toDFA(),information_stud.toDFA());
                         }
                         if (!(formalism_teach.equals("DFA") || (formalism_teach.equals("MIC"))|| formalism_teach.equals("MIN")
                                 || formalism_teach.equals("CAN") || formalism_teach.equals("TOT"))){
@@ -132,7 +136,7 @@ public class Equal extends HttpServlet {
                     } catch (RegLanguageException ex) {
                         out.println("false||Vstupní formalismus nebyl správně zadán: " + ex.getMessage());
                         if ((formalism_stud.equals("DFA") || (formalism_stud.equals("MIC"))|| formalism_stud.equals("MIN")
-                                || formalism_stud.equals("CAN") || formalism_stud.equals("TOT"))) out.println("Zkonktrolujte, zda je automat deterministický. ");
+                                || formalism_stud.equals("CAN") || formalism_stud.equals("TOT"))) out.println("Zkontrolujte, zda je automat deterministický. ");
                         out.println("||0%");
                         return;
                     }
@@ -161,12 +165,20 @@ public class Equal extends HttpServlet {
                     int percentage = 0;
                     if (goodFormalism && eq)
                     {
-                        ISAnswer.append("true");
+                        if (testIso && !isomorphic) {
+                            percentage += 80;
+                            ISAnswer.append("false||Nebyl správně vykonán požadovaný algoritmus.\n");
+                            ISAnswer.append("Jazyk odpovědi je ekvivalentní se zadáním.\n");
+                            ISAnswer.append("Odpověď splňuje požadovaný formalismus.");
+                        }
+                        else {
+                            ISAnswer.append("true");
+                        }
                     }
                     else{
                         ISAnswer.append("false||");
                         if(eq){
-                            ISAnswer.append("Jazyk odpovědi je ekvivalentní se zadáním. ");
+                            ISAnswer.append("Jazyk odpovědi je ekvivalentní se zadáním.\n");
                             if(("DFA".equals(formalism_teach)&&("DFA".equals(formalism_stud) || "TOT".equals(formalism_stud)
                                     || "MIC".equals(formalism_stud)|| "MIN".equals(formalism_stud)))||
                                     formalism_teach.equals(formalism_stud)) percentage += 40;
@@ -174,48 +186,48 @@ public class Equal extends HttpServlet {
                             
                         }
                         else if(inclusion==-1){
-                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyk odpovědi je podmnožinou jazyku zadání. ");
+                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyk odpovědi je podmnožinou jazyku zadání.\n");
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
-                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(". ");
+                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                                 percentage -=25;
                             }
-                            ISAnswer.append("Jazyky se liší o ").append(teachNotStud.getCharacteristics()).append(" počet slov. ");
+                            ISAnswer.append("Jazyky se liší o ").append(teachNotStud.getCharacteristics()).append(" počet slov.\n");
                             if("konečný".equals(teachNotStud.getCharacteristics())){
                                 percentage += 10;
                             }
-                            ISAnswer.append("Příklady slov z jazyka řešení, které nejsou v odpovědi: ").append(teachNotStud.getWords()).append(". ");
+                            ISAnswer.append("Příklady slov z jazyka řešení, které nejsou v odpovědi: ").append(teachNotStud.getWords()).append(".\n");
                             percentage += 20;
                         }
                         else if (inclusion == 1){
-                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyk odpovědi je nadmnožinou jazyku zadání. ");
+                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyk odpovědi je nadmnožinou jazyku zadání.\n");
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
-                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(". ");
+                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                                 percentage -=25;
                             }
-                            ISAnswer.append("Jazyky se liší o ").append(studNotTeach.getCharacteristics()).append(" počet slov. ");
+                            ISAnswer.append("Jazyky se liší o ").append(studNotTeach.getCharacteristics()).append(" počet slov.\n");
                             if("konečný".equals(studNotTeach.getCharacteristics())){
                                 percentage += 10;
                             }
-                            ISAnswer.append("Příklady slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(". ");
+                            ISAnswer.append("Příklady slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(".\n");
                             percentage += 20;
                         }
                         else if (disjoint){
-                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyky jsou disjunktní. ");
+                            ISAnswer.append("Jazyky nejsou ekvivalentní: Jazyky jsou disjunktní.\n");
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
-                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(". ");
+                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                             }
-                            ISAnswer.append("Příklad slov z jazyka odpovědi: ").append(information_stud.getWords()).append(". ");
-                            ISAnswer.append("Příklad slov z jazyka řešení: ").append(information_teach.getWords()).append("." );
+                            ISAnswer.append("\nPříklad slov z jazyka odpovědi: ").append(information_stud.getWords()).append(".\n");
+                            ISAnswer.append("\nPříklad slov z jazyka řešení: ").append(information_teach.getWords()).append(".\n");
                         }else{
-                            ISAnswer.append("Jazyk odpovědi není ekvivalentní se zadáním. ");
+                            ISAnswer.append("Jazyk odpovědi není ekvivalentní se zadáním.\n");
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
-                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(". ");
+                                ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                             }
-                            ISAnswer.append("Příklad slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(". ");
-                            ISAnswer.append("Příklad slov z jazyka řešení, ktere nejsou v odpovědi: ").append(teachNotStud.getWords()).append(". ");
+                            ISAnswer.append("Příklad slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(".\n");
+                            ISAnswer.append("Příklad slov z jazyka řešení, ktere nejsou v odpovědi: ").append(teachNotStud.getWords()).append(".\n");
                         }
                         if(goodFormalism){
-                            ISAnswer.append("Odpověď splňuje požadovaný formalismus. ");
+                            ISAnswer.append("Odpověď splňuje požadovaný formalismus.");
                             percentage += 40;
                         }else{
                             ISAnswer.append("Odpověď nesplňuje požadovaný formalismus: ");
@@ -223,18 +235,22 @@ public class Equal extends HttpServlet {
                                     || "MIC".equals(formalism_stud)|| "MIN".equals(formalism_stud)) ISAnswer.append("automat");
                             ISAnswer.append(gFormalism);
                             ISAnswer.deleteCharAt(ISAnswer.length()-1);
-                            ISAnswer.append(". ");
+                            ISAnswer.append(".");
                             percentage += AutomatonFormalismChecker.getFeedbackVal();
                         }
-                        ISAnswer.append("||").append(percentage).append("%");
+                        //ISAnswer.append("||").append(percentage).append("%");
                      }
                     out.println(ISAnswer.toString());
                     /*end*/
                     return;
                 }
+            boolean isomorphic = false;
             try{
                 information_teach = ComplexLanguageInformation.getLanguageInformation(formalism_teach, input_teach);
                 information_stud = ComplexLanguageInformation.getLanguageInformation(formalism_stud, input_stud);
+                if (testIso) {
+                    isomorphic = AutomatonIsomorphismChecker.areIsomorphic(information_teach.toDFA(),information_stud.toDFA());
+                }
                 if (!(formalism_teach.equals("DFA") || (formalism_teach.equals("MIC"))|| formalism_teach.equals("MIN")
                         || formalism_teach.equals("CAN") || formalism_teach.equals("TOT"))){
                     information_teach.toDFA().kanonize();
@@ -293,8 +309,15 @@ public class Equal extends HttpServlet {
             String eqImage;
             boolean disjoint = information_teach.intersection(information_stud).isEmpty()==1;
 
-            if (goodFormalism && eq)
-                out.println("<h1>Celkový výsledek: TRUE</h1>");
+            if (goodFormalism && eq) {
+                if (testIso && !isomorphic) {
+                    out.println("<h1>Celkový výsledek: FALSE</h1>");
+                    out.println("<span class=\"error\">Nebyl správně vykonán požadovaný algoritmus.</span><br>");
+                }
+                else {
+                    out.println("<h1>Celkový výsledek: TRUE</h1>");
+                }
+            }
             else
                 out.println("<h1>Celkový výsledek: FALSE</h1>");
             out.println(goodFormalism?"Odpověď splňuje požadovaný formalismus":"<span class=\"error\">Odpověď nesplňuje požadovaný formalismus</span>");
@@ -426,8 +449,16 @@ public class Equal extends HttpServlet {
     private static String[] exparse(String exData){
         String teacherType = exData.substring(0, 3);
         String studentType = exData.substring(4, 7);
-        String teacherData = exData.substring(8);
-        String[] returnArray = {teacherType, studentType, teacherData};
+        String isomorphism = exData.substring(8, 9);
+        String teacherData;
+        if ("Y".equals(isomorphism) || "N".equals(isomorphism)) {
+            teacherData = exData.substring(10);
+        }
+        else {
+            isomorphism = "N";
+            teacherData = exData.substring(8);
+        }
+        String[] returnArray = {teacherType, studentType, isomorphism, teacherData};
         return returnArray;
     }
     
