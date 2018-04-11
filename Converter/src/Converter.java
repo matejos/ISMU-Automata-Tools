@@ -8,13 +8,12 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * @author Matej Poklemba
  */
-public class Skript_Java {
+public class Converter {
     static String prefixContentFileName = "Skript_prefix.txt";
     static String parsersLocationFileName = "Skript_parsers.txt";
     static String endingContentFileName = "Skript_ending.txt";
@@ -238,7 +237,7 @@ public class Skript_Java {
     }
 
     static void printHelp() {
-        System.out.format("Usage: %s [-options] fileName…\n", Skript_Java.class.getName());
+        System.out.format("Usage: %s [-options] fileName…\n", Converter.class.getName());
         System.out.format("where options include:\n");
         System.out.format("\t-r | -reset\tperform reset on files (use if they contain older version of the editor)\n");
         System.out.format("\t-k | -keep\tkeep reset versions of files (…Reset.qdef)\n");
