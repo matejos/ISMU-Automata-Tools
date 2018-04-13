@@ -202,10 +202,12 @@ public class Converter {
                             while (s2 != null && s2.contains(":e=")) {
                                 StringBuilder stringBuilder = new StringBuilder(s2.trim());
                                 stringBuilder.replace(4, 5, "f");
-                                if (iso)
-                                    stringBuilder.insert(13, "-Y");
-                                else
-                                    stringBuilder.insert(13, "-N");
+                                if (stringBuilder.toString().charAt(13) == ':') {
+                                    if (iso)
+                                        stringBuilder.insert(13, "-Y");
+                                    else
+                                        stringBuilder.insert(13, "-N");
+                                }
                                 writer.write(stringBuilder.toString() + "\n");
                                 s2 = reader.readLine();
                                 dontRead = true;
