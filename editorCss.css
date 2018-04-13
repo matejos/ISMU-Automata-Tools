@@ -209,3 +209,6 @@
 .fade.in {
   opacity: 1;
 }
+.disableddiv {
+    pointer-events: none;
+}

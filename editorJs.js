@@ -281,6 +281,12 @@ function init(id, type) {
 			}
 		});
 		buttonSelect.click();
+		
+		if (jeProhlizeciStranka())
+		{
+			jQuery_new("#" + id).addClass("disableddiv");
+			jQuery_new(wp.textTab.textArea).prop("disabled", true);
+		}
 	}
 }
 
@@ -798,6 +804,9 @@ function updateTableTabFromText(wp, pure)
 	wp.tableTab.removeChild(oldTable);
 	wp.tableTab.removeChild(wp.tableTab.statusText);
 	wp.tableTab.appendChild(wp.tableTab.statusText);
+	
+	if (jeProhlizeciStranka())
+		jQuery_new(table).find("input").prop("disabled", true);
 }
 
 //--------------------
@@ -2502,6 +2511,8 @@ function whitenState(state) {
 
 function selectElement(evt) {
 	evt.preventDefault();
+	if (jeProhlizeciStranka())
+		return;
 	var svg = evt.target.parentSvg;
 	if (svg.rect.mode != modeEnum.SELECT)
 		return;
