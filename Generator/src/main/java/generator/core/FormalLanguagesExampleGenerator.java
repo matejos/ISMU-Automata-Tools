@@ -10,12 +10,8 @@ import generator.communication.ExampleConsumer;
 import generator.communication.ModuleToCore;
 import generator.communication.dto.ExampleDTO;
 import generator.modules.GeneratorMode;
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -514,9 +510,16 @@ public class FormalLanguagesExampleGenerator extends JFrame
 
 		moduleChoiceMenu.setText("mode selection");
 
+		ButtonGroup modeGroup = new ButtonGroup();
+		boolean modeSelected = false;
+
 		for (final GeneratorMode mode : GeneratorMode.values())
 		{
-			final JMenuItem modeItem = new JMenuItem();
+			final JRadioButtonMenuItem modeItem = new JRadioButtonMenuItem();
+			if (!modeSelected) {
+				modeSelected = true;
+				modeItem.setSelected(true);
+			}
 			modeItem.setText(mode.getGeneratorModeName());
 			modeItem.addActionListener(new ActionListener()
 			{
@@ -530,7 +533,7 @@ public class FormalLanguagesExampleGenerator extends JFrame
 				}
 			});
 			moduleChoiceMenu.add(modeItem);
-
+			modeGroup.add(modeItem);
 		}
 
 		languageSelectionMenu.setText("SelectLanguage");
@@ -599,9 +602,13 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		fileMenu.add(exit);
 
 		menuBar.add(fileMenu);
+		fileMenu.setMargin(new Insets(0, 20, 0, 20));
+
 		menuBar.add(moduleChoiceMenu);
+		moduleChoiceMenu.setMargin(new Insets(0, 20, 0, 20));
 
 		menuBar.add(viewSelectionMenu);
+		viewSelectionMenu.setMargin(new Insets(0, 20, 0, 20));
 
 		about.addActionListener(new ActionListener()
 		{
@@ -616,6 +623,7 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		helpMenu.add(about);
 
 		menuBar.add(helpMenu);
+		helpMenu.setMargin(new Insets(0, 20, 0, 20));
 
 		updateComponent(menuBar);
 
