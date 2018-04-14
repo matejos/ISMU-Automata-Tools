@@ -20,12 +20,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Field;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JSpinner.NumberEditor;
@@ -54,10 +51,15 @@ public class RegModule extends GenericModulePane
 
 	public RegModule()
 	{
+	    exclusionsList = new ArrayList<String>();
+	    for (String s : exclusions)
+	        exclusionsList.add(s);
+
 		settingsPane.setName("settingsPane");
 		settingsPane.setLayout(new GridBagLayout());
 
 		setupSpinners();
+
 
 		setupTransformationTypeLayout();
 		setupType0Layout();
@@ -4690,11 +4692,16 @@ public class RegModule extends GenericModulePane
 		{ type3OutputREConcatenationMinJSpinner, type3OutputREConcatenationMaxJSpinner },
 		{ type3OutputREIterationMinJSpinner, type3OutputREIterationMaxJSpinner }, };
 
+	private String[] exclusions = {
+            "typeJComboBox"
+    };
+
+	private List<String> exclusionsList;
+
 	@Override
 	public void afterInit()
 	{
 		this.setViewportView(settingsPane);
-
 	}
 
 	@Override
@@ -4914,6 +4921,33 @@ public class RegModule extends GenericModulePane
 				: (Integer) spinner.getValue());
 		}
 
+		for (Field field : getClass().getDeclaredFields()) {
+		    if (exclusionsList.indexOf(field.getName()) == -1) {
+                if (field.getType().isAssignableFrom(JCheckBox.class)) {
+                    try {
+                        JCheckBox cb = (JCheckBox) field.get(this);
+                        settings.put(field.getName(), cb.isSelected() ? 1 : 0);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                } else if (field.getType().isAssignableFrom(JRadioButton.class)) {
+                    try {
+                        JRadioButton rb = (JRadioButton) field.get(this);
+                        settings.put(field.getName(), rb.isSelected() ? 1 : 0);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                } else if (field.getType().isAssignableFrom(JComboBox.class)) {
+                    try {
+                        JComboBox cb = (JComboBox) field.get(this);
+                        settings.put(field.getName(), cb.getSelectedIndex());
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
 		return settings;
 	}
 	@Override
@@ -4931,5 +4965,35 @@ public class RegModule extends GenericModulePane
 				spinner.setValue(settings.get(spinnerDeclarationName));
 			}
 		}
+
+        for (Field field : getClass().getDeclaredFields()) {
+            if (exclusionsList.indexOf(field.getName()) == -1) {
+                if (settings.get(field.getName()) != null) {
+                    if (field.getType().isAssignableFrom(JCheckBox.class)) {
+                        try {
+                            JCheckBox cb = (JCheckBox) field.get(this);
+                            cb.setSelected(settings.get(field.getName()) == 1);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (field.getType().isAssignableFrom(JRadioButton.class)) {
+                        try {
+                            JRadioButton cb = (JRadioButton) field.get(this);
+                            cb.setSelected(settings.get(field.getName()) == 1);
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (field.getType().isAssignableFrom(JComboBox.class)) {
+                        try {
+                            JComboBox cb = (JComboBox) field.get(this);
+                            cb.setSelectedIndex(settings.get(field.getName()));
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+        activateTransformationPanel(activePanelNumber);
 	}
 }
