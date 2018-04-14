@@ -20,32 +20,16 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JSpinner;
 import javax.swing.JSpinner.NumberEditor;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class RegModule extends GenericModulePane
@@ -1191,6 +1175,13 @@ public class RegModule extends GenericModulePane
 				activePanelNumber = 0;
 				type0OperationJPanel.setVisible(true);
 				type0Automaton1JPanel.setVisible(true);
+                /*for (Component comp : type0Automaton1JPanel.getComponents()){
+                    if (comp instanceof JSpinner) {
+                        Object val = ((JSpinner)comp).getValue();
+                        ((JSpinner)comp).setValue(0);
+                        ((JSpinner)comp).setValue(val);
+                    }
+                }*/
 				type0Automaton2JPanel.setVisible(true);
 				type0OutputAutomatonJPanel.setVisible(true);
 				break;
@@ -1200,19 +1191,29 @@ public class RegModule extends GenericModulePane
 				type1InputAutomatonJPanel.setVisible(true);
 				type1OutputAutomatonJPanel.setVisible(true);
 				type1MinimalizationJPanel.setVisible(false);
+				int toIndex = type1OperationToJComboBox.getSelectedIndex();
+				type1OperationFromJComboBox.setSelectedIndex(type1OperationFromJComboBox.getSelectedIndex());
+                type1OperationToJComboBox.setSelectedIndex(toIndex);
 				break;
 			case 2:
 				activePanelNumber = 2;
 				activeType2SubpanelNumber = 0;
 				type2OperationJPanel.setVisible(true);
 				type2InputGrammarJPanel.setVisible(true);
+                if (type2OperationNFAToGrammarJButton.isSelected())
+                    type2OperationNFAToGrammarJButton.doClick();
+                else
+                    type2OperationGrammarToNFAJButton.doClick();
 				break;
 			case 3:
 				activePanelNumber = 3;
 				type3OperationJPanel.setVisible(true);
 				type3InputAutomatonJPanel.setVisible(true);
 				type3OutputREJPanel.setVisible(true);
-				type3OperationDFAToREJButton.setSelected(true);
+                if (type3OperationDFAToREJButton.isSelected())
+                    type3OperationDFAToREJButton.doClick();
+                else
+                    type3OperationREToDFAJButton.doClick();
 		}
 	}
 
