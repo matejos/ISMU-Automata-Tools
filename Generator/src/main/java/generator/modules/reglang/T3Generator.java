@@ -64,6 +64,8 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 
 	private boolean hasEps;
 
+	private boolean isomorphism;
+
 	/**
 	 * Constructor, which makes new backgroud thread. The thread generates the exercises for converting DFA -> regular
 	 * expression
@@ -113,7 +115,7 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		int numberOfStatesMin, int numberOfStatesMax, int numberOfUnreachableMin, int numberOfUnreachableMax,
 		int numberOfFinalStatesMin, int numberOfFinalStatesMax, int numberOfTransitionsMin, int numberOfTransitionsMax,
 		int resultSizeOfAlphabetMin, int resultSizeOfAlphabetMax, int resultLengthMin, int resultLengthMax,
-		int unionMin, int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, boolean hasEps)
+		int unionMin, int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, boolean hasEps, boolean isomorphism)
 	{
 
 		this.operation = 0;
@@ -142,12 +144,13 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 
 		this.hasEps = hasEps;
 
+		this.isomorphism = isomorphism;
 	}
 
 	// RE->EFA
 	public T3Generator(int exercises, int sizeOfAlphabetMin, int sizeOfAlphabetMax, int alphabet, int unionMin,
 		int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, int epsMin, int epsMax, int emptySetMin,
-		int emptySetMax)
+		int emptySetMax, boolean isomorphism)
 	{
 
 		this.operation = 1;
@@ -165,6 +168,8 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		this.epsMax = epsMax;
 		this.emptySetMin = emptySetMin;
 		this.emptySetMax = emptySetMax;
+
+		this.isomorphism = isomorphism;
 	}
 
 	public void executeGeneration()
@@ -442,11 +447,11 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		sbPlainText.append(b.toString() + "\n");
 		if (b.containsEpsilonTransitions())
 		{
-			sbIS.append(b.toIS("EFA", "EFA"));
+			sbIS.append(b.toIS("EFA", "EFA", isomorphism));
 		}
 		else
 		{
-			sbIS.append(b.toIS("NFA", "NFA"));
+			sbIS.append(b.toIS("NFA", "NFA", isomorphism));
 		}
 
 		Map<String, String> result = new HashMap<String, String>();

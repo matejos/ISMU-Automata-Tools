@@ -80,6 +80,8 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 	private int resultNumberOfUnreachableStatesMin; // -1, if is not set
 	private int resultNumberOfUnreachableStatesMax; // -1, if is not set
 
+	private boolean isomorphism;
+
 	/**
 	 * Constructor, which makes new backgroud thread. The thread generates the exercises for converting NFA to regular
 	 * grammar
@@ -140,7 +142,7 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 		int sizeOfAlphabetMax, int alphabet, int states, boolean epsilon, int numberOfUnreachableStatesMin,
 		int numberOfUnreachableStatesMax, int resultNumberOfVariablesMin, int resultNumberOfVariablesMax,
 		int resultNumberOfRulesMin, int resultNumberOfRulesMax, int resultNumberOfTerminalsMin,
-		int resultNumberOfTerminalsMax, boolean firstStateIsFinal)
+		int resultNumberOfTerminalsMax, boolean firstStateIsFinal, boolean isomorphism)
 	{
 
 		this.firstStateIsFinal = firstStateIsFinal;
@@ -166,6 +168,8 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 		this.epsilon = epsilon;
 
 		this.exercises = exercises;
+
+		this.isomorphism = isomorphism;
 	}
 
 	/**
@@ -218,7 +222,7 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 		int numberOfRulesMax, int numberOfTerminalsMin, int numberOfTerminalsMax, int terminals, int variables,
 		boolean epsilon, int resultNumberOfStatesMin, int resultNumberOfStatesMax, int resultNumberOfTransitionsMin,
 		int resultNumberOfTransitionsMax, int resultSizeOfAlphabetMin, int resultSizeOfAlphabetMax,
-		int resultNumberOfUnreachableStatesMin, int resultNumberOfUnreachableStatesMax, int minLoops, int maxLoops)
+		int resultNumberOfUnreachableStatesMin, int resultNumberOfUnreachableStatesMax, int minLoops, int maxLoops, boolean isomorphism)
 	{
 
 		this.operation = 1;
@@ -257,6 +261,7 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 		this.maxLoops = maxLoops;
 		this.exercises = exercises;
 
+		this.isomorphism = isomorphism;
 	}
 
 	public void executeGeneration()
@@ -566,7 +571,7 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 
 		// FA -> regular grammar
 
-		sbIS.append(a.toIS("NFA", "GRA"));
+		sbIS.append(a.toIS("NFA", "GRA", isomorphism));
 		g = RegularGrammarConverter.convertAutomatonToRegularGrammar(a);
 		sbLatexEN.append("Grammar " + g.toLaTeX() + "\n");
 		sbPlainTextEN.append(g.toString() + "\n");
@@ -613,7 +618,7 @@ public class T2Generator extends GeneratorWorker implements GeneratingLogic
 		sbPlainTextEN.append(b.toString() + "\n");
 		sbLatex.append(b.toLaTeX() + "\n");
 		sbPlainText.append(b.toString() + "\n");
-		sbIS.append(b.toIS(from, from));
+		sbIS.append(b.toIS(from, from, isomorphism));
 
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("latex", sbLatex.toString());

@@ -1446,14 +1446,20 @@ public class Automaton
 	 *            deterministic finite automaton; MIC -- minimal deterministic finite automaton in the canonical form;
 	 *            TOT -- deterministic finite automaton with the total transition function; GRA -- regular grammar; REG
 	 *            -- regular expression
+	 * @param isomorphism
+	 *            whether to insert condition for isomorphism (transforms to 'Y'/'N')
 	 * @return returns the Automaton in the form to IS: :e
-	 *         :e="b:teacher-student:init=startState transition function F={final states}" ok
+	 *         :e="f:teacher-student-isomorphism:init=startState transition function F={final states}" ok
 	 */
-	public String toIS(String teacher, String student)
+	public String toIS(String teacher, String student, boolean isomorphism)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(" :e" + "\n" + ":e=\"b:");
-		sb.append(teacher + "-" + student);
+		sb.append(" :e" + "\n" + ":e=\"f:");
+		sb.append(teacher + "-" + student + "-");
+		if (isomorphism)
+			sb.append("Y");
+		else
+			sb.append("N");
 		sb.append(":init=" + this.getStartState().replace("_{", "").replace("}", "") + " ");
 		for (String state : AlphabetGenerator.sortSet(this.getStates(), this.getStatesType()))
 		{

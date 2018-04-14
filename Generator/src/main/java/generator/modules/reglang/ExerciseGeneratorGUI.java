@@ -3000,7 +3000,7 @@ public class ExerciseGeneratorGUI extends javax.swing.JFrame
 			a1NumberOfTransitionsMin, a1NumberOfTransitionsMax, a1States, a1TotalTransitionFunction, a1Complement,
 			a2NumberOfStatesMin, a2NumberOfStatesMax, a2NumberOfFinalStatesMin, a2NumberOfFinalStatesMax,
 			a2NumberOfTransitionsMin, a2NumberOfTransitionsMax, a2States, a2TotalTransitionFunction, a2Complement,
-			outputStatesMin, outputStatesMax, outputTransitionsMin, outputTransitionsMax, outputMinOneFinalState))
+			outputStatesMin, outputStatesMax, outputTransitionsMin, outputTransitionsMax, outputMinOneFinalState, false))
 			.execute();
 	}
 
