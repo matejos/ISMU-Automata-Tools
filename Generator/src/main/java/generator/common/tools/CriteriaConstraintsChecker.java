@@ -27,6 +27,8 @@ import java.util.Set;
 import javax.swing.Action;
 import javax.swing.JLabel;
 import javax.swing.JSpinner;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -205,7 +207,7 @@ public final class CriteriaConstraintsChecker
 	}
 
 	private class CriteriaPaar extends ComponentAdapter implements ChangeListener, PropertyChangeListener,
-		ContainerListener
+		ContainerListener, AncestorListener
 	{
 
 		private JSpinner lesser;
@@ -285,6 +287,20 @@ public final class CriteriaConstraintsChecker
 
 		}
 
+		@Override
+		public void ancestorAdded(AncestorEvent event) {
+			resolveProblemOnSpinner(lesser, greater, type, message);
+		}
+
+		@Override
+		public void ancestorRemoved(AncestorEvent event) {
+			errorMessages.clear();
+		}
+
+		@Override
+		public void ancestorMoved(AncestorEvent event) {
+
+		}
 	}
 
 	public void addErrConstraint(JSpinner lesser, JSpinner greater, String message)
@@ -306,6 +322,8 @@ public final class CriteriaConstraintsChecker
 
 		lesser.addChangeListener(listener);
 		greater.addChangeListener(listener);
+		lesser.addAncestorListener(listener);
+		greater.addAncestorListener(listener);
 
 		Container current = lesser.getParent();
 		while (current != null)
@@ -342,6 +360,7 @@ public final class CriteriaConstraintsChecker
 		SpinnerListener listener = new SpinnerListener(spin, bottom, isLower, MesType.ERROR, message);
 
 		spin.addChangeListener(listener);
+		spin.addComponentListener(listener);
 		shouldControl.addSpinnerNotUsedListener(spin, listener);
 
 		Container current = spin.getParent();
