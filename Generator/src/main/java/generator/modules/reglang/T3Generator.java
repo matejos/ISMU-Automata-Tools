@@ -64,7 +64,8 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 
 	private boolean hasEps;
 
-	private boolean isomorphism;
+	private boolean isomorphism = false;
+	private int isoPercent = 0;
 
 	/**
 	 * Constructor, which makes new backgroud thread. The thread generates the exercises for converting DFA -> regular
@@ -115,7 +116,7 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		int numberOfStatesMin, int numberOfStatesMax, int numberOfUnreachableMin, int numberOfUnreachableMax,
 		int numberOfFinalStatesMin, int numberOfFinalStatesMax, int numberOfTransitionsMin, int numberOfTransitionsMax,
 		int resultSizeOfAlphabetMin, int resultSizeOfAlphabetMax, int resultLengthMin, int resultLengthMax,
-		int unionMin, int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, boolean hasEps, boolean isomorphism)
+		int unionMin, int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, boolean hasEps)
 	{
 
 		this.operation = 0;
@@ -143,14 +144,12 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		this.iterMax = iterMax;
 
 		this.hasEps = hasEps;
-
-		this.isomorphism = isomorphism;
 	}
 
 	// RE->EFA
 	public T3Generator(int exercises, int sizeOfAlphabetMin, int sizeOfAlphabetMax, int alphabet, int unionMin,
 		int unionMax, int concatMin, int concatMax, int iterMin, int iterMax, int epsMin, int epsMax, int emptySetMin,
-		int emptySetMax, boolean isomorphism)
+		int emptySetMax, boolean isomorphism, int isoPercent)
 	{
 
 		this.operation = 1;
@@ -170,6 +169,7 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		this.emptySetMax = emptySetMax;
 
 		this.isomorphism = isomorphism;
+		this.isoPercent = isoPercent;
 	}
 
 	public void executeGeneration()
@@ -447,11 +447,11 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		sbPlainText.append(b.toString() + "\n");
 		if (b.containsEpsilonTransitions())
 		{
-			sbIS.append(b.toIS("EFA", "EFA", isomorphism));
+			sbIS.append(b.toIS("EFA", "EFA", isomorphism, isoPercent));
 		}
 		else
 		{
-			sbIS.append(b.toIS("NFA", "NFA", isomorphism));
+			sbIS.append(b.toIS("NFA", "NFA", isomorphism, isoPercent));
 		}
 
 		Map<String, String> result = new HashMap<String, String>();

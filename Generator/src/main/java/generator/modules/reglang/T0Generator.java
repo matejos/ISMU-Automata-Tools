@@ -57,7 +57,8 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 	private int resultTransitionsMax;
 	private boolean resultMinOneFinalState;
 
-	private boolean isomorphism;
+	private boolean isomorphism = false;
+	private int isoPercent = 0;
 
 	private int exercises;
 	private int operation;
@@ -136,7 +137,8 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 		boolean a1Complement, int a2NumberOfStatesMin, int a2NumberOfStatesMax, int a2NumberOfFinalStatesMin,
 		int a2NumberOfFinalStatesMax, int a2NumberOfTransitionsMin, int a2NumberOfTransitionsMax, int a2States,
 		boolean a2TotalTransitionFunction, boolean a2Complement, int outputStatesMin, int outputStatesMax,
-		int outputTransitionsMin, int outputTransitionsMax, boolean outputMinOneFinalState, boolean isomorphism)
+		int outputTransitionsMin, int outputTransitionsMax, boolean outputMinOneFinalState,
+					   boolean isomorphism, int isoPercent)
 	{
 
 		// initializing atributes for generation the first automaton
@@ -176,6 +178,7 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 		this.resultMinOneFinalState = outputMinOneFinalState;
 
 		this.isomorphism = isomorphism;
+		this.isoPercent = isoPercent;
 	}
 
 	public void executeGeneration()
@@ -454,7 +457,7 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 		sbLatex.append(a.toLaTeX() + "\n");
 		sbPlainText.append(a.toString().replace("transition function", "přechodová funkce") + "\n");
 		AutomatonModificator.modifyStates(a, a.getStatesType());
-		sbIS.append(a.toIS("DFA", "DFA", isomorphism));
+		sbIS.append(a.toIS("DFA", "DFA", isomorphism, isoPercent));
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("latex", sbLatex.toString());
 		result.put("plainText", sbPlainText.toString());

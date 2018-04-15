@@ -81,6 +81,8 @@ public class RegModule extends GenericModulePane
 		updateStrings();
 
 		settingsPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+
 	}
 
 	public void generate(int numberOfExamplesToGenerate)
@@ -411,7 +413,7 @@ public class RegModule extends GenericModulePane
 				a1TotalTransitionFunction, a1Complement, a2NumberOfStatesMin, a2NumberOfStatesMax,
 				a2NumberOfFinalStatesMin, a2NumberOfFinalStatesMax, a2NumberOfTransitionsMin, a2NumberOfTransitionsMax,
 				selectedStates2, a2TotalTransitionFunction, a2Complement, outputStatesMin, outputStatesMax,
-				outputTransitionsMin, outputTransitionsMax, outputMinOneFinalState, false).execute();
+				outputTransitionsMin, outputTransitionsMax, outputMinOneFinalState, false, 0).execute();
 		}
 		// T0Generator t0 = new T0Generator(numberOfExercises, operation, alphabet, sizeOfAlphabetMin,
 		// sizeOfAlphabetMax,
@@ -465,6 +467,7 @@ public class RegModule extends GenericModulePane
 		boolean totalTransitionFunction = this.type1InputAutomatonTotalTransitionFunctionJCheckBox.isSelected();
 		boolean stepsWriteOut = this.type1MinimalizationStepsJCheckBox.isSelected();
 		boolean isomorphism = this.type1IsomorphismJCheckBox.isSelected();
+		int isoPercent = (Integer) this.type1IsoPercentJSpinner.getValue();
 		int numberOfStatesMin = 1;
 		int numberOfStatesMax = 10;
 		int numberOfFinalStatesMin = 1;
@@ -685,7 +688,7 @@ public class RegModule extends GenericModulePane
 				selectedStates, stepsWriteOut, totalTransitionFunction, firstStateNotInitial, numberOfStepsMin,
 				numberOfStepsMax, numberOfUnreachableStatesMin, numberOfUnreachableStatesMax, resultNumberOfStatesMin,
 				resultNumberOfStatesMax, resultNumberOfTransitionsMin, resultNumberOfTransitionsMax,
-				numberOfEpsTransitionsMin, numberOfEpsTransitionsMax, isomorphism).execute();
+				numberOfEpsTransitionsMin, numberOfEpsTransitionsMax, isomorphism, isoPercent).execute();
 		}
 	}
 
@@ -709,6 +712,7 @@ public class RegModule extends GenericModulePane
 		int numberOfLoopsMax = 4;
 		boolean epsilon = this.type2InputGrammarEpsilonJCheckBox.isSelected();
         boolean isomorphism = this.type2IsomorphismJCheckBox.isSelected();
+        int isoPercent = (Integer) this.type2IsoPercentJSpinner.getValue();
 		// optional attributes
 		int resultNumberOfStatesMin = -1; // -1, if is not set
 		int resultNumberOfStatesMax = -1; // -1, if is not set
@@ -844,7 +848,7 @@ public class RegModule extends GenericModulePane
 				epsilon, resultNumberOfStatesMin, resultNumberOfStatesMax, resultNumberOfTransitionsMin,
 				resultNumberOfTransitionsMax, resultSizeOfAlphabetMin, resultSizeOfAlphabetMax,
 				resultNumberOfUnreachableStatesMin, resultNumberOfUnreachableStatesMax, numberOfLoopsMin,
-				numberOfLoopsMax, isomorphism).execute();
+				numberOfLoopsMax, isomorphism, isoPercent).execute();
 		}
 
 	}
@@ -997,7 +1001,7 @@ public class RegModule extends GenericModulePane
 				sizeOfAlphabetMin, sizeOfAlphabetMax, alphabet, selectedStates2, epsilon, numberOfUnreachableStatesMin,
 				numberOfUnreachableStatesMax, resultNumberOfVariablesMin, resultNumberOfVariablesMax,
 				resultNumberOfRulesMin, resultNumberOfRulesMax, resultNumberOfTerminalsMin, resultNumberOfTerminalsMax,
-				firstStateFinal, false).execute();
+				firstStateFinal, false, 0).execute();
 		}
 
 	}
@@ -1096,7 +1100,7 @@ public class RegModule extends GenericModulePane
 				sizeOfAlphabetMin, sizeOfAlphabetMax, numberOfStatesMin, numberOfStatesMax, numberOfUnreachableMin,
 				numberOfUnreachableMax, numberOfFinalStatesMin, numberOfFinalStatesMax, numberOfTransitionsMin,
 				numberOfTransitionsMax, resultSizeOfAlphabetMin, resultSizeOfAlphabetMax, lengthMin, lengthMax,
-				unionMin, unionMax, concatMin, concatMax, iterMin, iterMax, hasEps, false).execute();
+				unionMin, unionMax, concatMin, concatMax, iterMin, iterMax, hasEps).execute();
 		}
 
 	}
@@ -1113,6 +1117,7 @@ public class RegModule extends GenericModulePane
 		int sizeOfAlphabetMax = 0;
 		int alphabet = this.type3InputReAlphabetJComboBox.getSelectedIndex();
 		boolean isomorphism = this.type3IsomorphismJCheckBox.isSelected();
+        int isoPercent = (Integer) this.type3IsoPercentJSpinner.getValue();
 
 		int unionMin = (Integer) type3inputREUnionMinJSpinner.getValue();
 		int unionMax = (Integer) type3inputREUnionMaxJSpinner.getValue();
@@ -1153,7 +1158,7 @@ public class RegModule extends GenericModulePane
 		{
 			new T3Generator(threads.get(i).getNumberOfExamplesPerThread(), sizeOfAlphabetMin, sizeOfAlphabetMax,
 				alphabet, unionMin, unionMax, concatMin, concatMax, iterMin, iterMax, epsMin, epsMax, emptySetMin,
-				emptySetMax, isomorphism).execute();
+				emptySetMax, isomorphism, isoPercent).execute();
 		}
 
 	}
@@ -1317,6 +1322,9 @@ public class RegModule extends GenericModulePane
 		type1OutputAutomatonTransitionsMaxJSpinner.setName("type1OutputAutomatonTransitionsMaxJSpinner.name");
 		type1MinimalizationStepsMinJSpinner.setName("type1MinimalizationStepsMinJSpinner.name");
 		type1MinimalizationStepsMaxJSpinner.setName("type1MinimalizationStepsMaxJSpinner.name");
+        type1IsoPercentJSpinner.setName("type1IsoPercentJSpinner.name");
+        type2IsoPercentJSpinner.setName("type2IsoPercentJSpinner.name");
+        type3IsoPercentJSpinner.setName("type3IsoPercentJSpinner.name");
 		type2InputGrammarVariablesMinJSpinner.setName("type2InputGrammarVariablesMinJSpinner.name");
 		type2InputGrammarRulesMinJSpinner.setName("type2InputGrammarRulesMinJSpinner.name");
 		type2InputGrammarVariablesMaxJSpinner.setName("type2InputGrammarVariablesMaxJSpinner.name");
@@ -2584,31 +2592,43 @@ public class RegModule extends GenericModulePane
     private void setupType1IsomorphismTestLayout()
     {
         // Setup layout
-
+        setStandardJComponentSize(type1IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type1IsoPercentJSpinner, 148, 25);
         GroupLayout type1IsomorphismLayout = new GroupLayout(type1IsomorphismJPanel);
         type1IsomorphismJPanel.setLayout(type1IsomorphismLayout);
-        type1IsomorphismLayout
-                .setHorizontalGroup(type1IsomorphismLayout.createParallelGroup(Alignment.LEADING)
+
+        type1IsomorphismLayout.setHorizontalGroup(type1IsomorphismLayout.createParallelGroup(Alignment.LEADING).addGroup(
+                Alignment.TRAILING,
+                type1IsomorphismLayout
+                        .createParallelGroup()
                         .addGroup(
-                                Alignment.TRAILING,
+                                type1IsomorphismLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(type1IsomorphismJCheckBox, GroupLayout.DEFAULT_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                                        )
+                        .addGroup(
                                 type1IsomorphismLayout
                                         .createSequentialGroup()
                                         .addContainerGap()
-                                        .addGroup(
-                                                type1IsomorphismLayout
-                                                        .createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(type1IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
-                                                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap()));
+                                        .addGroup(type1IsomorphismLayout.createSequentialGroup()
+                                        .addComponent(type1IsoPercentJLabel, GroupLayout.DEFAULT_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(type1IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE, 65,
+                                                GroupLayout.PREFERRED_SIZE))
+                        )));
         type1IsomorphismLayout.setVerticalGroup(type1IsomorphismLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(
                         type1IsomorphismLayout
                                 .createSequentialGroup()
                                 .addContainerGap()
+                                .addComponent(type1IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
                                 .addGroup(
                                         type1IsomorphismLayout
                                                 .createParallelGroup(Alignment.LEADING)
-                                                .addComponent(type1IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                                .addComponent(type1IsoPercentJLabel, GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(type1IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE,
                                                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
 
@@ -2840,34 +2860,45 @@ public class RegModule extends GenericModulePane
     private void setupType2IsomorphismTestLayout()
     {
         // Setup layout
-
+        setStandardJComponentSize(type2IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type2IsoPercentJSpinner, 148, 25);
         GroupLayout type2IsomorphismLayout = new GroupLayout(type2IsomorphismJPanel);
         type2IsomorphismJPanel.setLayout(type2IsomorphismLayout);
-        type2IsomorphismLayout
-                .setHorizontalGroup(type2IsomorphismLayout.createParallelGroup(Alignment.LEADING)
+
+        type2IsomorphismLayout.setHorizontalGroup(type2IsomorphismLayout.createParallelGroup(Alignment.LEADING).addGroup(
+                Alignment.TRAILING,
+                type2IsomorphismLayout
+                        .createParallelGroup()
                         .addGroup(
-                                Alignment.TRAILING,
+                                type2IsomorphismLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(type2IsomorphismJCheckBox, GroupLayout.DEFAULT_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                        )
+                        .addGroup(
                                 type2IsomorphismLayout
                                         .createSequentialGroup()
                                         .addContainerGap()
-                                        .addGroup(
-                                                type2IsomorphismLayout
-                                                        .createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(type2IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
-                                                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap()));
+                                        .addGroup(type2IsomorphismLayout.createSequentialGroup()
+                                                .addComponent(type2IsoPercentJLabel, GroupLayout.DEFAULT_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(type2IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE, 65,
+                                                        GroupLayout.PREFERRED_SIZE))
+                        )));
         type2IsomorphismLayout.setVerticalGroup(type2IsomorphismLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(
                         type2IsomorphismLayout
                                 .createSequentialGroup()
                                 .addContainerGap()
+                                .addComponent(type2IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
                                 .addGroup(
                                         type2IsomorphismLayout
                                                 .createParallelGroup(Alignment.LEADING)
-                                                .addComponent(type2IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                                .addComponent(type2IsoPercentJLabel, GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(type2IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE,
                                                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
     }
 
 	// private void setupType2OutputAutomatonLayout()
@@ -4034,34 +4065,45 @@ public class RegModule extends GenericModulePane
     private void setupType3IsomorphismTestLayout()
     {
         // Setup layout
-
+        setStandardJComponentSize(type3IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type3IsoPercentJSpinner, 148, 25);
         GroupLayout type3IsomorphismLayout = new GroupLayout(type3IsomorphismJPanel);
         type3IsomorphismJPanel.setLayout(type3IsomorphismLayout);
-        type3IsomorphismLayout
-                .setHorizontalGroup(type3IsomorphismLayout.createParallelGroup(Alignment.LEADING)
+
+        type3IsomorphismLayout.setHorizontalGroup(type3IsomorphismLayout.createParallelGroup(Alignment.LEADING).addGroup(
+                Alignment.TRAILING,
+                type3IsomorphismLayout
+                        .createParallelGroup()
                         .addGroup(
-                                Alignment.TRAILING,
+                                type3IsomorphismLayout.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(type3IsomorphismJCheckBox, GroupLayout.DEFAULT_SIZE, 100, GroupLayout.PREFERRED_SIZE)
+                        )
+                        .addGroup(
                                 type3IsomorphismLayout
                                         .createSequentialGroup()
                                         .addContainerGap()
-                                        .addGroup(
-                                                type3IsomorphismLayout
-                                                        .createParallelGroup(Alignment.LEADING)
-                                                        .addComponent(type3IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
-                                                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                        .addContainerGap()));
+                                        .addGroup(type3IsomorphismLayout.createSequentialGroup()
+                                                .addComponent(type3IsoPercentJLabel, GroupLayout.DEFAULT_SIZE, 125, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(type3IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE, 65,
+                                                        GroupLayout.PREFERRED_SIZE))
+                        )));
         type3IsomorphismLayout.setVerticalGroup(type3IsomorphismLayout.createParallelGroup(Alignment.LEADING)
                 .addGroup(
                         type3IsomorphismLayout
                                 .createSequentialGroup()
                                 .addContainerGap()
+                                .addComponent(type3IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
                                 .addGroup(
                                         type3IsomorphismLayout
                                                 .createParallelGroup(Alignment.LEADING)
-                                                .addComponent(type3IsomorphismJCheckBox, GroupLayout.PREFERRED_SIZE,
+                                                .addComponent(type3IsoPercentJLabel, GroupLayout.PREFERRED_SIZE,
+                                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(type3IsoPercentJSpinner, GroupLayout.PREFERRED_SIZE,
                                                         GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
-
     }
 
 	/**
@@ -4447,6 +4489,8 @@ public class RegModule extends GenericModulePane
 	private JComboBox type1OperationToJComboBox = new JComboBox();
     private JPanel type1IsomorphismJPanel = new JPanel();
     private JCheckBox type1IsomorphismJCheckBox = new JCheckBox();
+    private JSpinner type1IsoPercentJSpinner = new JSpinner();
+    private JLabel type1IsoPercentJLabel = new JLabel();
 	private JPanel type2OperationJPanel = new JPanel();
 	private ButtonGroup type2OperationButtonGroup = new ButtonGroup();
 	private ButtonGroup type3OperationButtonGroup = new ButtonGroup();
@@ -4469,6 +4513,8 @@ public class RegModule extends GenericModulePane
 	private JComboBox type2InputGrammarVariablesJComboBox = new JComboBox();
     private JPanel type2IsomorphismJPanel = new JPanel();
     private JCheckBox type2IsomorphismJCheckBox = new JCheckBox();
+    private JSpinner type2IsoPercentJSpinner = new JSpinner();
+    private JLabel type2IsoPercentJLabel = new JLabel();
 	private JPanel type2OutputAutomatonJPanel = new JPanel();
 	private JSpinner type2OutputAutomatonAlphabetMinJSpinner = new JSpinner();
 	private JSpinner type2OutputAutomatonAlphabetMaxJSpinner = new JSpinner();
@@ -4565,6 +4611,8 @@ public class RegModule extends GenericModulePane
 	private JLabel type3InputREEmptySetJLabel = new JLabel();
     private JPanel type3IsomorphismJPanel = new JPanel();
     private JCheckBox type3IsomorphismJCheckBox = new JCheckBox();
+    private JSpinner type3IsoPercentJSpinner = new JSpinner();
+    private JLabel type3IsoPercentJLabel = new JLabel();
 
 	private JSpinner type3inputREUnionMinJSpinner = new JSpinner();
 	private JSpinner type3inputREConcatenationMinJSpinner = new JSpinner();
@@ -4614,7 +4662,9 @@ public class RegModule extends GenericModulePane
 		type1InputAutomatonUnreachableStatesMaxJSpinner, type1OutputAutomatonStatesMinJSpinner,
 		type1OutputAutomatonStatesMaxJSpinner, type1OutputAutomatonTransitionsMinJSpinner,
 		type1OutputAutomatonTransitionsMaxJSpinner, type1MinimalizationStepsMinJSpinner,
-		type1MinimalizationStepsMaxJSpinner, type2InputGrammarVariablesMinJSpinner, type2InputGrammarRulesMinJSpinner,
+		type1MinimalizationStepsMaxJSpinner,
+            type1IsoPercentJSpinner, type2IsoPercentJSpinner, type3IsoPercentJSpinner,
+            type2InputGrammarVariablesMinJSpinner, type2InputGrammarRulesMinJSpinner,
 		type2InputGrammarVariablesMaxJSpinner, type2InputGrammarRulesMaxJSpinner,
 		type2InputGrammarTerminalsMinJSpinner, type2InputGrammarTerminalsMaxJSpinner,
 		type2InputAutomatonAlphabetMinJSpinner, type2InputAutomatonStatesMinJSpinner,
@@ -4765,6 +4815,7 @@ public class RegModule extends GenericModulePane
 		type1MinimalizationMaxJLabel.setText(maximal);
 		type1MinimalizationStepsJCheckBox.setText(resourceBundle.getString("WriteOut"));
         type1IsomorphismJCheckBox.setText(resourceBundle.getString("IsomorphismTest"));
+        type1IsoPercentJLabel.setText(resourceBundle.getString("IsoPercent"));
 		type2OperationGrammarToNFAJButton.setText(resourceBundle.getString("REGNFATransformation"));// "regular grammar -> NFA");
 		type2OperationNFAToGrammarJButton.setText(resourceBundle.getString("NFAREGTransformation"));// "NFA  -> regular grammar");
 		type2InputGrammarTerminalsJLabel.setText(resourceBundle.getString("Terminals"));
@@ -4774,6 +4825,7 @@ public class RegModule extends GenericModulePane
 		type2InputGrammarMaxJLabel.setText(maximal);
 		type2InputGrammarEpsilonJCheckBox.setText(resourceBundle.getString("EpsilonRule"));
         type2IsomorphismJCheckBox.setText(resourceBundle.getString("IsomorphismTest"));
+        type2IsoPercentJLabel.setText(resourceBundle.getString("IsoPercent"));
 		type2InputAutomatonAlphabetJLabel.setText(alphabet);
 		type2InputAutomatonStatesJLabel.setText(statesWithoutUnreach);
 		type2InputAutomatonFinalStatesJLabel.setText(finalStates);
@@ -4818,6 +4870,7 @@ public class RegModule extends GenericModulePane
 		type3OutputREIterationJLabel.setText(resourceBundle.getString("Iteration"));
 		type3OutputREHasEpsJCheckBox.setText(resourceBundle.getString("HasEpsilon"));
         type3IsomorphismJCheckBox.setText(resourceBundle.getString("IsomorphismTest"));
+        type3IsoPercentJLabel.setText(resourceBundle.getString("IsoPercent"));
 
 		// Titled borders
 		transformationTypePane.setBorder(BorderFactory.createTitledBorder(resourceBundle
@@ -4953,6 +5006,7 @@ public class RegModule extends GenericModulePane
 	@Override
 	public void loadSettings(Map<String, Integer> settings)
 	{
+	    System.out.println("loading");
 		for (JSpinner spinner : allSpinners)
 		{
 			String spinnerDeclarationName = spinner.getName().replace(".name", "");

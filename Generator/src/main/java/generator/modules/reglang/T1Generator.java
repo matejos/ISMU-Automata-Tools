@@ -62,7 +62,8 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 
 	private int exercises;
 
-	private boolean isomorphism;
+	private boolean isomorphism = false;
+	private int isoPercent = 0;
 
 	/**
 	 * Constructor, which makes new backgroud thread. The thread generates the exercises for converting between various
@@ -134,7 +135,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 		boolean totalTransitionFunction, boolean firstStateNotInitial, int numberOfStepsMin, int numberOfStepsMax,
 		int numberOfUnreachableStatesMin, int numberOfUnreachableStatesMax, int resultNumberOfStatesMin,
 		int resultNumberOfStatesMax, int resultNumberOfTransitionsMin, int resultNumberOfTransitionsMax,
-		int numberOfEpsTransitionsMin, int numberOfEpsTransitionsMax, boolean isomorphism)
+		int numberOfEpsTransitionsMin, int numberOfEpsTransitionsMax, boolean isomorphism, int isoPercent)
 	{
 
 		this.operationFrom = operationFrom;
@@ -167,6 +168,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 		this.exercises = exercises;
 
 		this.isomorphism = isomorphism;
+		this.isoPercent = isoPercent;
 	}
 
 	public void executeGeneration()
@@ -708,7 +710,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 
 			if (operationTo == 0)
 			{
-				sbIS.append(b.toIS(from, to, isomorphism));
+				sbIS.append(b.toIS(from, to, isomorphism, isoPercent));
 			}
 		}
 		// determinization
@@ -727,7 +729,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 				sbPlainText.append(b.toString() + "\n");
 				if (operationTo == 1)
 				{
-					sbIS.append(b.toIS(from, to, isomorphism));
+					sbIS.append(b.toIS(from, to, isomorphism, isoPercent));
 				}
 			}
 		}
@@ -792,7 +794,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 				sbPlainText.append(b.toString() + "\n");
 				if (operationTo == 2)
 				{
-					sbIS.append(b.toIS(from, to, isomorphism));
+					sbIS.append(b.toIS(from, to, isomorphism, isoPercent));
 				}
 			}
 		}
@@ -812,7 +814,7 @@ public class T1Generator extends GeneratorWorker implements GeneratingLogic
 				sbPlainText.append(b.toString() + "\n");
 				if (operationTo == 3)
 				{
-					sbIS.append(b.toIS(from, to, isomorphism));
+					sbIS.append(b.toIS(from, to, isomorphism, isoPercent));
 				}
 			}
 		}

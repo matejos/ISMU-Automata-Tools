@@ -296,6 +296,8 @@ public class FormalLanguagesExampleGenerator extends JFrame
 
 		// setMinimumSize(new Dimension(leftMainPanel.getWidth() + rightMainPanel.getWidth() + 40, 400));
 		setMinimumSize(new Dimension(leftMainPanel.getWidth() + rightMainPanel.getWidth() - 200, 400));
+
+		loadDefaultSettings();
 	}
 
 	private void setupResultTabbedPane()

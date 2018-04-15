@@ -1451,16 +1451,18 @@ public class Automaton
 	 * @return returns the Automaton in the form to IS: :e
 	 *         :e="f:teacher-student-isomorphism:init=startState transition function F={final states}" ok
 	 */
-	public String toIS(String teacher, String student, boolean isomorphism)
+	public String toIS(String teacher, String student, boolean isomorphism, int percent)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.append(" :e" + "\n" + ":e=\"f:");
+		StringBuilder sb2 = new StringBuilder();
+		sb.append(" :e" + "\n");
+		sb.append(":e=\"f:");
 		sb.append(teacher + "-" + student + "-");
 		if (isomorphism)
 			sb.append("Y");
 		else
 			sb.append("N");
-		sb.append(":init=" + this.getStartState().replace("_{", "").replace("}", "") + " ");
+		sb2.append(":init=" + this.getStartState().replace("_{", "").replace("}", "") + " ");
 		for (String state : AlphabetGenerator.sortSet(this.getStates(), this.getStatesType()))
 		{
 			SortedSet<String> alphabet = AlphabetGenerator.sortSet(this.getAlphabet(), this.getAlphabetType());
@@ -1478,13 +1480,13 @@ public class Automaton
 					{
 						if (under.equals("epsilon"))
 						{
-							sb.append("(" + state.replace("_{", "").replace("}", "") + "," + "\u03b5" + ")="
+							sb2.append("(" + state.replace("_{", "").replace("}", "") + "," + "\u03b5" + ")="
 								+ to.toString().replace("_{", "").replace("}", "").replace("[", "{").replace("]", "}")
 								+ " ");
 						}
 						else
 						{
-							sb.append("("
+							sb2.append("("
 								+ state.replace("_{", "").replace("}", "")
 								+ ","
 								+ under.replace("_{", "").replace("}", "")
@@ -1502,8 +1504,18 @@ public class Automaton
 			}
 		}
 		SortedSet<String> finStates = AlphabetGenerator.sortSet(this.getFinalStates(), this.getStatesType());
-		sb.append("F=" + finStates.toString().replace("_{", "").replace("}", "").replace("[", "{").replace("]", "}")
-			+ "\" ok\n");
+		sb2.append("F=" + finStates.toString().replace("_{", "").replace("}", "").replace("[", "{").replace("]", "}")
+			+ "\" ");
+		sb.append(sb2);
+		if (isomorphism && percent > 0)
+			sb.append((100 - percent) + "% ");
+		sb.append("ok\n");
+		if (isomorphism && percent > 0) {
+			sb.append(":e=\"f:");
+			sb.append(teacher + "-" + student + "-N");
+			sb.append(sb2);
+			sb.append(percent + "% ok\n");
+		}
 		return sb.toString();
 	}
 

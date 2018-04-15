@@ -14,7 +14,6 @@ Napište DFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1c">Text</a></li></ul></ul>
 <div id="q1" class="tab-content"><script>init("q1", "DFA");</script></div>
 :e="b:DFA-DFA-Y:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=E(D,b)=C(D,c)=C(E,a)=C(E,b)=D(E,c)=C F={D}" ok
-:e="b:DFA-DFA-Y:(A,a)=B(A,b)=C(A,c)=D(B,a)=C(B,b)=A(B,c)=C(C,a)=C(C,b)=C(C,c)=C(D,a)=E(D,b)=C(D,c)=C(E,a)=C(E,b)=D F={D}" ok 80%
 
 --
 
@@ -37,8 +36,6 @@ Napište EFA popisující následující jazyk nad abecedou <m>\Sigma = \{a,b,c\
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q3a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q3b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q3c">Text</a></li></ul></ul>
 <div id="q3" class="tab-content"><script>init("q3", "EFA");</script></div>
 :e="b:DFA-EFA:(A,a)=B(A,b)=A(A,c)=A(B,a)=B(B,b)=C(B,c)=A(C,a)=D(C,b)=D(C,c)=E(D,a)=D(D,b)=D(D,c)=D(E,a)=B(E,b)=E(E,c)=E F={A,B,E}" ok
-:e="b:DFA-EFA:(A,a)=B(A,b)=A(A,c)=A(B,a)=B(B,b)=C(B,c)=A(C,a)=D(C,b)=D(C,c)=E(D,a)=D(D,c)=D(E,a)=B(E,b)=E(E,c)=E F={A,B,E}" ok 80%
-:e="b:DFA-EFA:(A,a)=B(A,b)=A(A,c)=A(B,a)=B(B,b)=C(B,c)=A(D,a)=D(D,b)=D(D,c)=D(E,a)=B(E,b)=E(E,c)=E F={A,B,E}" ok 60%
 
 --
 
