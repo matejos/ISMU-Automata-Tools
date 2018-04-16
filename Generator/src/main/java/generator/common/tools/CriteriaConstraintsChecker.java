@@ -4,10 +4,13 @@
 
 package generator.common.tools;
 
+import com.sun.org.apache.xerces.internal.xs.StringList;
 import generator.core.FormalLanguagesExampleGenerator;
 import generator.modules.cfgexamplegenerator.ColorController;
 import generator.modules.cfgexamplegenerator.ColorPriority;
 import generator.modules.cfgexamplegenerator.cfgtransformationalgorithm.SetList;
+import javafx.util.Pair;
+
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.SystemColor;
@@ -44,7 +47,7 @@ public final class CriteriaConstraintsChecker
 	private ColorController colors;
 	private Map<JSpinner, Set<JSpinner>> errorCount = new HashMap<JSpinner, Set<JSpinner>>();
 	private Map<JSpinner, Set<JSpinner>> warningCount = new HashMap<JSpinner, Set<JSpinner>>();
-	private List<String> errorMessages = new SetList<String>();
+	private List<Pair<String, String>> errorMessages = new SetList<Pair<String, String>>();
 	private List<String> warningMessages = new SetList<String>();
 	// private Map<JSpinner, Integer> lowerBounds = new HashMap<JSpinner, Integer>();
 	// private Map<JSpinner, Integer> upperBounds = new HashMap<JSpinner, Integer>();
@@ -132,7 +135,7 @@ public final class CriteriaConstraintsChecker
 				a.setEnabled(false);
 			}
 			notice.setForeground(ERROR_COLOR);
-			notice.setText(errorMessages.get(0));
+			notice.setText(errorMessages.get(0).getValue());
 		}
 		else if (!warningMessages.isEmpty())
 		{
@@ -155,7 +158,7 @@ public final class CriteriaConstraintsChecker
 	}
 
 	private class SpinnerListener extends ComponentAdapter implements ChangeListener, PropertyChangeListener,
-		ContainerListener
+		ContainerListener, AncestorListener
 	{
 
 		private JSpinner spin;
@@ -202,6 +205,21 @@ public final class CriteriaConstraintsChecker
 		public void componentShown(ComponentEvent e)
 		{
 			controlBounds(spin, bound, isLower, type, message);
+		}
+
+		@Override
+		public void ancestorAdded(AncestorEvent event) {
+			controlBounds(spin, bound, isLower, type, message);
+		}
+
+		@Override
+		public void ancestorRemoved(AncestorEvent event) {
+			removeErrorMessage(spin.getName() + bound + isLower + type);
+		}
+
+		@Override
+		public void ancestorMoved(AncestorEvent event) {
+
 		}
 
 	}
@@ -294,7 +312,7 @@ public final class CriteriaConstraintsChecker
 
 		@Override
 		public void ancestorRemoved(AncestorEvent event) {
-			errorMessages.clear();
+			removeErrorMessage(lesser.getName() + greater.getName() + type);
 		}
 
 		@Override
@@ -343,16 +361,7 @@ public final class CriteriaConstraintsChecker
 		{
 			throw new NullPointerException("spin");
 		}
-		if (message == null)
-		{
-
-			message = isLower ? criteriaBundle.getString(spin.getName()) + criteriaBundle.getString("atLeast") + " "
-				+ bottom : criteriaBundle.getString(spin.getName()) + criteriaBundle.getString("atMost") + " " + bottom;
-			message = message + ".";
-			notice.setForeground(WARNING_COLOR);
-			notice.setText(message);
-		}
-		if (message.equals(""))
+		if (message != null && message.equals(""))
 		{
 			throw new IllegalArgumentException("message cannot be empty string");
 		}
@@ -361,6 +370,7 @@ public final class CriteriaConstraintsChecker
 
 		spin.addChangeListener(listener);
 		spin.addComponentListener(listener);
+		spin.addAncestorListener(listener);
 		shouldControl.addSpinnerNotUsedListener(spin, listener);
 
 		Container current = spin.getParent();
@@ -428,7 +438,7 @@ public final class CriteriaConstraintsChecker
 		{
 			if (type == MesType.ERROR)
 			{
-				errorMessages.add(errMess);
+				errorMessages.add(new Pair<String, String>(lesser.getName()+greater.getName() + type, errMess));
 				errorCount.get(lesser).add(greater);
 				errorCount.get(greater).add(lesser);
 			}
@@ -443,7 +453,7 @@ public final class CriteriaConstraintsChecker
 		{
 			if (type == MesType.ERROR)
 			{
-				errorMessages.remove(errMess);
+				removeErrorMessage(lesser.getName()+greater.getName() + type);
 				errorCount.get(lesser).remove(greater);
 				errorCount.get(greater).remove(lesser);
 			}
@@ -462,6 +472,14 @@ public final class CriteriaConstraintsChecker
 	{
 
 		int value = (Integer) spin.getValue();
+
+		if (message == null)
+		{
+
+			message = isLower ? criteriaBundle.getString(spin.getName()) + " " + criteriaBundle.getString("atLeast") + " "
+					+ bound : criteriaBundle.getString(spin.getName()) + " " + criteriaBundle.getString("atMost") + " " + bound;
+			message = message + ".";
+		}
 
 		if (!errorCount.containsKey(spin))
 		{
@@ -487,7 +505,7 @@ public final class CriteriaConstraintsChecker
 		{
 			if (type == MesType.ERROR)
 			{
-				errorMessages.add(message);
+				errorMessages.add(new Pair<String, String>(spin.getName() + bound + isLower + type, message));
 				errorCount.get(spin).add(spin);
 			}
 			else
@@ -500,7 +518,7 @@ public final class CriteriaConstraintsChecker
 		{
 			if (type == MesType.ERROR)
 			{
-				errorMessages.remove(message);
+				removeErrorMessage(spin.getName() + bound + isLower + type);
 				errorCount.get(spin).remove(spin);
 			}
 			else
@@ -512,6 +530,15 @@ public final class CriteriaConstraintsChecker
 
 		setLabelShowing();
 		setSpinnerColor(spin);
+	}
+
+	private void removeErrorMessage(String spinner){
+		for (Pair<String, String> p : errorMessages) {
+			if (spinner.equals(p.getKey())) {
+				errorMessages.remove(p);
+				return;
+			}
+		}
 	}
 
 	private String firstLower(String origin)

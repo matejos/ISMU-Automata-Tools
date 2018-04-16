@@ -674,6 +674,10 @@ public class RegModule extends GenericModulePane
 				+ "number of transitions min > number of transitions max.");
 
 		}
+		if (isoPercent > 100) {
+			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
+				+ "partial points > 100.");
+		}
 		if (!validationOK)
 		{
 			return;
@@ -835,6 +839,10 @@ public class RegModule extends GenericModulePane
 		// + "number of unreachable states min > number of unreachable states max.");
 		//
 		// }
+		if (isoPercent > 100) {
+			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
+					+ "partial points > 100.");
+		}
 		if (!validationOK)
 		{
 			return;
@@ -1143,6 +1151,10 @@ public class RegModule extends GenericModulePane
 			wrongParamsInterruptGenerating("The input regular expression panel:\n"
 				+ "size of alphabet min > size of alphabet max.");
 
+		}
+		if (isoPercent > 100) {
+			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
+					+ "partial points > 100.");
 		}
 		if (!validationOK)
 		{
@@ -2592,8 +2604,9 @@ public class RegModule extends GenericModulePane
     private void setupType1IsomorphismTestLayout()
     {
         // Setup layout
-        setStandardJComponentSize(type1IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type1IsoPercentJLabel, 269, 25);
         setStandardJComponentSize(type1IsoPercentJSpinner, 148, 25);
+		criteriaChecker.addErrorConstraint(type1IsoPercentJSpinner, 100, false, null);
         GroupLayout type1IsomorphismLayout = new GroupLayout(type1IsomorphismJPanel);
         type1IsomorphismJPanel.setLayout(type1IsomorphismLayout);
 
@@ -2860,8 +2873,9 @@ public class RegModule extends GenericModulePane
     private void setupType2IsomorphismTestLayout()
     {
         // Setup layout
-        setStandardJComponentSize(type2IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type2IsoPercentJLabel, 269, 25);
         setStandardJComponentSize(type2IsoPercentJSpinner, 148, 25);
+		criteriaChecker.addErrorConstraint(type2IsoPercentJSpinner, 100, false, null);
         GroupLayout type2IsomorphismLayout = new GroupLayout(type2IsomorphismJPanel);
         type2IsomorphismJPanel.setLayout(type2IsomorphismLayout);
 
@@ -4065,8 +4079,9 @@ public class RegModule extends GenericModulePane
     private void setupType3IsomorphismTestLayout()
     {
         // Setup layout
-        setStandardJComponentSize(type3IsoPercentJLabel, 50, 25);
+        setStandardJComponentSize(type3IsoPercentJLabel, 269, 25);
         setStandardJComponentSize(type3IsoPercentJSpinner, 148, 25);
+		criteriaChecker.addErrorConstraint(type3IsoPercentJSpinner, 100, false, null);
         GroupLayout type3IsomorphismLayout = new GroupLayout(type3IsomorphismJPanel);
         type3IsomorphismJPanel.setLayout(type3IsomorphismLayout);
 
