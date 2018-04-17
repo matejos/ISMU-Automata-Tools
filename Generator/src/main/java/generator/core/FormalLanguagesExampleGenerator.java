@@ -370,6 +370,17 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		outputTextAreasMap.put("isEN", isAreaEn);
 
 	}
+
+    String setFileFormat()
+    {
+        String format = ".txt";
+        JScrollPane selectedOutputWindow = (JScrollPane) resultTabbedPane.getSelectedComponent();
+        if (scrollPaneIsCz.equals(selectedOutputWindow) || scrollPaneIsEn.equals(selectedOutputWindow)) {
+            format = ".qdef";
+        }
+        return format;
+    }
+
 	private void setupMenu()
 	{
 		this.setJMenuBar(menuBar);
@@ -381,21 +392,24 @@ public class FormalLanguagesExampleGenerator extends JFrame
 			@Override
 			public void actionPerformed(ActionEvent e)
 			{
+				String format = setFileFormat();
 				File outputFile = null;
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setFileFilter(new FileFilter()
 				{
-
+					private String format;
 					@Override
 					public String getDescription()
 					{
-						return "*.txt";
+						format = setFileFormat();
+						return "*" + format;
 					}
 
 					@Override
 					public boolean accept(File f)
 					{
-						if (!f.getName().endsWith(".txt") && !f.isDirectory())
+                        format = setFileFormat();
+						if (!f.getName().endsWith(format) && !f.isDirectory())
 							return false;
 						return true;
 					}
@@ -404,9 +418,9 @@ public class FormalLanguagesExampleGenerator extends JFrame
 				if (returnVal == JFileChooser.APPROVE_OPTION)
 				{
 					outputFile = fileChooser.getSelectedFile();
-					if (!outputFile.getAbsolutePath().endsWith(".txt"))
+					if (!outputFile.getAbsolutePath().endsWith(format))
 					{
-						outputFile = new File(outputFile.getAbsolutePath() + ".txt");
+						outputFile = new File(outputFile.getAbsolutePath() + format);
 					}
 				}
 				if (outputFile != null)
