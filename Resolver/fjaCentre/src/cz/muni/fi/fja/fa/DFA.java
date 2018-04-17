@@ -481,7 +481,7 @@ public class DFA extends DeviceAbstract {
     if (inOneRow) {
       sb.append(" ");
     }
-    sb.append("F={");
+    sb.append("final={");
     boolean first = true;
     for (int i = 0; i < finalControl.length; i++) {
       if (first) {
@@ -607,7 +607,7 @@ public class DFA extends DeviceAbstract {
     if (inOneRow) {
       sb.append(" ");
     }
-    sb.append("F={");
+    sb.append("final={");
     boolean first = true;
     for (int i = 0; i < finalControl.length; i++) {
       if (first) {

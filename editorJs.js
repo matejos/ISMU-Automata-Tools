@@ -534,9 +534,9 @@ function updateTableTabFromText(wp, pure)
 			if (table.states.indexOf(str[i]) == -1)
 				table.states.push(str[i]);
 		}
-		else if (/^F={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i]))
+		else if (/^final={[a-zA-Z0-9]+(,[a-zA-Z0-9]+)*}$/.test(str[i]))
 		{
-			str[i] = str[i].substring(3, str[i].length - 1);
+			str[i] = str[i].substring(7, str[i].length - 1);
 			var exits = str[i].split(",");
 			for (j =  0; j < exits.length; j++)
 			{
@@ -1997,7 +1997,7 @@ function generateAnswer(rect)
     }
     if (finalStates.length !== 0)
     {
-        out += "F={";
+        out += "final={";
         for (i = 0; i < finalStates.length; i++)
     	{
             out += finalStates[i].name;

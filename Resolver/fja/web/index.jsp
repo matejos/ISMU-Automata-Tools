@@ -17,9 +17,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Vyhodnocovací služba pro regulární jazyky</title>
         <link rel="stylesheet" type="text/css" href="style/style_reg.css">
-        <script type="text/javascript" src="js/DFAParser.js"></script>
-        <script type="text/javascript" src="js/NFAParser.js"></script>
-        <script type="text/javascript" src="js/EFAParser.js"></script>
+        <script type="text/javascript" src="js/DFAParser.js?v=2"></script>
+        <script type="text/javascript" src="js/NFAParser.js?v=2"></script>
+        <script type="text/javascript" src="js/EFAParser.js?v=2"></script>
         <script type="text/javascript" src="js/GRAParser.js"></script>
         <script type="text/javascript" src="js/REGParser.js"></script>
         <script type="text/javascript" src="js/example.js"></script>

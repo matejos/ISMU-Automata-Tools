@@ -126,7 +126,9 @@ public class Converter {
                             }
                             if (writeMinusMinus) {
                                 writeMinusMinus = false;
-                                writer.write("--\n");
+                                if (!s.trim().equals("++")) {
+                                    writer.write("--\n");
+                                }
                             }
                             if (s.trim().equals("--")) {
                                 writeMinusMinus = true;
@@ -207,6 +209,9 @@ public class Converter {
                                         stringBuilder.insert(13, "-Y");
                                     else
                                         stringBuilder.insert(13, "-N");
+                                }
+                                if (stringBuilder.indexOf("F=") != -1) {
+                                    stringBuilder.replace(stringBuilder.indexOf("F="), stringBuilder.indexOf("F=") + 2, "final=");
                                 }
                                 writer.write(stringBuilder.toString() + "\n");
                                 s2 = reader.readLine();

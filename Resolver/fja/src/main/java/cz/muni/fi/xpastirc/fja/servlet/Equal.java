@@ -57,7 +57,7 @@ public class Equal extends HttpServlet {
                 if(request.getParameter("teach")==null){
                     String[] externalData = exparse(request.getParameter("t"));
                     formalism_teach = externalData[0];
-                    input_teach = externalData[3];
+                    input_teach = PreParser.parse(externalData[3]);
                     formalism_stud = externalData[1];
                     if ("Y".equals(externalData[2]))
                         testIso = true;

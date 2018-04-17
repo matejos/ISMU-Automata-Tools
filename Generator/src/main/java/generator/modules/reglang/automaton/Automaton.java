@@ -1432,7 +1432,7 @@ public class Automaton
 
 	/**
 	 * returns the automaton as the result to IS: :e
-	 * :e="b:teacher-student:init=startState transition function F={final states}" ok viz
+	 * :e="b:teacher-student:init=startState transition function final={final states}" ok viz
 	 * http://arran.fi.muni.cz:8180/fja/help.html
 	 * 
 	 * @param teacher
@@ -1449,7 +1449,7 @@ public class Automaton
 	 * @param isomorphism
 	 *            whether to insert condition for isomorphism (transforms to 'Y'/'N')
 	 * @return returns the Automaton in the form to IS: :e
-	 *         :e="f:teacher-student-isomorphism:init=startState transition function F={final states}" ok
+	 *         :e="f:teacher-student-isomorphism:init=startState transition function final={final states}" ok
 	 */
 	public String toIS(String teacher, String student, boolean isomorphism, int percent)
 	{
@@ -1504,7 +1504,7 @@ public class Automaton
 			}
 		}
 		SortedSet<String> finStates = AlphabetGenerator.sortSet(this.getFinalStates(), this.getStatesType());
-		sb2.append("F=" + finStates.toString().replace("_{", "").replace("}", "").replace("[", "{").replace("]", "}")
+		sb2.append("final=" + finStates.toString().replace("_{", "").replace("}", "").replace("[", "{").replace("]", "}")
 			+ "\" ");
 		sb.append(sb2);
 		if (isomorphism && percent > 0)

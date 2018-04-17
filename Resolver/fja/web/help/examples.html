@@ -18,7 +18,7 @@ init=Q
 (A,a)=AA (B,b)=BB (C,c)=CC
 (AA,a)=3ABC (BB,b)=3ABC (CC,c)=3ABC
 (3ABC,a)=A (3ABC,b)=B (3ABC,c)=C
-F={3ABC}
+final={3ABC}
 <span class="note"> //definice finalnich stavu, neni povinna - pak je jazyk akceptovany automatem prazdny</span>
 <span class="note"> //neni podminkou psat velka pismena pro stavy a mala pismena pro vst.znaky</span>
 </pre>
@@ -34,7 +34,7 @@ init=Q
 (Q,a)={Q,A} (Q,b)={Q}
 (A,b)={B}
 (B,a)={B} (B,b)={B}
-F={B}
+final={B}
 <span class="note"> //definice finalnich stavu, neni povinna - pak je jazyk akceptovany automatem prazdny</span>
 <span class="note"> //neni podminkou psat velka pismena pro stavy a mala pismena pro vst.znaky</span>
 <span class="note"> //+ je normalni znak - pouze (){},\= a mezera se musi uvest \</span>
@@ -53,7 +53,7 @@ init=Q
 (B+C,b)={B+C} (B+C,c)={B+C}
 (A,a)={A} (A,\e)={C}
 (C,c)={C}
-F={B+C,C} 
+final={B+C,C}
 <span class="note"> //definice finalnich stavu, neni povinna - pak je jazyk akceptovany automatem prazdny</span>
 <span class="note"> //neni podminkou psat velka pismena pro stavy a mala pismena pro vst.znaky</span>
 <span class="note"> //+ je normalni znak - pouze (){},\= a mezera se musi uvest \</span>

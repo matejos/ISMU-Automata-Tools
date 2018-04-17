@@ -134,7 +134,7 @@ public abstract class FAReaderAbstract extends ModelReaderAbstract {
     if (startSymbol != null)
       s += "init=" + startSymbol.toFAString() + "\n";
     s += super.toString();
-    s += "F={";
+    s += "final={";
     boolean first = true;
     for (Control c : finalControl) {
       if (first) {

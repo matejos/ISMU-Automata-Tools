@@ -20,9 +20,12 @@ public class PreParser {
         Pattern p2 = Pattern.compile("init\u0020=+\u0020+");
         Matcher m2 = p2.matcher(toReturn);
         toReturn = m2.replaceAll("init=");
-        Pattern p3 = Pattern.compile("F\u0020=+\u0020+");
+        Pattern p3 = Pattern.compile("final\u0020=+\u0020+");
         Matcher m3 = p3.matcher(toReturn);
         toReturn = m3.replaceAll("F=");
+        Pattern p4 = Pattern.compile("final=");
+        Matcher m4 = p4.matcher(toReturn);
+        toReturn = m4.replaceAll("F=");
         System.out.println(toReturn);
         return toReturn;
 

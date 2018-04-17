@@ -65,7 +65,7 @@
                 
                     <h3>Množina koncových stavů</h3>
                     <p>Množinu koncových stavů definujeme jako
-                    <span class="code">F={KoncovyStav1,KoncovyStav2,...KoncovyStavN}</span>.
+                    <span class="code">final={KoncovyStav1,KoncovyStav2,...KoncovyStavN}</span>.
                     </p>
 
                     <h3>Speciální znaky v definici automatu</h3>

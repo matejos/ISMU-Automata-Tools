@@ -60,7 +60,7 @@ public interface Evaluator {
    * init=A
    * (A,a)=A (A,b)=B (A,c)=B 
    * (B,a)=B (B,b)=A (B,c)=A 
-   * F={B}
+   * final={B}
    * </pre></td></tr>
    */
   StringBuffer getTeacherTable();
@@ -73,7 +73,7 @@ public interface Evaluator {
    * init=A
    * (A,a)=A (A,b)=B (A,c)=B 
    * (B,a)=B (B,b)=A (B,c)=A 
-   * F={B}
+   * final={B}
    * </pre></td></tr>
    */
   StringBuffer getStudentTable();

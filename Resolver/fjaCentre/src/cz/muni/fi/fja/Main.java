@@ -51,7 +51,7 @@ public class Main {
      * System.out.println(fa.toString());
      */
     /*
-     * String pom = "(x,\\e)={y,q1} (y,a)={y} (q1,a)={y} F={y}"; fa = new
+     * String pom = "(x,\\e)={y,q1} (y,a)={y} (q1,a)={y} final={y}"; fa = new
      * EFA(new FAStream(pom.toCharArray(), 0));
      * System.out.println("*** EFA ***"); System.out.println(fa.toString()); fa
      * = fa.makeMinimalCanonicDFA(); System.out.println("*** MIN DFA ***");
@@ -63,8 +63,8 @@ public class Main {
     /*
      * Centre centre = new Centre(true, true); String teacher = ""; String
      * student = ""; teacher =
-     * "DFA-DFA\n (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n F={C}\n";
-     * student = " (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n F={C}\n";
+     * "DFA-DFA\n (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n final={C}\n";
+     * student = " (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n final={C}\n";
      * 
      * 
      * System.out.println(centre.equalDevices(teacher, student));
@@ -74,13 +74,13 @@ public class Main {
      * 
      * 
      * teacher =
-     * "DFA-DFA\n (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n F={C}\n";
-     * student = " (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n F={C}\n";
+     * "DFA-DFA\n (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n final={C}\n";
+     * student = " (A,a)=A\n (A,b)=B\n (B,b)=B\n (B,c)=C\n (C,c)=C\n final={C}\n";
      * student =
-     * " (A,a)={A,B}\n (A,b)={A,B}\n (B,a)={C}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n F={C}\n"
+     * " (A,a)={A,B}\n (A,b)={A,B}\n (B,a)={C}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n final={C}\n"
      * ; student =
-     * " (A,a)={A,B}\n (A,b)={A}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n F={C}";
-     * //(A,a)={A,B}\n (A,b)={A}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n F={C} /
+     * " (A,a)={A,B}\n (A,b)={A}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n final={C}";
+     * //(A,a)={A,B}\n (A,b)={A}\n (B,b)={C}\n (C,a)={C} (C,b)={C}\n final={C} /
      * InStream pokus = new
      * FilterStream("fa1=%2B%B%2B%26%26%26&fa2=%2B%2B%2B%26%26%26"); while
      * (!pokus.isEOF() && pokus.getSymbol()) { System.out.println("SYMBOL:" +
