@@ -130,12 +130,6 @@ public class ExampleConsumer extends SwingWorker<Void, Void> implements Runnable
 	@SuppressWarnings("static-access")
 	private void generatingComplete()
 	{
-		textAreas.get("plainCZ").append(plainCZ.toString());
-		textAreas.get("plainEN").append(plainEn.toString());
-		textAreas.get("latexCZ").append(latexCz.toString() + LINE_SEPARATOR + "\\end{document}");
-		textAreas.get("latexEN").append(latexEn.toString() + LINE_SEPARATOR + "\\end{document}");
-		textAreas.get("isCZ").append(isCz.toString());
-		textAreas.get("isEN").append(isEn.toString());
 		isEn = new StringBuilder();
 		plainEn = new StringBuilder();
 		latexCz = new StringBuilder();
@@ -154,6 +148,11 @@ public class ExampleConsumer extends SwingWorker<Void, Void> implements Runnable
 
 	private void updateTextAreas(final ExampleDTO exampleForms)
 	{
+		plainEn = new StringBuilder();
+		latexCz = new StringBuilder();
+		latexEn = new StringBuilder();
+		plainCZ = new StringBuilder();
+
 		plainCZ.append(LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR + "  PlainCZ Example " + exampleNumber
 			+ LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR + exampleForms.getPlainCZOutput());
 		plainEn.append(LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR + "  PlainEn Example " + exampleNumber
@@ -162,10 +161,26 @@ public class ExampleConsumer extends SwingWorker<Void, Void> implements Runnable
 			+ exampleForms.getLateXCZOutput());
 		latexEn.append(LINE_SEPARATOR + "\\hrule \\bigskip \\noindent \\textbf{Example " + exampleNumber + ". }" + LINE_SEPARATOR
 			+ exampleForms.getLateXENOutput());
-		isCz.append(LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR + "  iscz Example " + exampleNumber + LINE_SEPARATOR
-			+ EXAMPLE_LINE + LINE_SEPARATOR + exampleForms.getISCZOutput());
-		isEn.append(LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR + "  isen Example " + exampleNumber + LINE_SEPARATOR
-			+ EXAMPLE_LINE + LINE_SEPARATOR + exampleForms.getISENOutput());
+		if (!"".equals(isCz.toString())) {
+			isCz = new StringBuilder();
+			isCz.append("--" + LINE_SEPARATOR);
+		}
+		else {
+			isCz = new StringBuilder();
+		}
+		isCz.append(LINE_SEPARATOR
+				//+ EXAMPLE_LINE + LINE_SEPARATOR + "  iscz Example " + exampleNumber + LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR
+				+ exampleForms.getISCZOutput());
+		if (!"".equals(isEn.toString())) {
+			isEn = new StringBuilder();
+			isEn.append("--" + LINE_SEPARATOR);
+		}
+		else {
+			isEn = new StringBuilder();
+		}
+		isEn.append(LINE_SEPARATOR
+				//+ EXAMPLE_LINE + LINE_SEPARATOR + "  isen Example " + exampleNumber + LINE_SEPARATOR + EXAMPLE_LINE + LINE_SEPARATOR
+				+ exampleForms.getISENOutput());
 
 		if (exampleNumber % 1 == 0)
 		{
@@ -175,12 +190,6 @@ public class ExampleConsumer extends SwingWorker<Void, Void> implements Runnable
 			textAreas.get("latexEN").append(latexEn.toString());
 			textAreas.get("isCZ").append(isCz.toString());
 			textAreas.get("isEN").append(isEn.toString());
-			isEn = new StringBuilder();
-			plainEn = new StringBuilder();
-			latexCz = new StringBuilder();
-			latexEn = new StringBuilder();
-			plainCZ = new StringBuilder();
-			isCz = new StringBuilder();
 
 			for (JTextArea textArea : textAreas.values())
 			{
