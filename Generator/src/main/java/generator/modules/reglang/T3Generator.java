@@ -359,6 +359,8 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 						sbPlainTextEN.append("The NFA (may contain epsilon-transitions):\n");
 						sbLatex.append("\\noindent\nNFA (může obsahovat $\\varepsilon$-kroky):\n\n");
 						sbPlainText.append("NFA (může obsahovat epsilon-kroky):\n");
+						sbIS.append(re.toISText());
+						sbISEN.append(re.toISText());
 
 						// result
 
@@ -545,6 +547,7 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 		sbLatex.append("\\begin{center} $" + latexText + "$ \\end{center}" + "\n");
 		sbPlainTextEN.append(plainText + "\n");
 		sbLatexEN.append("\\begin{center} $" + latexText + "$ \\end{center} \n");
+		sbIS.append(re.toIS("REG") + "\n");
 
 		Map<String, String> result = new HashMap<String, String>();
 		result.put("latex", sbLatex.toString());

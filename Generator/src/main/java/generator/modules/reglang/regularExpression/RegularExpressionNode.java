@@ -349,6 +349,30 @@ public class RegularExpressionNode
 		return resultString;
 	}
 
+	public String toIS(String student)
+	{
+		String resultString = toString();
+		if (resultString.startsWith("(") && resultString.endsWith(")"))
+		{
+			resultString = resultString.substring(1, resultString.length() - 1);
+		}
+		resultString = resultString.replace("*", "^*");
+		StringBuilder sb = new StringBuilder();
+		sb.append(" :e" + "\n");
+		sb.append(":e=\"f:");
+		sb.append("REG-" + student + ":");
+		sb.append(resultString);
+		sb.append("\" ok\n");
+		return sb.toString();
+	}
+
+	public String toISText()
+	{
+		String resultString = toLatexText();
+		resultString = "<m>" + resultString + "</m>";
+		return resultString;
+	}
+
 	public RegularExpressionStatistics getStatistics()
 	{
 		String expr = toPlainText();
