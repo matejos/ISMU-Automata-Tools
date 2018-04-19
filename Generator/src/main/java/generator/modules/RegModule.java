@@ -4919,7 +4919,14 @@ public class RegModule extends GenericModulePane
         { type3OutputREIterationMinJSpinner, type3OutputREIterationMaxJSpinner }, };
 
 	private String[] exclusions = {
-            "typeJComboBox"
+            "typeJComboBox",
+            "type0OperationJComboBox",
+            "type1OperationFromJComboBox",
+            "type1OperationToJComboBox",
+            "type2OperationNFAToGrammarJButton",
+            "type2OperationGrammarToNFAJButton",
+            "type3OperationREToDFAJButton",
+            "type3OperationDFAToREJButton"
     };
 
 	private List<String> exclusionsList;
