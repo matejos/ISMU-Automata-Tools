@@ -12,6 +12,8 @@ import generator.modules.reglang.T0Generator;
 import generator.modules.reglang.T1Generator;
 import generator.modules.reglang.T2Generator;
 import generator.modules.reglang.T3Generator;
+import javafx.util.Pair;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -134,6 +136,13 @@ public class RegModule extends GenericModulePane
 		validationOK = true;
 	}
 
+	private void checkSpinnerErrors()
+    {
+        for (Pair<String, String> p : criteriaChecker.getErrorMessages()){
+            wrongParamsInterruptGenerating(p.getValue());
+        }
+    }
+
 	private void generateType0(int numberOfExercises)
 	{
 
@@ -222,38 +231,44 @@ public class RegModule extends GenericModulePane
 		a2NumberOfFinalStatesMax = (Integer) type0Automaton2FinalStatesMaxJSpinner.getValue();
 		a2NumberOfTransitionsMin = (Integer) type0Automaton2TransitionsMinJSpinner.getValue();
 		a2NumberOfTransitionsMax = (Integer) type0Automaton2TransitionsMaxJSpinner.getValue();
+
+        checkSpinnerErrors();
+
 		if (spinnersSup.isEnabled(type0OutputAutomatonStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type0OutputAutomatonStatesMaxJSpinner))
 		{
 			outputStatesMin = (Integer) type0OutputAutomatonStatesMinJSpinner.getValue();
 			outputStatesMax = (Integer) type0OutputAutomatonStatesMaxJSpinner.getValue();
-			if (outputStatesMin < 1)
+			/*if (outputStatesMin < 1)
 			{
 				generatorCore.generatingStopped();
 				wrongParamsInterruptGenerating("The output automaton panel:\n" + "number of states min < 1.");
 
-			}
+			}*/
 		}
+
 		if (spinnersSup.isEnabled(type0OutputAutomatonTransitionsMinJSpinner)
 			&& spinnersSup.isEnabled(type0OutputAutomatonTransitionsMaxJSpinner))
 		{
 			outputTransitionsMin = (Integer) type0OutputAutomatonTransitionsMinJSpinner.getValue();
 			outputTransitionsMax = (Integer) type0OutputAutomatonTransitionsMaxJSpinner.getValue();
-			if (outputTransitionsMin < 0)
+			/*if (outputTransitionsMin < 0)
 			{
 				generatorCore.generatingStopped();
 				wrongParamsInterruptGenerating("The output automaton panel:\n" + "number of transitions min < 0.");
 
-			}
+			}*/
 		}
 
 		// check the input for the automaton 1
+        /*
 		if (a1NumberOfStatesMin < 1 || a1NumberOfStatesMax < 1)
 		{
 			generatorCore.generatingStopped();
 			wrongParamsInterruptGenerating("The pane automaton A panel:\n" + "Number of states min, max must be >= 1.");
 
 		}
+
 		if ((a1NumberOfFinalStatesMin < 0) || (a1NumberOfFinalStatesMax < 0) || (a1NumberOfTransitionsMin < 0)
 			|| (a1NumberOfTransitionsMax < 0) || (sizeOfAlphabetMin < 0) || (sizeOfAlphabetMax < 0))
 		{
@@ -262,6 +277,8 @@ public class RegModule extends GenericModulePane
 				+ "The fields \nhave to be filled with number >= 0.");
 
 		}
+		*/
+		/*
 		if (a1NumberOfStatesMin > a1NumberOfStatesMax)
 		{
 			generatorCore.generatingStopped();
@@ -288,6 +305,7 @@ public class RegModule extends GenericModulePane
 			wrongParamsInterruptGenerating("Automaton A panel:\n" + "size of alphabet min > size of alphabet max.");
 
 		}
+
 		if (a1NumberOfFinalStatesMin > a1NumberOfStatesMax)
 		{
 			generatorCore.generatingStopped();
@@ -295,6 +313,7 @@ public class RegModule extends GenericModulePane
 				+ "number of final states min > number of states max.");
 
 		}
+
 		if (sizeOfAlphabetMin > a1NumberOfTransitionsMax)
 		{
 			generatorCore.generatingStopped();
@@ -302,6 +321,7 @@ public class RegModule extends GenericModulePane
 				+ "size of alphabet min > number of transitions max.");
 
 		}
+		*/
 		if (a1NumberOfTransitionsMin > a1NumberOfStatesMax * a1NumberOfStatesMax * sizeOfAlphabetMax)
 		{
 			generatorCore.generatingStopped();
@@ -317,6 +337,7 @@ public class RegModule extends GenericModulePane
 
 		}
 		// check the input for automaton 2
+        /*
 		if (a2NumberOfStatesMin < 1 || a2NumberOfStatesMax < 1)
 		{
 			generatorCore.generatingStopped();
@@ -331,6 +352,8 @@ public class RegModule extends GenericModulePane
 				+ "The fields \nhave to be filled with number >= 0.");
 
 		}
+		*/
+		/*
 		if (a2NumberOfStatesMin > a2NumberOfStatesMax)
 		{
 			generatorCore.generatingStopped();
@@ -351,6 +374,7 @@ public class RegModule extends GenericModulePane
 				+ "number of transitions min > number of transitions max.");
 
 		}
+
 		if (sizeOfAlphabetMin > a2NumberOfTransitionsMax)
 		{
 			generatorCore.generatingStopped();
@@ -358,6 +382,7 @@ public class RegModule extends GenericModulePane
 				+ "size of alphabet min > number of transitions max.");
 
 		}
+		*/
 		if (a2NumberOfTransitionsMin > a2NumberOfStatesMax * a2NumberOfStatesMax * sizeOfAlphabetMax)
 		{
 			generatorCore.generatingStopped();
@@ -373,6 +398,7 @@ public class RegModule extends GenericModulePane
 
 		}
 		// check output attributes
+        /*
 		if (outputStatesMin > outputStatesMax)
 		{
 			generatorCore.generatingStopped();
@@ -387,6 +413,7 @@ public class RegModule extends GenericModulePane
 				+ "number of transitions min > number of transitions max.");
 
 		}
+		*/
 		if (outputStatesMin > (a1NumberOfStatesMin + (a1TotalTransitionFunction ? 0 : 1))
 			* (a2NumberOfStatesMin + (a2TotalTransitionFunction ? 0 : 1)))
 		{
@@ -513,18 +540,20 @@ public class RegModule extends GenericModulePane
 		sizeOfAlphabetMin = (Integer) type1InputAutomatonAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type1InputAutomatonAlphabetMaxJSpinner.getValue();
 
+		checkSpinnerErrors();
+
 		if (spinnersSup.isEnabled(type1InputAutomatonUnreachableStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type1InputAutomatonUnreachableStatesMaxJSpinner))
 		{
 			numberOfUnreachableStatesMin = (Integer) type1InputAutomatonUnreachableStatesMinJSpinner.getValue();
 			numberOfUnreachableStatesMax = (Integer) type1InputAutomatonUnreachableStatesMaxJSpinner.getValue();
-			if ((numberOfUnreachableStatesMin < 0) || (numberOfUnreachableStatesMax < 0))
+			/*if ((numberOfUnreachableStatesMin < 0) || (numberOfUnreachableStatesMax < 0))
 			{
 				wrongParamsInterruptGenerating("The input automaton panel:\n"
 					+ "The fields number of unreachable states min, "
 					+ "max \n do not have to be filled or have to be filled " + "with number >= 0.");
 
-			}
+			}*/
 		}
 
 		if (spinnersSup.isEnabled(type1MinimalizationStepsMinJSpinner)
@@ -533,6 +562,7 @@ public class RegModule extends GenericModulePane
 		{
 			numberOfStepsMin = (Integer) type1MinimalizationStepsMinJSpinner.getValue();
 			numberOfStepsMax = (Integer) type1MinimalizationStepsMaxJSpinner.getValue();
+			/*
 			if (numberOfStepsMin <= 0 || numberOfStepsMax <= 0)
 			{
 				wrongParamsInterruptGenerating("The minimization panel:\n"
@@ -540,34 +570,38 @@ public class RegModule extends GenericModulePane
 					+ "or must be filled with number > 0.");
 
 			}
+			*/
 		}
+
 		if (spinnersSup.isEnabled(type1OutputAutomatonStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type1OutputAutomatonStatesMaxJSpinner)
 			&& type1OutputAutomatonStatesMinJSpinner.isEnabled() && type1OutputAutomatonStatesMaxJSpinner.isEnabled())
 		{
 			resultNumberOfStatesMin = (Integer) type1OutputAutomatonStatesMinJSpinner.getValue();
 			resultNumberOfStatesMax = (Integer) type1OutputAutomatonStatesMaxJSpinner.getValue();
-			if (resultNumberOfStatesMin < 0)
+			/*if (resultNumberOfStatesMin < 0)
 			{
 				wrongParamsInterruptGenerating("The output automaton panel:\n" + "number of states min < 1.");
 
-			}
+			}*/
 		}
+
 		if (spinnersSup.isEnabled(type1OutputAutomatonTransitionsMinJSpinner)
 			&& spinnersSup.isEnabled(type1OutputAutomatonTransitionsMaxJSpinner))
 		{
 			resultNumberOfTransitionsMin = (Integer) type1OutputAutomatonTransitionsMinJSpinner.getValue();
 			resultNumberOfTransitionsMax = (Integer) type1OutputAutomatonTransitionsMaxJSpinner.getValue();
 
-			if (resultNumberOfTransitionsMin < 0)
+			/*if (resultNumberOfTransitionsMin < 0)
 			{
 				wrongParamsInterruptGenerating("The output automaton panel:\n" + "number of transitions min < 0.");
 
-			}
+			}*/
 		}
 
 		// // check the input
 		// // attributes of the input automatom panel
+		/*
 		if ((numberOfStatesMin < 1) || (numberOfStatesMax < 1))
 		{
 
@@ -575,6 +609,7 @@ public class RegModule extends GenericModulePane
 				+ "the number of states min, max must be filled with number > 1.");
 
 		}
+
 		if ((numberOfFinalStatesMin < 0) || (numberOfFinalStatesMax < 0) || (numberOfTransitionsMin < 0)
 			|| (numberOfTransitionsMax < 0) || (sizeOfAlphabetMin < 0) || (sizeOfAlphabetMax < 0))
 		{
@@ -584,12 +619,14 @@ public class RegModule extends GenericModulePane
 				+ "to be filled or must be filled with number >= 0.");
 
 		}
+		*/
 		// if (totalTransitionFunction && (numberOfStatesMin * sizeOfAlphabetMin > numberOfTransitionsMax))
 		// {
 		// wrongParamsInterruptGenerating("The input automaton panel:\n" + "total transition function && "
 		// + "(number of states min * size of alphabet max > " + "number of transitions max).");
 		//
 		// }
+		/*
 		if (numberOfStatesMin > numberOfStatesMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
@@ -620,18 +657,21 @@ public class RegModule extends GenericModulePane
 				+ "number of unreachable states max.");
 
 		}
+
 		if (numberOfFinalStatesMin > numberOfStatesMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
 				+ "number of final states min > number of states max.");
 
 		}
+
 		if (sizeOfAlphabetMin > numberOfTransitionsMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
 				+ "size of alphabet min > number of transitions max.");
 
 		}
+		*/
 		if (operationFrom == 0)
 		{
 			if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * (sizeOfAlphabetMax + 1))
@@ -656,12 +696,15 @@ public class RegModule extends GenericModulePane
 				+ "first state not initial && (number of states max = 1).");
 		}
 		// minimization
+        /*
 		if (numberOfStepsMin > numberOfStepsMax)
 		{
 			wrongParamsInterruptGenerating("The minimization panel:\n" + "number of steps min > number of steps max.");
 
 		}
+		*/
 		// output automaton
+        /*
 		if (resultNumberOfStatesMin > resultNumberOfStatesMax)
 		{
 			wrongParamsInterruptGenerating("The output automaton panel:\n"
@@ -674,10 +717,13 @@ public class RegModule extends GenericModulePane
 				+ "number of transitions min > number of transitions max.");
 
 		}
+		*/
+		/*
 		if (isoPercent > 100) {
 			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
 				+ "partial points > 100.");
 		}
+		*/
 		if (!validationOK)
 		{
 			return;
@@ -777,6 +823,8 @@ public class RegModule extends GenericModulePane
 		numberOfLoopsMin = (Integer) type2InputGrammarLoopsMinJSpinner.getValue();
 		numberOfLoopsMax = (Integer) type2InputGrammarLoopsMaxJSpinner.getValue();
 
+		checkSpinnerErrors();
+
 		// check the input
 		// if (resultNumberOfStatesMin > resultNumberOfStatesMax)
 		// {
@@ -803,6 +851,7 @@ public class RegModule extends GenericModulePane
 		// + "size of alphabet min > number of transitions max.");
 		//
 		// }
+        /*
 		if ((numberOfVariablesMin < 1) || (numberOfVariablesMax < 1))
 		{
 			wrongParamsInterruptGenerating("The input grammar panel:\n"
@@ -816,6 +865,7 @@ public class RegModule extends GenericModulePane
 				+ "The fields have to be filled with number >= 0.");
 
 		}
+
 		if (numberOfTerminalsMin > numberOfTerminalsMax)
 		{
 			wrongParamsInterruptGenerating("The input grammar panel:\n"
@@ -843,6 +893,7 @@ public class RegModule extends GenericModulePane
 			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
 					+ "partial points > 100.");
 		}
+		*/
 		if (!validationOK)
 		{
 			return;
@@ -917,6 +968,9 @@ public class RegModule extends GenericModulePane
 		numberOfTransitionsMax = (Integer) type2InputAutomatonTransitionsMaxJSpinner.getValue();
 		sizeOfAlphabetMin = (Integer) type2InputAutomatonAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type2InputAutomatonAlphabetMaxJSpinner.getValue();
+
+		checkSpinnerErrors();
+
 		if (spinnersSup.isEnabled(type2InputAutomatonUnreachableStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type2InputAutomatonUnreachableStatesMaxJSpinner))
 		{
@@ -940,12 +994,14 @@ public class RegModule extends GenericModulePane
 
 		// check the input
 		// automaton
+        /*
 		if ((numberOfStatesMin < 1) || (numberOfStatesMax < 1))
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
 				+ "the number of states min, max must be filled with number > 1.");
 
 		}
+
 		if ((numberOfFinalStatesMin < 0) || (numberOfFinalStatesMax < 0) || (numberOfTransitionsMin < 0)
 			|| (numberOfTransitionsMax < 0) || (sizeOfAlphabetMin < 0) || (sizeOfAlphabetMax < 0))
 		{
@@ -953,6 +1009,7 @@ public class RegModule extends GenericModulePane
 				+ "The fields (except number of unreachable states min, " + "max)\nhave to be filled with number >= 0.");
 
 		}
+
 		if (numberOfStatesMin > numberOfStatesMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
@@ -983,6 +1040,7 @@ public class RegModule extends GenericModulePane
 				+ "number of unreachable states max.");
 
 		}
+
 		if (numberOfFinalStatesMin > numberOfStatesMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n"
@@ -995,7 +1053,7 @@ public class RegModule extends GenericModulePane
 				+ "size of alphabet min > number of transitions max.");
 
 		}
-
+*/
 		if (!validationOK)
 		{
 			return;
@@ -1079,7 +1137,10 @@ public class RegModule extends GenericModulePane
 		int numberOfUnreachableMin = (Integer) type3InputAutomatonUnreachableStatesMinJSpinner.getValue();
 		int numberOfUnreachableMax = (Integer) type3InputAutomatonUnreachableStatesMaxJSpinner.getValue();
 
+		checkSpinnerErrors();
+
 		// check the input
+        /*
 		if ((numberOfStatesMin < 0) || (numberOfStatesMax < 0) || (numberOfFinalStatesMin < 0)
 			|| (numberOfFinalStatesMax < 0) || (numberOfTransitionsMin < 0) || (numberOfTransitionsMax < 0)
 			|| (sizeOfAlphabetMin < 0) || (sizeOfAlphabetMax < 0))
@@ -1088,7 +1149,7 @@ public class RegModule extends GenericModulePane
 				+ "the fields have to be filled with number >= 0.");
 
 		}
-
+*/
 		if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * sizeOfAlphabetMax)
 		{
 			wrongParamsInterruptGenerating("The input automaton panel:\n" + "number of transitions min > "
@@ -1140,12 +1201,17 @@ public class RegModule extends GenericModulePane
 		// input regular expression requierements
 		sizeOfAlphabetMin = (Integer) type3InputREAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type3InputREAlphabetMaxJSpinner.getValue();
+
+		checkSpinnerErrors();
+
 		// // check input
+        /*
 		if (sizeOfAlphabetMin < 0 || sizeOfAlphabetMax < 0)
 		{
 			wrongParamsInterruptGenerating("The input regular expression panel:\n"
 				+ "the fields have to be filled with number >= 0.");
 		}
+
 		if (sizeOfAlphabetMin > sizeOfAlphabetMax)
 		{
 			wrongParamsInterruptGenerating("The input regular expression panel:\n"
@@ -1156,6 +1222,8 @@ public class RegModule extends GenericModulePane
 			wrongParamsInterruptGenerating("The correct algorithm test panel:\n"
 					+ "partial points > 100.");
 		}
+		*/
+
 		if (!validationOK)
 		{
 			return;
@@ -1593,6 +1661,11 @@ public class RegModule extends GenericModulePane
 
 		setStandardJComponentSize(type0Automaton1TotalTransitionFunctionJCheckBox, 148, 25);
 
+		criteriaChecker.addErrorConstraint(type0Automaton1AlphabetMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton1StatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton1FinalStatesMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton1TransitionsMinJSpinner, 0, true, null, true);
+
 		type0Automaton1TotalTransitionFunctionJCheckBox.addActionListener(new ActionListener()
 		{
 
@@ -1790,6 +1863,11 @@ public class RegModule extends GenericModulePane
 		// type0Automaton2JPanel.add(type0Automaton2StatesJComboBox);
 		setStandardJComponentSize(type0Automaton2StatesJComboBox, 148, 25);
 
+        criteriaChecker.addErrorConstraint(type0Automaton2AlphabetMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton2StatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton2FinalStatesMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type0Automaton2TransitionsMinJSpinner, 0, true, null, true);
+
 		type0Automaton2TotalTransitionFunctionJCheckBox.addActionListener(new ActionListener()
 		{
 
@@ -1963,6 +2041,8 @@ public class RegModule extends GenericModulePane
 		spinnersSup.defaultDisabled(type0OutputAutomatonTransitionsMaxJSpinner);
 
 		setStandardJComponentSize(type0OutputAutomatonMinOneFinalStateJCheckBox, 148, 25);
+
+		criteriaChecker.addErrorConstraint(type0OutputAutomatonStatesMinJSpinner, 1, true, null);
 
 		GroupLayout type0OutputAutomatonLayout = new GroupLayout(type0OutputAutomatonJPanel);
 		type0OutputAutomatonJPanel.setLayout(type0OutputAutomatonLayout);
@@ -2193,6 +2273,12 @@ public class RegModule extends GenericModulePane
 		setStandardJComponentSize(type1InputAutomatonFirstStateJCheckBox, 148, 25);
 
 		setStandardJComponentSize(type1InputAutomatonTotalTransitionFunctionJCheckBox, 148, 25);
+
+        criteriaChecker.addErrorConstraint(type1InputAutomatonStatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type1InputAutomatonFinalStatesMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type1InputAutomatonAlphabetMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type1InputAutomatonTransitionsMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type1InputAutomatonEpsTransitionsMinJSpinner, 1, true, null, true);
 
 		type1InputAutomatonTotalTransitionFunctionJCheckBox.addActionListener(new ActionListener()
 		{
@@ -2432,6 +2518,8 @@ public class RegModule extends GenericModulePane
 		spinnersSup.defaultDisabled(type1OutputAutomatonTransitionsMaxJSpinner);
 		setStandardJComponentSize(type1OutputAutomatonTransitionsMaxJSpinner, 148, 25);
 
+		criteriaChecker.addErrorConstraint(type1OutputAutomatonStatesMinJSpinner, 1, true, null);
+
 		GroupLayout type1OutputAutomatonLayout = new GroupLayout(type1OutputAutomatonJPanel);
 		type1OutputAutomatonJPanel.setLayout(type1OutputAutomatonLayout);
 		type1OutputAutomatonLayout.setHorizontalGroup(type1OutputAutomatonLayout.createParallelGroup(Alignment.LEADING)
@@ -2535,6 +2623,8 @@ public class RegModule extends GenericModulePane
 		setStandardJComponentSize(type1MinimalizationStepsMaxJSpinner, 148, 25);
 
 		setStandardJComponentSize(type1MinimalizationStepsJCheckBox, 148, 25);
+
+        criteriaChecker.addErrorConstraint(type1MinimalizationStepsMinJSpinner, 1, true, null);
 
 		GroupLayout type1MinimalizationLayout = new GroupLayout(type1MinimalizationJPanel);
 		type1MinimalizationJPanel.setLayout(type1MinimalizationLayout);
@@ -2695,7 +2785,6 @@ public class RegModule extends GenericModulePane
 		type2InputGrammarTerminalsMinJSpinner.setValue(3);
 		setStandardJComponentSize(type2InputGrammarTerminalsMinJSpinner, 148, 25);
 
-		criteriaChecker.addErrorConstraint(type2InputGrammarVariablesMinJSpinner, 2, true, null);
 		type2InputGrammarVariablesMinJSpinner.setValue(3);
 		setStandardJComponentSize(type2InputGrammarVariablesMinJSpinner, 148, 25);
 
@@ -2729,6 +2818,11 @@ public class RegModule extends GenericModulePane
 		type2InputGrammarVariablesJComboBox.setModel(new DefaultComboBoxModel(new String[] { " A, B, C...",
 			" X, Y, Z...", " q0, q1, q2...", " s0, s1, s2...", " I, II, III, IV..." }));
 		setStandardJComponentSize(type2InputGrammarVariablesJComboBox, 148, 25);
+
+        criteriaChecker.addErrorConstraint(type2InputGrammarVariablesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputGrammarRulesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputGrammarTerminalsMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputGrammarLoopsMinJSpinner, 1, true, null, true);
 
 		// Setup layout
 
@@ -3107,6 +3201,11 @@ public class RegModule extends GenericModulePane
 
 		setStandardJComponentSize(type2InputAutomatonInitialStateFinal, 148, 25);
 
+        criteriaChecker.addErrorConstraint(type2InputAutomatonStatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputAutomatonAlphabetMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputAutomatonFinalStatesMinJSpinner, 0, true, null, true);
+        criteriaChecker.addErrorConstraint(type2InputAutomatonTransitionsMinJSpinner, 0, true, null, true);
+
 		GroupLayout type2InputAutomatonLayout = new GroupLayout(type2InputAutomatonJPanel);
 		type2InputAutomatonJPanel.setLayout(type2InputAutomatonLayout);
 		type2InputAutomatonLayout.setHorizontalGroup(type2InputAutomatonLayout.createParallelGroup(Alignment.LEADING)
@@ -3475,6 +3574,12 @@ public class RegModule extends GenericModulePane
 		type3InputAutomatonStatesJComboBox.setSelectedIndex(4);
 		setStandardJComponentSize(type3InputAutomatonStatesJComboBox, 148, 25);
 
+        criteriaChecker.addErrorConstraint(type3InputAutomatonAlphabetMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type3InputAutomatonTransitionsMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type3InputAutomatonFinalStatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type3InputAutomatonStatesMinJSpinner, 1, true, null, true);
+        criteriaChecker.addErrorConstraint(type3InputAutomatonUnreachableStatesMinJSpinner, 0, true, null, true);
+
 		GroupLayout type3InputAutomatonLayout = new GroupLayout(type3InputAutomatonJPanel);
 		type3InputAutomatonJPanel.setLayout(type3InputAutomatonLayout);
 		type3InputAutomatonLayout
@@ -3773,6 +3878,8 @@ public class RegModule extends GenericModulePane
 		type3InputReAlphabetJComboBox.setModel(new DefaultComboBoxModel(new String[] { " a, b, c...", " A, B, C...",
 			" 1, 2, 3...", " x, y, z...", " X, Y, Z..." }));
 		setStandardJComponentSize(type3InputReAlphabetJComboBox, 148, 25);
+
+		criteriaChecker.addErrorConstraint(type3InputREAlphabetMinJSpinner, 1, true, null, true);
 
 		// Minimal values
 		type3InputREAlphabetMinJSpinner.setValue(2);
@@ -4705,57 +4812,62 @@ public class RegModule extends GenericModulePane
 		type3OutputREConcatenationMaxJSpinner, type3OutputREIterationMaxJSpinner, };
 
 	private JSpinner[][] errorSpinnerPairs = {
-		{ type0Automaton1AlphabetMinJSpinner, type0Automaton1AlphabetMaxJSpinner },
-		{ type0Automaton1FinalStatesMinJSpinner, type0Automaton1FinalStatesMaxJSpinner },
-		{ type0Automaton1TransitionsMinJSpinner, type0Automaton1TransitionsMaxJSpinner },
-		{ type0Automaton1StatesMinJSpinner, type0Automaton1StatesMaxJSpinner },
-		{ type0Automaton2AlphabetMinJSpinner, type0Automaton2AlphabetMaxJSpinner },
-		{ type0Automaton2StatesMinJSpinner, type0Automaton2StatesMaxJSpinner },
-		{ type0Automaton2FinalStatesMinJSpinner, type0Automaton2FinalStatesMaxJSpinner },
-		{ type0Automaton2TransitionsMinJSpinner, type0Automaton2TransitionsMaxJSpinner },
-		{ type0OutputAutomatonStatesMinJSpinner, type0OutputAutomatonStatesMaxJSpinner },
-		{ type0OutputAutomatonTransitionsMinJSpinner, type0OutputAutomatonTransitionsMaxJSpinner },
-		{ type1InputAutomatonStatesMinJSpinner, type1InputAutomatonStatesMaxJSpinner },
-		{ type1InputAutomatonFinalStatesMinJSpinner, type1InputAutomatonFinalStatesMaxJSpinner },
-		{ type1InputAutomatonTransitionsMinJSpinner, type1InputAutomatonTransitionsMaxJSpinner },
-		{ type1InputAutomatonAlphabetMinJSpinner, type1InputAutomatonAlphabetMaxJSpinner },
-		{ type1InputAutomatonUnreachableStatesMinJSpinner, type1InputAutomatonUnreachableStatesMaxJSpinner },
-		{ type1InputAutomatonEpsTransitionsMinJSpinner, type1InputAutomatonEpsTransitionsMaxJSpinner },
-		{ type1OutputAutomatonStatesMinJSpinner, type1OutputAutomatonStatesMaxJSpinner },
-		{ type1OutputAutomatonTransitionsMinJSpinner, type1OutputAutomatonTransitionsMaxJSpinner },
-		{ type1MinimalizationStepsMinJSpinner, type1MinimalizationStepsMaxJSpinner },
-		{ type0Automaton1FinalStatesMaxJSpinner, type0Automaton1StatesMinJSpinner },
-		{ type0Automaton2FinalStatesMaxJSpinner, type0Automaton2StatesMinJSpinner },
-		{ type3InputAutomatonFinalStatesMaxJSpinner, type3InputAutomatonStatesMinJSpinner },
-		{ type1InputAutomatonFinalStatesMaxJSpinner, type1InputAutomatonStatesMinJSpinner },
-		{ type2InputGrammarVariablesMinJSpinner, type2InputGrammarVariablesMaxJSpinner },
-		{ type2InputGrammarRulesMinJSpinner, type2InputGrammarRulesMaxJSpinner },
-		{ type2InputGrammarTerminalsMinJSpinner, type2InputGrammarTerminalsMaxJSpinner },
-		{ type2InputAutomatonAlphabetMinJSpinner, type2InputAutomatonAlphabetMaxJSpinner },
-		{ type2InputAutomatonStatesMinJSpinner, type2InputAutomatonStatesMaxJSpinner },
-		{ type2InputAutomatonFinalStatesMinJSpinner, type2InputAutomatonFinalStatesMaxJSpinner },
-		{ type2InputAutomatonTransitionsMinJSpinner, type2InputAutomatonTransitionsMaxJSpinner },
-		{ type2InputAutomatonUnreachableStatesMinJSpinner, type2InputAutomatonUnreachableStatesMaxJSpinner },
-		{ type3InputAutomatonStatesMinJSpinner, type3InputAutomatonStatesMaxJSpinner },
-		{ type3InputAutomatonUnreachableStatesMinJSpinner, type3InputAutomatonUnreachableStatesMaxJSpinner },
-		{ type3InputAutomatonFinalStatesMinJSpinner, type3InputAutomatonFinalStatesMaxJSpinner },
-		{ type3InputAutomatonTransitionsMinJSpinner, type3InputAutomatonTransitionsMaxJSpinner },
-		{ type3InputAutomatonAlphabetMinJSpinner, type3InputAutomatonAlphabetMaxJSpinner },
-		{ type3InputREAlphabetMinJSpinner, type3InputREAlphabetMaxJSpinner },
-		{ type3OutputRELengthMinJSpinner, type3OutputRELengthMaxJSpinner },
-		{ type3InputRELengthMinJSpinner, type3InputRELengthMaxJSpinner },
-		{ type3OutputAutomatonStatesMinJSpinner, type3OutputAutomatonStatesMaxJSpinner },
-		{ type3OutputAutomatonTransitionsMinJSpinner, type3OutputAutomatonTransitionsMaxJSpinner },
-		{ type3OutputREAlphabetMinJSpinner, type3OutputREAlphabetMaxJSpinner },
-		{ type2InputGrammarLoopsMinJSpinner, type2InputGrammarLoopsMaxJSpinner },
-		{ type3inputREUnionMinJSpinner, type3inputREUnionMaxJSpinner },
-		{ type3inputREConcatenationMinJSpinner, type3inputREConcatenationMaxJSpinner },
-		{ type3inputREIterationMinJSpinner, type3inputREIterationMaxJSpinner },
-		{ type3inputREEpsMinJSpinner, type3inputREEpsMaxJSpinner },
-		{ type3inputREEmptySetMinJSpinner, type3inputREEmptySetMaxJSpinner },
-		{ type3OutputREUnionMinJSpinner, type3OutputREUnionMaxJSpinner },
-		{ type3OutputREConcatenationMinJSpinner, type3OutputREConcatenationMaxJSpinner },
-		{ type3OutputREIterationMinJSpinner, type3OutputREIterationMaxJSpinner }, };
+        { type0Automaton1AlphabetMinJSpinner, type0Automaton1AlphabetMaxJSpinner },
+        { type0Automaton1FinalStatesMinJSpinner, type0Automaton1FinalStatesMaxJSpinner },
+        { type0Automaton1TransitionsMinJSpinner, type0Automaton1TransitionsMaxJSpinner },
+        { type0Automaton1StatesMinJSpinner, type0Automaton1StatesMaxJSpinner },
+        { type0Automaton2AlphabetMinJSpinner, type0Automaton2AlphabetMaxJSpinner },
+        { type0Automaton2StatesMinJSpinner, type0Automaton2StatesMaxJSpinner },
+        { type0Automaton2FinalStatesMinJSpinner, type0Automaton2FinalStatesMaxJSpinner },
+        { type0Automaton2TransitionsMinJSpinner, type0Automaton2TransitionsMaxJSpinner },
+        { type0OutputAutomatonStatesMinJSpinner, type0OutputAutomatonStatesMaxJSpinner },
+        { type0OutputAutomatonTransitionsMinJSpinner, type0OutputAutomatonTransitionsMaxJSpinner },
+        { type0Automaton1AlphabetMinJSpinner, type0Automaton1TransitionsMaxJSpinner },
+        { type0Automaton1AlphabetMinJSpinner, type0Automaton2TransitionsMaxJSpinner },
+        { type1InputAutomatonStatesMinJSpinner, type1InputAutomatonStatesMaxJSpinner },
+        { type1InputAutomatonFinalStatesMinJSpinner, type1InputAutomatonFinalStatesMaxJSpinner },
+        { type1InputAutomatonTransitionsMinJSpinner, type1InputAutomatonTransitionsMaxJSpinner },
+        { type1InputAutomatonAlphabetMinJSpinner, type1InputAutomatonAlphabetMaxJSpinner },
+        { type1InputAutomatonAlphabetMinJSpinner, type1InputAutomatonTransitionsMaxJSpinner },
+        { type1InputAutomatonUnreachableStatesMinJSpinner, type1InputAutomatonUnreachableStatesMaxJSpinner },
+        { type1InputAutomatonEpsTransitionsMinJSpinner, type1InputAutomatonEpsTransitionsMaxJSpinner },
+        { type1OutputAutomatonStatesMinJSpinner, type1OutputAutomatonStatesMaxJSpinner },
+        { type1OutputAutomatonTransitionsMinJSpinner, type1OutputAutomatonTransitionsMaxJSpinner },
+        { type1MinimalizationStepsMinJSpinner, type1MinimalizationStepsMaxJSpinner },
+        { type0Automaton1FinalStatesMaxJSpinner, type0Automaton1StatesMinJSpinner },
+        { type0Automaton2FinalStatesMaxJSpinner, type0Automaton2StatesMinJSpinner },
+        { type3InputAutomatonFinalStatesMaxJSpinner, type3InputAutomatonStatesMinJSpinner },
+        { type1InputAutomatonFinalStatesMaxJSpinner, type1InputAutomatonStatesMinJSpinner },
+        { type2InputGrammarVariablesMinJSpinner, type2InputGrammarVariablesMaxJSpinner },
+        { type2InputGrammarRulesMinJSpinner, type2InputGrammarRulesMaxJSpinner },
+        { type2InputGrammarTerminalsMinJSpinner, type2InputGrammarTerminalsMaxJSpinner },
+        { type2InputAutomatonAlphabetMinJSpinner, type2InputAutomatonAlphabetMaxJSpinner },
+        { type2InputAutomatonStatesMinJSpinner, type2InputAutomatonStatesMaxJSpinner },
+        { type2InputAutomatonFinalStatesMinJSpinner, type2InputAutomatonFinalStatesMaxJSpinner },
+        { type2InputAutomatonTransitionsMinJSpinner, type2InputAutomatonTransitionsMaxJSpinner },
+        { type2InputAutomatonUnreachableStatesMinJSpinner, type2InputAutomatonUnreachableStatesMaxJSpinner },
+        { type2InputAutomatonFinalStatesMinJSpinner, type2InputAutomatonStatesMaxJSpinner },
+        { type2InputAutomatonAlphabetMinJSpinner, type2InputAutomatonTransitionsMaxJSpinner },
+        { type3InputAutomatonStatesMinJSpinner, type3InputAutomatonStatesMaxJSpinner },
+        { type3InputAutomatonUnreachableStatesMinJSpinner, type3InputAutomatonUnreachableStatesMaxJSpinner },
+        { type3InputAutomatonFinalStatesMinJSpinner, type3InputAutomatonFinalStatesMaxJSpinner },
+        { type3InputAutomatonTransitionsMinJSpinner, type3InputAutomatonTransitionsMaxJSpinner },
+        { type3InputAutomatonAlphabetMinJSpinner, type3InputAutomatonAlphabetMaxJSpinner },
+        { type3InputREAlphabetMinJSpinner, type3InputREAlphabetMaxJSpinner },
+        { type3OutputRELengthMinJSpinner, type3OutputRELengthMaxJSpinner },
+        { type3InputRELengthMinJSpinner, type3InputRELengthMaxJSpinner },
+        { type3OutputAutomatonStatesMinJSpinner, type3OutputAutomatonStatesMaxJSpinner },
+        { type3OutputAutomatonTransitionsMinJSpinner, type3OutputAutomatonTransitionsMaxJSpinner },
+        { type3OutputREAlphabetMinJSpinner, type3OutputREAlphabetMaxJSpinner },
+        { type2InputGrammarLoopsMinJSpinner, type2InputGrammarLoopsMaxJSpinner },
+        { type3inputREUnionMinJSpinner, type3inputREUnionMaxJSpinner },
+        { type3inputREConcatenationMinJSpinner, type3inputREConcatenationMaxJSpinner },
+        { type3inputREIterationMinJSpinner, type3inputREIterationMaxJSpinner },
+        { type3inputREEpsMinJSpinner, type3inputREEpsMaxJSpinner },
+        { type3inputREEmptySetMinJSpinner, type3inputREEmptySetMaxJSpinner },
+        { type3OutputREUnionMinJSpinner, type3OutputREUnionMaxJSpinner },
+        { type3OutputREConcatenationMinJSpinner, type3OutputREConcatenationMaxJSpinner },
+        { type3OutputREIterationMinJSpinner, type3OutputREIterationMaxJSpinner }, };
 
 	private String[] exclusions = {
             "typeJComboBox"
@@ -4975,7 +5087,7 @@ public class RegModule extends GenericModulePane
 	 */
 	private void showWarningDialog(String message)
 	{
-		JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, resourceBundle.getString("Error"), JOptionPane.WARNING_MESSAGE);
 	}
 
 	@Override

@@ -96,6 +96,7 @@ public final class SpinnersSupport
 	private Map<JSpinner, Integer> lastKnownPositiveValue = new HashMap<JSpinner, Integer>();
 	private Set<JSpinner> disabled = new HashSet<JSpinner>();
 	private Map<JSpinner, PropertyChangeSupport> supports = new HashMap<JSpinner, PropertyChangeSupport>();
+	private Set<JSpinner> valueRequired = new HashSet<JSpinner>();
 
 	public SpinnersSupport(JPopupMenu menu, JMenuItem item, ColorController colorCont)
 	{
@@ -456,5 +457,15 @@ public final class SpinnersSupport
 		}
 
 		supports.get(spin).addPropertyChangeListener(listener);
+	}
+
+	public void requireValue(JSpinner spin)
+	{
+		valueRequired.add(spin);
+	}
+
+	public boolean isValueRequired(JSpinner spin)
+	{
+		return valueRequired.contains(spin);
 	}
 }

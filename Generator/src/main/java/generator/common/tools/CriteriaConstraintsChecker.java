@@ -355,7 +355,7 @@ public final class CriteriaConstraintsChecker
 		shouldControl.addSpinnerNotUsedListener(greater, listener);
 	}
 
-	public void addErrorConstraint(JSpinner spin, Integer bottom, boolean isLower, String message)
+	public void addErrorConstraint(JSpinner spin, Integer bottom, boolean isLower, String message, boolean requireValue)
 	{
 		if (spin == null)
 		{
@@ -380,6 +380,15 @@ public final class CriteriaConstraintsChecker
 			current.addContainerListener(listener);
 			current = current.getParent();
 		}
+		if (requireValue)
+		{
+			shouldControl.requireValue(spin);
+		}
+	}
+
+	public void addErrorConstraint(JSpinner spin, Integer bottom, boolean isLower, String message)
+	{
+		addErrorConstraint(spin, bottom, isLower, message, false);
 	}
 
 	public void addErrConstraint(JSpinner lesser, JSpinner greater)
@@ -478,7 +487,8 @@ public final class CriteriaConstraintsChecker
 
 			message = isLower ? criteriaBundle.getString(spin.getName()) + " " + criteriaBundle.getString("atLeast") + " "
 					+ bound : criteriaBundle.getString(spin.getName()) + " " + criteriaBundle.getString("atMost") + " " + bound;
-			message = message + ".";
+			message += shouldControl.isValueRequired(spin) ? "" : " " + criteriaBundle.getString("orNotFilled");
+			message += ".";
 		}
 
 		if (!errorCount.containsKey(spin))
@@ -501,7 +511,7 @@ public final class CriteriaConstraintsChecker
 			notOk = value > bound;
 		}
 
-		if (notOk && shouldControl.isCriteriaUsed(spin))
+		if (notOk && (shouldControl.isCriteriaUsed(spin) || shouldControl.isValueRequired(spin)))
 		{
 			if (type == MesType.ERROR)
 			{
@@ -555,4 +565,8 @@ public final class CriteriaConstraintsChecker
 		return origin.substring(0, 2).toLowerCase() + origin.substring(2);
 	}
 
+	public List<Pair<String, String>> getErrorMessages()
+	{
+		return errorMessages;
+	}
 }
