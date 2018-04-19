@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.TreeSet;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -66,6 +67,11 @@ public class Equal extends HttpServlet {
                 out.println("Vstupní formalismus nebyl správně zadán: nebyl zvolen formalismus zadání.");
                 printFooter(out);
                 return;
+            }
+            if ("CFG".equals(formalism_teach)) {
+                System.out.println("CFG");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("evaluatecfg");
+                dispatcher.forward(request, response);
             }
             LanguageInformation information_teach;
             LanguageInformation information_stud;

@@ -2,10 +2,8 @@ package cz.muni.fi.admin;
 
 import cz.muni.fi.cfg.conversions.TransformationTypes;
 import cz.muni.fi.fja.conversions.InputFormalisms;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 
@@ -221,7 +219,7 @@ public class ServicesController {
   }
   private static final Logger log = Logger.getLogger(ServicesController.class);
 
-  private static final String CONF_DIR = "../conf" + File.separator;
+  private static final String CONF_DIR = ".." + File.separator + "conf" + File.separator;
   private static final String DEFAULT_PROP_PATH = CONF_DIR + "default.properties";
   private static final String APP_PROP_PATH = CONF_DIR + "app.properties";
 
@@ -263,16 +261,27 @@ public class ServicesController {
     private synchronized void load() {
       FileInputStream in = null;
         try {
-            log.info("Loading default settings");
+            log.info("Loading default settings from " + DEFAULT_PROP_PATH);
             Properties defaults = new Properties();
-            in = new FileInputStream(DEFAULT_PROP_PATH);
-            defaults.load(in);
-            Utils.closeQuite(in);
+            try {
+              in = new FileInputStream(DEFAULT_PROP_PATH);
+              defaults.load(in);
+              Utils.closeQuite(in);
+            }
+            catch (FileNotFoundException e) {
+              log.error(e.toString());
+            }
 
-            log.info("Loading app settings");
+            log.info("Loading app settings from " + APP_PROP_PATH);
             settings = new Properties(defaults);
-            in = new FileInputStream(APP_PROP_PATH);
-            settings.load(in);
+            try {
+              in = new FileInputStream(APP_PROP_PATH);
+              settings.load(in);
+              Utils.closeQuite(in);
+            }
+            catch (FileNotFoundException e) {
+              log.error(e.toString());
+            }
         }
         catch (IOException e) {
             log.error("Failed to load settings: " + e, e);
