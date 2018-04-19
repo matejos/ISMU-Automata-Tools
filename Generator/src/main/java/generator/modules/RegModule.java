@@ -4304,6 +4304,7 @@ public class RegModule extends GenericModulePane
 	{
 		if (evt.getSource() != null)
 		{
+
 			// index of selected item
 			int i = this.type1OperationFromJComboBox.getSelectedIndex();
 			// change operation To combobox
@@ -4313,6 +4314,7 @@ public class RegModule extends GenericModulePane
 				this.type1OperationToJComboBox.addItem(this.type1OperationFromJComboBox.getItemAt(j + 1));
 			}
 			this.type1OperationToJComboBox.addItem(" " + resourceBundle.getString("canonicalDFA"));
+			/*
 			// disable/enable minimization
 			// disable/ enable total transition function
 			boolean enabled = (i == 2 ? true : false);
@@ -4354,6 +4356,8 @@ public class RegModule extends GenericModulePane
 					this.setType1ResultingAutomatonEnabled(true);
 					break;
 			}
+			*/
+            type1OperationToJComboBoxActionPerformed(evt);
 		}
 	}
 
@@ -4371,7 +4375,8 @@ public class RegModule extends GenericModulePane
 			int i = this.type1OperationFromJComboBox.getItemCount() - this.type1OperationToJComboBox.getItemCount()
 				+ this.type1OperationToJComboBox.getSelectedIndex();
 			// enable / disable advanced minimization options
-			boolean enabled = (i > 1 ? true : false);
+			boolean enabled = this.type1OperationFromJComboBox.getSelectedIndex() <= 2
+                    && i >= 2;
 			// changeGridbagPanelAllComponentsStatus(type1MinimalizationJPanel, enabled);
 			type1MinimalizationJPanel.setVisible(enabled);
 			int j = this.type1OperationFromJComboBox.getSelectedIndex();
@@ -4386,11 +4391,11 @@ public class RegModule extends GenericModulePane
 					this.setType1ResultingAutomatonEnabled(true);
 					break;
 			}
-			enabled = (j == 2 ? true : false);
+			enabled = j == 2;
 			// enable / disable total transition function
 			type1InputAutomatonTotalTransitionFunctionJCheckBox.setVisible(enabled);
 			// enable / disable unreachable states options
-			enabled = (j == 3 ? false : true);
+			enabled = j != 3;
 			this.setType1UnreachableStatesEnabled(enabled);
 		}
 	}
