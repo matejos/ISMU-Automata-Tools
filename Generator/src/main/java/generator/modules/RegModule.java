@@ -91,6 +91,11 @@ public class RegModule extends GenericModulePane
 	{
 		validationOK = true;
 		generatorCore = FormalLanguagesExampleGenerator.getCoreInstance();
+        checkSpinnerErrors();
+        if (!validationOK)
+        {
+            return;
+        }
 
 		int numberOfExercises = numberOfExamplesToGenerate;
 
@@ -231,8 +236,6 @@ public class RegModule extends GenericModulePane
 		a2NumberOfFinalStatesMax = (Integer) type0Automaton2FinalStatesMaxJSpinner.getValue();
 		a2NumberOfTransitionsMin = (Integer) type0Automaton2TransitionsMinJSpinner.getValue();
 		a2NumberOfTransitionsMax = (Integer) type0Automaton2TransitionsMaxJSpinner.getValue();
-
-        checkSpinnerErrors();
 
 		if (spinnersSup.isEnabled(type0OutputAutomatonStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type0OutputAutomatonStatesMaxJSpinner))
@@ -565,8 +568,6 @@ public class RegModule extends GenericModulePane
 		sizeOfAlphabetMin = (Integer) type1InputAutomatonAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type1InputAutomatonAlphabetMaxJSpinner.getValue();
 
-		checkSpinnerErrors();
-
 		if (spinnersSup.isEnabled(type1InputAutomatonUnreachableStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type1InputAutomatonUnreachableStatesMaxJSpinner))
 		{
@@ -869,8 +870,6 @@ public class RegModule extends GenericModulePane
 		numberOfLoopsMin = (Integer) type2InputGrammarLoopsMinJSpinner.getValue();
 		numberOfLoopsMax = (Integer) type2InputGrammarLoopsMaxJSpinner.getValue();
 
-		checkSpinnerErrors();
-
 		// check the input
 		// if (resultNumberOfStatesMin > resultNumberOfStatesMax)
 		// {
@@ -1014,8 +1013,6 @@ public class RegModule extends GenericModulePane
 		numberOfTransitionsMax = (Integer) type2InputAutomatonTransitionsMaxJSpinner.getValue();
 		sizeOfAlphabetMin = (Integer) type2InputAutomatonAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type2InputAutomatonAlphabetMaxJSpinner.getValue();
-
-		checkSpinnerErrors();
 
 		if (spinnersSup.isEnabled(type2InputAutomatonUnreachableStatesMinJSpinner)
 			&& spinnersSup.isEnabled(type2InputAutomatonUnreachableStatesMaxJSpinner))
@@ -1183,8 +1180,6 @@ public class RegModule extends GenericModulePane
 		int numberOfUnreachableMin = (Integer) type3InputAutomatonUnreachableStatesMinJSpinner.getValue();
 		int numberOfUnreachableMax = (Integer) type3InputAutomatonUnreachableStatesMaxJSpinner.getValue();
 
-		checkSpinnerErrors();
-
 		// check the input
         /*
 		if ((numberOfStatesMin < 0) || (numberOfStatesMax < 0) || (numberOfFinalStatesMin < 0)
@@ -1257,8 +1252,6 @@ public class RegModule extends GenericModulePane
 		// input regular expression requierements
 		sizeOfAlphabetMin = (Integer) type3InputREAlphabetMinJSpinner.getValue();
 		sizeOfAlphabetMax = (Integer) type3InputREAlphabetMaxJSpinner.getValue();
-
-		checkSpinnerErrors();
 
 		// // check input
         /*

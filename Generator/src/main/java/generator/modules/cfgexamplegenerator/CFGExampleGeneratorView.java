@@ -223,7 +223,7 @@ public class CFGExampleGeneratorView extends FrameView
 		}
 
 		ResourceBundle bundle = ResourceBundle
-			.getBundle("cz/muni/fi/cfgexamplegenerator/resources/CFGExampleGeneratorView");
+			.getBundle("CFGExampleGeneratorView");
 		messagesLabel.setText(bundle.getString("GEN_IS_RUNNING") + " " + duration + " s. "
 			+ bundle.getString("IT_HAS_GENERATED") + " " + generated + "/" + count + bundle.getString("EXAMPLES"));
 
@@ -4138,7 +4138,7 @@ public class CFGExampleGeneratorView extends FrameView
 		if (ioOutputGramarCombo.getSelectedItem().equals(OutputGrammarForm.NO_USELESS))
 		{
 			result.add(new SimpleCriteria(AlgorithmType.UNREACHABLE_ELIM_ALG, CriteriaType.USELESS_NO_PUNISH, false, 0,
-				ResourceBundle.getBundle("cz/muni/fi/cfgexamplegenerator/resources/CFGExampleGeneratorView").getString(
+				ResourceBundle.getBundle("CFGExampleGeneratorView").getString(
 					"PENALTY"), 0));
 		}
 

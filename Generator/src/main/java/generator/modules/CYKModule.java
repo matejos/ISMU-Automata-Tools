@@ -14,6 +14,8 @@ import generator.modules.cyk.CYKHelper;
 import generator.modules.cyk.Grammar;
 import generator.modules.cyk.GrammarManager;
 import generator.modules.cyk.GrammarManagerImpl;
+import javafx.util.Pair;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -37,32 +39,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JSpinner.NumberEditor;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.LayoutStyle;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
@@ -89,6 +69,7 @@ public class CYKModule extends GenericModulePane
 	private static String LINE_SEPARATOR = System.getProperty("line.separator");
 	private boolean grammarsValidated = false;
 	private boolean wordsValidated = false;
+	private FormalLanguagesExampleGenerator generatorCore;
 
 	public CYKModule()
 	{
@@ -595,9 +576,29 @@ public class CYKModule extends GenericModulePane
 
 	}
 
+	private void checkSpinnerErrors()
+	{
+		for (Pair<String, String> p : criteriaChecker.getErrorMessages()){
+			wrongParamsInterruptGenerating(p.getValue());
+		}
+	}
+
+	private void wrongParamsInterruptGenerating(String warningMessage)
+	{
+		validationOK = false;
+		generatorCore.generatingStopped();
+		this.showWarningDialog(warningMessage);
+	}
+
 	public void generate(int numberOfExamplesToGenerate)
 	{
 		validationOK = true;
+		generatorCore = FormalLanguagesExampleGenerator.getCoreInstance();
+		checkSpinnerErrors();
+		if (!validationOK)
+		{
+			return;
+		}
 
 		int numberOfExercises = numberOfExamplesToGenerate;
 		switch (activePanelNumber)
@@ -762,13 +763,6 @@ public class CYKModule extends GenericModulePane
 			selectedAlphabet, words, grammar).execute();
 
 	}
-
-	// private void wrongParamsInterruptGenerating(String warningMessage)
-	// {
-	// validationOK = false;
-	// generatorCore.generatingStopped();
-	// this.showWarningDialog(warningMessage);
-	// }
 
 	/**
 	 * words to grammar
@@ -1708,10 +1702,10 @@ public class CYKModule extends GenericModulePane
 	// * @param message
 	// * the cause of the proposition
 	// */
-	// private void showWarningDialog(String message)
-	// {
-	// JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
-	// }
+	private void showWarningDialog(String message)
+	{
+		JOptionPane.showMessageDialog(this, message, resourceBundle.getString("Error"), JOptionPane.WARNING_MESSAGE);
+	}
 
 	@Override
 	public Map<String, Integer> saveSettings()

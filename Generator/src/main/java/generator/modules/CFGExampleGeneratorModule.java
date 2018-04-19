@@ -15,6 +15,8 @@ import generator.modules.cfgexamplegenerator.generator.CriteriaType;
 import generator.modules.cfgexamplegenerator.generator.InputGrammarForm;
 import generator.modules.cfgexamplegenerator.generator.OutputGrammarForm;
 import generator.modules.cfgexamplegenerator.generator.SimpleCriteria;
+import javafx.util.Pair;
+
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -76,6 +78,8 @@ public class CFGExampleGeneratorModule extends GenericModulePane
 	// private boolean afterInit = false;
 	private ImageIcon questionMarkIcon = new ImageIcon();
 	private static String LINE_SEPARATOR = System.getProperty("line.separator");
+	private FormalLanguagesExampleGenerator generatorCore;
+	private boolean validationOK;
 
 	public CFGExampleGeneratorModule()
 	{
@@ -2826,7 +2830,7 @@ public class CFGExampleGeneratorModule extends GenericModulePane
 		if (ioOutputGramarCombo.getSelectedItem().equals(OutputGrammarForm.NO_USELESS))
 		{
 			result.add(new SimpleCriteria(AlgorithmType.UNREACHABLE_ELIM_ALG, CriteriaType.USELESS_NO_PUNISH, false, 0,
-				ResourceBundle.getBundle("cz/muni/fi/cfgexamplegenerator/resources/CFGExampleGeneratorView").getString(
+				ResourceBundle.getBundle("CFGExampleGeneratorView").getString(
 					"PENALTY"), 0));
 		}
 
@@ -3112,7 +3116,15 @@ public class CFGExampleGeneratorModule extends GenericModulePane
 	@Override
 	public void generate(int numberOfExamplesToGenerate)
 	{
-		FormalLanguagesExampleGenerator generatorCore = FormalLanguagesExampleGenerator.getCoreInstance();
+		validationOK = true;
+		generatorCore = FormalLanguagesExampleGenerator.getCoreInstance();
+
+		checkSpinnerErrors();
+		if (!validationOK)
+		{
+			return;
+		}
+
 		Map<String, JTextArea> textAreas = generatorCore.getTextAreas();
 		GenerationWorker worker = new GenerationWorker(this, numberOfExamplesToGenerate);
 		worker.addPublisher(new Publisher(textAreas.get("plainCZ"), "language1.", "plain.", getInputGrammar(),
@@ -3137,6 +3149,20 @@ public class CFGExampleGeneratorModule extends GenericModulePane
 		component.setPreferredSize(new Dimension(width, height));
 	}
 
+	private void checkSpinnerErrors()
+	{
+		for (Pair<String, String> p : criteriaChecker.getErrorMessages()){
+			wrongParamsInterruptGenerating(p.getValue());
+		}
+	}
+
+	private void wrongParamsInterruptGenerating(String warningMessage)
+	{
+		validationOK = false;
+		generatorCore.generatingStopped();
+		this.showWarningDialog(warningMessage);
+	}
+
 	/**
 	 * shows the the error dialog pane, if the error occures
 	 * 
@@ -3156,7 +3182,7 @@ public class CFGExampleGeneratorModule extends GenericModulePane
 	 */
 	public void showWarningDialog(String message)
 	{
-		JOptionPane.showMessageDialog(this, message, "Warning", JOptionPane.WARNING_MESSAGE);
+		JOptionPane.showMessageDialog(this, message, resourceBundle.getString("Error"), JOptionPane.WARNING_MESSAGE);
 	}
 
 	private void updateStrings()
