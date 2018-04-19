@@ -136,6 +136,8 @@ public class ExampleConsumer extends SwingWorker<Void, Void> implements Runnable
 		latexEn = new StringBuilder();
 		plainCZ = new StringBuilder();
 		isCz = new StringBuilder();
+		textAreas.get("latexCZ").append("\n\\end{document}\n");
+		textAreas.get("latexEN").append("\n\\end{document}\n");
 		for (JTextArea textArea : textAreas.values())
 		{
 			textArea.selectAll();
