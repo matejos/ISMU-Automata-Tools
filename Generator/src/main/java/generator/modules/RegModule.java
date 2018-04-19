@@ -322,20 +322,25 @@ public class RegModule extends GenericModulePane
 
 		}
 		*/
-		if (a1NumberOfTransitionsMin > a1NumberOfStatesMax * a1NumberOfStatesMax * sizeOfAlphabetMax)
+		if (!a1TotalTransitionFunction && a1NumberOfTransitionsMin > a1NumberOfStatesMax * sizeOfAlphabetMax)
 		{
 			generatorCore.generatingStopped();
-			wrongParamsInterruptGenerating("The automaton A panel:\n" + "number of transitions min > "
-				+ "((number of states max)^2 * (size of alphabet max)).");
-
+			wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton1TransitionsMinJSpinner)
+                    + " " + criteriaChecker.GREATER_THAN + " "
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton1StatesMaxJSpinner)
+                    + " " + criteriaChecker.MULTIPLY + " "
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton1AlphabetMaxJSpinner)
+            );
 		}
+		/*
 		if (a1TotalTransitionFunction && (a1NumberOfStatesMin * sizeOfAlphabetMax < a1NumberOfTransitionsMax))
 		{
 			generatorCore.generatingStopped();
 			wrongParamsInterruptGenerating("The automaton A panel:\n" + "total transition function && "
 				+ "(number of states min * size of alphabet max) < " + "number of transitions max).");
 
-		}
+		}*/
 		// check the input for automaton 2
         /*
 		if (a2NumberOfStatesMin < 1 || a2NumberOfStatesMax < 1)
@@ -383,13 +388,21 @@ public class RegModule extends GenericModulePane
 
 		}
 		*/
-		if (a2NumberOfTransitionsMin > a2NumberOfStatesMax * a2NumberOfStatesMax * sizeOfAlphabetMax)
+		if (!a2TotalTransitionFunction && a2NumberOfTransitionsMin > a2NumberOfStatesMax * sizeOfAlphabetMax)
 		{
 			generatorCore.generatingStopped();
-			wrongParamsInterruptGenerating("The automaton B panel:\n" + "number of transitions min > "
+            wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton2TransitionsMinJSpinner)
+                    + " " + criteriaChecker.GREATER_THAN + " "
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton2StatesMaxJSpinner)
+                    + " " + criteriaChecker.MULTIPLY + " "
+                    + criteriaChecker.getSpinnerNameInPar(type0Automaton1AlphabetMaxJSpinner)
+            );
+			/*wrongParamsInterruptGenerating("The automaton B panel:\n" + "number of transitions min > "
 				+ "((number of states max)^2 * (size of alphabet max)).");
-
+*/
 		}
+		/*
 		if (a2TotalTransitionFunction && (a2NumberOfStatesMin * sizeOfAlphabetMin > a2NumberOfTransitionsMax))
 		{
 			generatorCore.generatingStopped();
@@ -397,6 +410,7 @@ public class RegModule extends GenericModulePane
 				+ "(number of states min * size of alphabet max) < " + "number of transitions max).");
 
 		}
+		*/
 		// check output attributes
         /*
 		if (outputStatesMin > outputStatesMax)
@@ -418,10 +432,21 @@ public class RegModule extends GenericModulePane
 			* (a2NumberOfStatesMin + (a2TotalTransitionFunction ? 0 : 1)))
 		{
 			generatorCore.generatingStopped();
+            wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                    + criteriaChecker.getSpinnerNameInPar(type0OutputAutomatonStatesMinJSpinner)
+                    + " " + criteriaChecker.GREATER_THAN + " "
+                    + "(" + criteriaChecker.getSpinnerName(type0Automaton1StatesMinJSpinner)
+                    + (a1TotalTransitionFunction ? "" : " + 1")
+                    + ") " + criteriaChecker.MULTIPLY + " "
+                    + "(" + criteriaChecker.getSpinnerName(type0Automaton2StatesMinJSpinner)
+                    + (a2TotalTransitionFunction ? "" : " + 1")
+                    + ") "
+            );
+            /*
 			wrongParamsInterruptGenerating("The output automaton panel:\n"
 				+ "output states min > (a1NumberOfStatesMin + "
 				+ "(a1TotalTransitionFunction?0:1)) * (a2NumberOfStatesMin + " + "(a2TotalTransitionFunction?0:1))");
-
+*/
 		}
 
 		if (!validationOK)
@@ -672,28 +697,49 @@ public class RegModule extends GenericModulePane
 
 		}
 		*/
-		if (operationFrom == 0)
+		if (operationFrom <= 1)
 		{
-			if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * (sizeOfAlphabetMax + 1))
+			if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * sizeOfAlphabetMax)
 			{
+                wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonTransitionsMinJSpinner)
+                        + " " + criteriaChecker.GREATER_THAN + " "
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonStatesMaxJSpinner) + criteriaChecker.SQR
+                        + " " + criteriaChecker.MULTIPLY + " "
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonAlphabetMaxJSpinner)
+                );
+                /*
 				wrongParamsInterruptGenerating("The input automaton panel:\n" + "number of transitions min > "
 					+ "(number of states max)^2 * (size of alphabet max + 1).");
-
+*/
 			}
 		}
 		else
 		{
-			if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * sizeOfAlphabetMax)
-			{
+            if (numberOfTransitionsMin > numberOfStatesMax * sizeOfAlphabetMax)
+            {
+                wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonTransitionsMinJSpinner)
+                        + " " + criteriaChecker.GREATER_THAN + " "
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonStatesMaxJSpinner)
+                        + " " + criteriaChecker.MULTIPLY + " "
+                        + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonAlphabetMaxJSpinner)
+                );
+                /*
 				wrongParamsInterruptGenerating("The input automaton panel:\n" + "number of transitions min > "
-					+ "(number of states max)^2 * (size of alphabet max).");
-
-			}
+					+ "(number of states max)^2 * (size of alphabet max + 1).");
+*/
+            }
 		}
 		if (firstStateNotInitial && numberOfStatesMax == 1)
 		{
-			wrongParamsInterruptGenerating("The input automaton panel:\n"
-				+ "first state not initial && (number of states max = 1).");
+            wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                    + criteriaChecker.getCheckBoxNameInPar(type1InputAutomatonFirstStateJCheckBox)
+                    + " " + criteriaChecker.AND + " ("
+                    + criteriaChecker.getSpinnerNameInPar(type1InputAutomatonStatesMaxJSpinner) + " = 1)"
+            );
+			/*wrongParamsInterruptGenerating("The input automaton panel:\n"
+				+ "first state not initial && (number of states max = 1).");*/
 		}
 		// minimization
         /*
@@ -976,13 +1022,13 @@ public class RegModule extends GenericModulePane
 		{
 			numberOfUnreachableStatesMin = (Integer) type2InputAutomatonUnreachableStatesMinJSpinner.getValue();
 			numberOfUnreachableStatesMax = (Integer) type2InputAutomatonUnreachableStatesMaxJSpinner.getValue();
-			if (numberOfUnreachableStatesMin < 0)
+			/*if (numberOfUnreachableStatesMin < 0)
 			{
 				wrongParamsInterruptGenerating("The pane Input automaton:\n"
 					+ "The fields number of unreachable states min, max\n"
 					+ "do not have to be filled or have to be filled " + "with number >= 0.");
 
-			}
+			}*/
 		}
 		else
 		{
@@ -1150,11 +1196,21 @@ public class RegModule extends GenericModulePane
 
 		}
 */
-		if (numberOfTransitionsMin > numberOfStatesMax * numberOfStatesMax * sizeOfAlphabetMax)
+		if (numberOfTransitionsMin > (numberOfStatesMax + numberOfUnreachableMax) * sizeOfAlphabetMax)
 		{
+            wrongParamsInterruptGenerating(resourceBundle.getString("ConditionMustNotBeMet")+":\n"
+                    + criteriaChecker.getSpinnerNameInPar(type3InputAutomatonTransitionsMinJSpinner)
+                    + " " + criteriaChecker.GREATER_THAN + "\n("
+                    + criteriaChecker.getSpinnerNameInPar(type3InputAutomatonStatesMaxJSpinner)
+                    + " + "
+                    + criteriaChecker.getSpinnerNameInPar(type3InputAutomatonUnreachableStatesMaxJSpinner)
+                    + ") " + criteriaChecker.MULTIPLY + " "
+                    + criteriaChecker.getSpinnerNameInPar(type3InputAutomatonAlphabetMaxJSpinner)
+            );
+/*
 			wrongParamsInterruptGenerating("The input automaton panel:\n" + "number of transitions min > "
 				+ "(number of states max)^2 * (size of alphabet max).");
-
+*/
 		}
 
 		if (!validationOK)

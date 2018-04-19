@@ -27,9 +27,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import javax.swing.Action;
-import javax.swing.JLabel;
-import javax.swing.JSpinner;
+import javax.swing.*;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 import javax.swing.event.ChangeEvent;
@@ -59,6 +57,13 @@ public final class CriteriaConstraintsChecker
 	// private static final String RULE_COMP = bundle.getString("RULE_COMP");
 	public static final Color ERROR_COLOR = Color.RED;// new Color(253, 101, 0);
 	public static final Color WARNING_COLOR = Color.ORANGE;
+	public static final String LESS_THAN = "\u003C";
+	public static final String LESS_THAN_OR_EQUAL = "\u2264";
+	public static final String GREATER_THAN = "\u003E";
+	public static final String GREATER_THAN_OR_EQUAL = "\u2265";
+	public static final String SQR = "\u00B2";
+	public static final String MULTIPLY = "\u00D7";
+	public static final String AND = "\u2227";
 
 	public CriteriaConstraintsChecker(JLabel noticeLabel, Action[] toDisable, SpinnersSupport spinSup,
 		ColorController colorController)
@@ -568,5 +573,25 @@ public final class CriteriaConstraintsChecker
 	public List<Pair<String, String>> getErrorMessages()
 	{
 		return errorMessages;
+	}
+
+	public String getSpinnerName(JSpinner spin)
+	{
+		return criteriaBundle.getString(spin.getName());
+	}
+
+	public String getSpinnerNameInPar(JSpinner spin)
+	{
+		return "(" + getSpinnerName(spin) + ")";
+	}
+
+	public String getCheckBoxName(JCheckBox cb)
+	{
+		return cb.getText();
+	}
+
+	public String getCheckBoxNameInPar(JCheckBox cb)
+	{
+		return "(" + getCheckBoxName(cb) + ")";
 	}
 }

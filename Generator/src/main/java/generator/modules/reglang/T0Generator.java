@@ -150,6 +150,8 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 		this.a1NumberOfTransitionsMax = a1NumberOfTransitionsMax;
 		this.a1States = a1States;
 		this.a1TotalTransitionFunction = a1TotalTransitionFunction;
+		if (a1NumberOfTransitionsMin == a1NumberOfStatesMax * sizeOfAlphabetMax)
+			this.a1TotalTransitionFunction = true;
 		this.a1Complement = a1Complement;
 		// initializing atributes for generating the second automaton
 		this.a2NumberOfStatesMin = a2NumberOfStatesMin;
@@ -160,6 +162,8 @@ public class T0Generator extends GeneratorWorker implements GeneratingLogic
 		this.a2NumberOfTransitionsMax = a2NumberOfTransitionsMax;
 		this.a2States = a2States;
 		this.a2TotalTransitionFunction = a2TotalTransitionFunction;
+		if (a2NumberOfTransitionsMin == a2NumberOfStatesMax * sizeOfAlphabetMax)
+			this.a2TotalTransitionFunction = true;
 		this.a2Complement = a2Complement;
 		// other atributes
 		this.operation = operation;
