@@ -173,6 +173,8 @@ public class Converter {
                     writer.write("<style type=\"text/css\">@import \"" + parsersLocation + "css/parser_style.css\";</style>\n--\n");
                     s = reader.readLine();
                     while (s != null) {
+                        if ("++".equals(s.trim()))
+                            throw new Exception();
                         boolean dontRead = false;
                         if (s.contains(":e") && !s.contains(":e=")) {
                             s2 = reader.readLine();
@@ -239,7 +241,7 @@ public class Converter {
                 }
             }
         }
-        System.out.println("Finished. Press Enter to continue.");
+        System.out.println("Finished.");
         return;
     }
 
