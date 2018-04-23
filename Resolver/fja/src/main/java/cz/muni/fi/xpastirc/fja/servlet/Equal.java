@@ -353,7 +353,7 @@ public class Equal extends HttpServlet {
             out.println("</center>");
             out.println("<div class=\"row\">");
             out.println("<div class=\"leftTable col-sm-6\">");
-            out.println("<h2 class=\"text-center\">Jazyk zadání = T</h2>");
+            out.println("<h3 class=\"text-center\">Jazyk zadání = T</h3>");
             out.println("<div class=\"panel panel-default\">");
             out.println("<div class=\"panel-body whitebg\">");
             out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_teach.getCharacteristics()+"</samp><br/><br/>");
@@ -382,7 +382,7 @@ public class Equal extends HttpServlet {
             out.println("</div></div></div>");
 
             out.println("<div class=\"rightTable col-sm-6\">");
-            out.println("<h2 class=\"text-center\">Jazyk odpovědi = S</h2>");
+            out.println("<h3 class=\"text-center\">Jazyk odpovědi = S</h3>");
             out.println("<div class=\"panel panel-default\">");
             out.println("<div class=\"panel-body whitebg\">");
             out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_stud.getCharacteristics()+"</samp><br/><br/>");
@@ -413,7 +413,7 @@ public class Equal extends HttpServlet {
             out.println("</div>");
             out.println("<br/><div>");
                 //odpovednik
-                out.println("<h2 class=\"transformTitle\">Vygenerovaný řetězec pro odpovědník</h2><br/>");
+                out.println("<h3 class=\"transformTitle\">Vygenerovaný řetězec pro odpovědník</h3><br/>");
             out.println("<div class=\"panel panel-default\">");
             String ropot = teachInDFA.toString();
             ropot = ropot.replace("F=", " final=");
@@ -423,7 +423,7 @@ public class Equal extends HttpServlet {
                         + HTMLEscaper.removeWhiteSpace(ropot)
                         + "</samp>");
             out.println("</div></div></div>");
-                out.println("<h2 class=\"transformTitle\">Vztahy mezi jazyky</h2><br/>");
+                out.println("<h3 class=\"transformTitle\">Vztahy mezi jazyky</h3><br/>");
                 out.println("<div class=\"row\">");
                 out.println("<div class=\"col-sm-3\">");
                 out.println(eqImage);

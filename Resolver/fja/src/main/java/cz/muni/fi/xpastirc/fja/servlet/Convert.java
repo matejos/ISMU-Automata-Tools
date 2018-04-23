@@ -107,7 +107,7 @@ public class Convert extends HttpServlet {
           out.println("<div class=\"panel-heading\">P&#345;evod:" + modelInfo + "&#8594;" + convertInfo + "</div>");
           out.println("<div class=\"panel-body\">");
         if (generateQuestion) {
-          out.println("<h2 class=\"transformationTitle\">Vygenerovaný &#345;et&#283;zec pro odpov&#283;dník:</h2>");
+          out.println("<h3 class=\"transformationTitle\">Vygenerovaný &#345;et&#283;zec pro odpov&#283;dník:</h3>");
           out.println("<pre class='whitebg'>");
           out.println(c.getQuestion());
           out.println("</pre>");

@@ -99,6 +99,7 @@ public class Evaluate extends HttpServlet {
     } else {
       transformation = request.getParameter("stud");
     }
+    request.setAttribute("stud", transformation);
 
     log.debug("Transformation type: " + transformation);
     
@@ -170,6 +171,7 @@ public class Evaluate extends HttpServlet {
                 }
             }
     // return result
+    request.setAttribute("mode", request.getParameter("mode"));
     if (mode == Modes.simple) {
         PrintWriter out= response.getWriter();;
       try { 
@@ -189,18 +191,18 @@ public class Evaluate extends HttpServlet {
       log.info("Comparison successful");
     } catch (IllegalAccessException e) {
       log.info("Comparison failed: " + e.getMessage());
-      request.setAttribute("error2", e.getMessage());
+      request.setAttribute("error", e.getMessage());
       request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
     } catch (ParserException e) {
       log.info("Comparison failed: incorrect input data", e);
-      request.setAttribute("error2", "Neplatné vstupní údaje");
+      request.setAttribute("error", "Neplatné vstupní údaje");
       request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
     } catch (SQLException s){
-      request.setAttribute("error2", s);
+      request.setAttribute("error", s);
       request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
     } catch (Throwable t) {
       log.error("Comparison failed: " + t.getMessage(), t);
-      request.setAttribute("error2", "Neočekávaná chyba, prosím kontaktuje administrátora.");
+      request.setAttribute("error", "Neočekávaná chyba, prosím kontaktuje administrátora.");
       request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
     }
   }

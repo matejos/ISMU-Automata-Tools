@@ -69,3 +69,35 @@ h1, h2, h3, h4 {
     margin: 50px;
     width: auto;
 }
+.cyk td{
+    padding: 0px !important;
+}
+.cyk input{
+    border-radius: 0px !important;
+    padding: 6px 0px !important;
+    text-align: center;
+}
+.cykpanel-body{
+    min-height: 570px;
+}
+.no-border{
+    border: none !important;
+}
+.cyk-last-row{
+    vertical-align: top;
+    padding: 0px !important;
+}
+.greenbg{
+    background-color: palegreen;
+}
+.redbg{
+    background-color: #FEA7A7;
+}
+.cyk-cell{
+    min-width: 50px;
+}
+@media (max-width: 580px) {
+    .cyk-cell{
+        min-width: 35px;
+    }
+}

@@ -82,6 +82,9 @@ public class Convert extends HttpServlet {
 
     request.setAttribute("windowData", resultMap);
     request.setAttribute("inputData", request.getParameter("inputData"));
+    request.setAttribute("stud", transformation);
+    request.setAttribute("generateISString", request.getParameter("generateISString"));
+    request.setAttribute("mode", request.getParameter("mode"));
     
     String dispatcher = (transformation.equals(TransformationTypes.ANA)) ? "/resultanalysis.jsp" : "/resultconversion.jsp";
 
@@ -96,15 +99,15 @@ public class Convert extends HttpServlet {
     } catch (IllegalAccessException e) {
       log.info("Comparison failed: " + e.getMessage());
       request.setAttribute("error", e.getMessage());
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.getRequestDispatcher("/convertcfg.jsp").forward(request, response);
     } catch (ParserException e) {
       log.info("Conversion failed: incorrect input data", e);
       request.setAttribute("error", "Neplatné vstupní údaje");
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.getRequestDispatcher("/convertcfg.jsp").forward(request, response);
     } catch (Throwable t) {
       log.error("Conversion failed: " + t.getMessage(), t);
       request.setAttribute("error", "Neočekávaná chyba, prosím kontaktuje administrátora.");
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.getRequestDispatcher("/convertcfg.jsp").forward(request, response);
     }
   }
 

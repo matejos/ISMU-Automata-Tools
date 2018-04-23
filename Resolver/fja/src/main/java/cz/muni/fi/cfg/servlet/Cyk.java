@@ -120,17 +120,17 @@ public class Cyk extends HttpServlet {
       log.info("Comparison successful");
     } catch (ParserException e) {
       log.info("Comparison failed: " + e.getMessage());
-      request.setAttribute("error3", e.getMessage());
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.setAttribute("error", e.getMessage());
+      request.getRequestDispatcher("/cyk.jsp").forward(request, response);
     }  catch (IllegalAccessException e) {
       log.info("Comparison failed: " + e.getMessage());
-      request.setAttribute("error3", e.getMessage());
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.setAttribute("error", e.getMessage());
+      request.getRequestDispatcher("/cyk.jsp").forward(request, response);
     }
     catch (Throwable t) {
       log.error("Comparison failed: " + t.getMessage(), t);
-      request.setAttribute("error3", "Neočekávaná chyba, prosím kontaktuje administrátora.");
-      request.getRequestDispatcher("/indexcfg.jsp").forward(request, response);
+      request.setAttribute("error", "Neočekávaná chyba, prosím kontaktuje administrátora.");
+      request.getRequestDispatcher("/cyk.jsp").forward(request, response);
     }
   }
 

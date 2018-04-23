@@ -195,6 +195,11 @@ function invalidate(textboxinput,textboxelement ){
         }
 }
 
+/* -FUNCTION--------------------------------------------------------------------
+ Function:		printHeader(session, activeMenu )
+ Author:		Matej Poklemba
+ Usage:			Prints the header with information about current session and with the active menu selected
+ ----------------------------------------------------------------------------- */
 function printHeader(session, activeMenu) {
     var str = "";
 	str += "<nav class='navbar navbar-default'>\n";
@@ -218,8 +223,8 @@ function printHeader(session, activeMenu) {
     str += "<span class='caret'></span></a>\n";
     str += "<ul class='dropdown-menu'>\n";
     str += "<li><a href='./indexcfg.jsp'>Simulace odpovědníku</a></li>\n";
-    str += "<li><a href='./indexcfg.jsp'>Převod</a></li>\n";
-    str += "<li><a href='./indexcfg.jsp'>C-Y-K</a></li>\n";
+    str += "<li><a href='./convertcfg.jsp'>Převod</a></li>\n";
+    str += "<li><a href='./cyk.jsp'>C-Y-K</a></li>\n";
     str += "</ul>\n";
     str += "</li>\n";
     str += "</ul>\n";
@@ -239,9 +244,17 @@ function printHeader(session, activeMenu) {
     if (activeMenu == "reg") {
         str += printHelpReg();
     }
+    else if (activeMenu == "cfg") {
+        str += printHelpCfg();
+    }
     return str;
 }
 
+/* -FUNCTION--------------------------------------------------------------------
+ Function:		printHelpReg()
+ Author:		Matej Poklemba
+ Usage:			Prints help modal for regular languages
+ ----------------------------------------------------------------------------- */
 function printHelpReg() {
     var str = "";
     str += printHelpStart("Popis formalismu");
@@ -293,6 +306,52 @@ function printHelpReg() {
     return str;
 }
 
+/* -FUNCTION--------------------------------------------------------------------
+ Function:		printHelpCfg()
+ Author:		Matej Poklemba
+ Usage:			Prints help modal for context-free grammars
+ ----------------------------------------------------------------------------- */
+function printHelpCfg() {
+    var str = "";
+    str += printHelpStart("Popis formalismu");
+
+    str += '<h1>CFG - Bezkontextová gramatika, syntaxe</h1>\n';
+    str += '<p>Gramatika je typu 2, jestliže každé její pravidlo je tvaru A -> α, kde |α|>=1 s eventuální výjimkou pravidla S -> \\e, pokud se S nevyskytuje na pravé straně žádného pravidla.<br>\n';
+    str += '<h4>Iniciální neterminál</h4>\n';
+    str += '<p>Iniciálním neterminálem je zvolen první nalezený neterminál.</p>\n';
+    str += '<h4>Neterminál</h4>\n';
+    str += '<p>Neterminál je symbol z množiny <code>{A, ..., Z}</code>, popř. sekvence povolených symbolů uzavřených do zobáčků: &lt;cokoli&gt; popř. terminál nebo symbol množiny <code>{A, ..., Z}</code> s libovolným počtem apostrofů.</p>\n';
+    str += '<h4>Terminál</h4>\n';
+    str += '<p>Terminál je libovolný symbol různý od neterminálního symbolu a speciálních symbolů.</p>\n';
+    str += '<h4>Pravidla</h4>\n';
+    str += '<p>Pravidla jsou v takovém tvaru, aby odpovídala pravidlům gramatik typu 2. Jednotlivá pravidla jsou od sebe oddělena čárkami nebo novým řádkem nebo čárkou a novým řádkem.</p>\n';
+    str += '<h4>Speciální symboly</h4>\n';
+    str += '<p>Speciální symboly jsou "\\n", ",", "<", ">", "|", "\\", " \' ". Epsilon se značí jako <code>\\e</code>.</p>\n';
+
+    str += '<h2>Simulace odpovědníku</h2>\n';
+    str += '<p>Simulace odpovědníku reprezentuje vyhodnocování odpovědí úkolů.<br>\n';
+    str += 'Do pravého formuláře se zadává studentovo řešení úkolu. Do levého formuláře se zadává zadání úkolu, nikoli jeho správné řešení. V případě zadání správného řešení by totiž mohlo dojít k opětovné transformaci zadané gramatiky, což by ve výsledku mohlo vést ke špatnému vyhodnocení příkladu.<br>\n';
+    str += 'Ke korektnímu vyhodnocení odpovědi je také nutno zvolit patřičný druh transformace, který se po studentovi v zadání požadoval.</p>\n';
+    str += '<h4>Módy odpovědí</h4>\n';
+    str += '<p>Lze zvolit celkem dva módy odpovědí. Normální mód vypisuje informace o chybách, kdy např. při odstranění jednoduchých pravidel je nejdříve gramatika studenta kontrolována, zda byla odstraněna epsilon pravidla, v případě, že nikoli, je student na daný fakt upozorněn. V případě, že je studentova gramatika zkontrolována, že neobsahuje epsilon pravidla, ani jednoduchá pravidla, teprve až pak je porovnána s modelem správné odpovědi. Student má tedy k dispozici obsáhlou kontrolu řešení.<br>\n';
+    str += 'IS mód pouze vypisuje true, je-li odpověď správná, jinak vypisuje false.</p>\n';
+
+    str += '<h2>Převody gramatik</h2>\n';
+    str += '<p>V sekci převod jde převést bezkontextovou gramatiku do všech možných forem. Konkrétně lze provést převody odstranění nenormovaných symbolů, odstranění nedosažitelných symbolů, redukce, odstranění epsilon kroků, odstranění jednoduchých pravidel, převod na vlastní gramatiku, převod do Chomského normální formy, odstranění levé rekurze a převod do Greibachové normální formy.</p>\n';
+    str += '<h4>Módy odpovědí</h4>\n';
+    str += '<p>Opět lze vybrat ze dvou módu odpovědí - normální a detailní. V normálním módu je zobrazena pouze výsledná transformace gramatiky, kdežto v módu detailním je vypsána celá posloupnost transformací gramatiky až do její požadované formy.</p>\n';
+    str += '<h4>Řetězec pro odpovědník</h4>\n';
+    str += '<p>Učitel může zvolit možnost vygenerování řetězce reprezentující model zadání úkolu do odpovědníku ISu.</p>\n';
+
+    str += printHelpEnd();
+    return str;
+}
+
+/* -FUNCTION--------------------------------------------------------------------
+ Function:		printHelpStart(title)
+ Author:		Matej Poklemba
+ Usage:			Prints the beginning of the help modal with the given title
+ ----------------------------------------------------------------------------- */
 function printHelpStart(title) {
     var str = "";
     str += '<div class="modal fade" id="myModal" role="dialog">\n';
@@ -306,6 +365,11 @@ function printHelpStart(title) {
     return str;
 }
 
+/* -FUNCTION--------------------------------------------------------------------
+ Function:		printHelpEnd()
+ Author:		Matej Poklemba
+ Usage:			Prints the end of the help modal
+ ----------------------------------------------------------------------------- */
 function printHelpEnd(){
     var str = "";
     str += '</div>\n';
