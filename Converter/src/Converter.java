@@ -170,7 +170,7 @@ public class Converter {
                     writer = new FileWriter(file);
                     writer.write("++\n" + prefixContent);
                     writer.write("<script src=\"" + parsersLocation + "js/utilIS.js\" type=\"text/javascript\"></script>\n");
-                    writer.write("<style type=\"text/css\">@import \"" + parsersLocation + "css/parser_style.css\";</style>\n--\n");
+                    writer.write("<style type=\"text/css\">@import \"" + parsersLocation + "style/parser_style.css\";</style>\n--\n");
                     s = reader.readLine();
                     while (s != null) {
                         if ("++".equals(s.trim()))

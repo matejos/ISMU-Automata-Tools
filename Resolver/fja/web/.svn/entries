@@ -35,20 +35,6 @@ file
 
 add
 
-css
-dir
-
-
-
-add
-
-help
-dir
-
-
-
-add
-
 helpcfg.html
 file
 
@@ -65,13 +51,6 @@ add
 
 js
 dir
-
-
-
-add
-
-news.html
-file
 
 
 
