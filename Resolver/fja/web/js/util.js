@@ -230,7 +230,7 @@ function printHeader(session, activeMenu) {
     str += "</ul>\n";
     str += "<ul class='nav navbar-nav navbar-right'>\n";
     if (session != "") {
-        str += "<p class='navbar-text'>P&#345;ihlá&#353;en jako " + session + "</p>\n";
+        str += "<li><a>P&#345;ihlá&#353;en jako " + session + "</a></li>\n";
         str += "<li><a href='Logout'>Odhlásit</a></li>\n";
     }
     str += "<li" + (activeMenu == "admin" ? " class='active'" : "") + "><a href='./admin.jsp' title='Nastavení'>Nastavení</a></li>\n";
