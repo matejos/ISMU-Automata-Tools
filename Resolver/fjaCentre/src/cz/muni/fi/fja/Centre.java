@@ -18,7 +18,7 @@ public class Centre {
   
   public final static char SEPARATOR_AFTER_DEFINITION = ':';
   public final static char SEPARATOR_MODELS = '-';
-  public final static String START_QUESTION = "b:";
+  public final static String START_QUESTION = "f:";
   
   
   public Centre(boolean p_verbose, boolean p_details) {
@@ -121,13 +121,6 @@ public class Centre {
           append(m_evaluator.getTeacherTask()).
           append("-").
           append(m_evaluator.getStudentTask());
-    } else {
-      l_sb.append("<h2 class=\"transformTitle\">P&#345;evod:").
-          append(m_evaluator.getTeacherTask()).
-          append("-&gt;").
-          append(m_evaluator.getStudentTask()).
-          append("</h2><br/>");
-          
     }
     if (!m_converting) {
         if (getError() != null) {

@@ -74,7 +74,8 @@ public class HTMLEscaper {
                  case '\r': sb.append("");break;
                  default:  sb.append(c); break;
               }
-              if (i < n - 2) {if ((s.charAt(i+1))=='F'&&(s.charAt(i+2))=='=') sb.append(" ");};
+              if (i < n - 6) {if ((s.charAt(i+1))=='f'&&(s.charAt(i+2))=='i' &&(s.charAt(i+3))=='n'
+                      &&(s.charAt(i+4))=='a' &&(s.charAt(i+5))=='l' &&(s.charAt(i+6))=='=') sb.append(" ");};
           }
               return sb.toString();
         }

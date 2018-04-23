@@ -331,90 +331,110 @@ public class Equal extends HttpServlet {
             //DEFINICE toho co se bude vypisovat v dalsim radku
             if (eq){
                 eqString=("Jazyky jsou ekvivalentní");
-                eqImage=("<img src=\"style/equal.png\" alt=\"TRUE\"></img>");
+                eqImage=("<img class=\"img-responsive\" src=\"style/equal.png\" alt=\"TRUE\"></img>");
             }
             else if(inclusion==-1){
                 eqString=("<span class=\"error\">Jazyky nejsou ekvivalentní: Jazyková inkluze S\u2282T </span>");
-                eqImage=("<img src=\"style/inclusiontins.png\" alt=\"FALSE\"></img>");
+                eqImage=("<img class=\"img-responsive\" src=\"style/inclusiontins.png\" alt=\"FALSE\"></img>");
             }
             else if (inclusion == 1){
                 eqString=("<span class=\"error\">Jazyky nejsou ekvivalentní: Jazyková inkluze T\u2282S</span>");
-                eqImage=("<img src=\"style/inclusionsint.png\" alt=\"FALSE\"></img>");
+                eqImage=("<img class=\"img-responsive\" src=\"style/inclusionsint.png\" alt=\"FALSE\"></img>");
             }
             else if (disjoint){
                 eqString=("<span class=\"error\">Jazyky nejsou ekvivalentní: Jazyky jsou disjunktní</span>");
-                eqImage=("<img src=\"style/disjoint.png\">");
+                eqImage=("<img class=\"img-responsive\" src=\"style/disjoint.png\">");
             }
             else{
                 eqString=("<span class=\"error\">Jazyky nejsou ekvivalentní</span>");
-                eqImage=("<img src=\"style/other.png\">");
+                eqImage=("<img class=\"img-responsive\" src=\"style/other.png\">");
             }
             out.println(eqString);
             out.println("</center>");
-            out.println("<div class=\"leftTable\" style=\"display:block;word-wrap:break-word;\">");
-            out.println("<center><h2 class=\"transformTitle\">Jazyk zadání = T</h2></center><br/>");
-            out.println("<pre class=model>");
-            out.println("<span class=\"arText\">Charakteristika</span><br/>"+information_teach.getCharacteristics()+"<br/>");
+            out.println("<div class=\"row\">");
+            out.println("<div class=\"leftTable col-sm-6\">");
+            out.println("<h2 class=\"text-center\">Jazyk zadání = T</h2>");
+            out.println("<div class=\"panel panel-default\">");
+            out.println("<div class=\"panel-body whitebg\">");
+            out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_teach.getCharacteristics()+"</samp><br/><br/>");
             System.out.println(information_teach.isFinal());
-            int i=0;
-            out.println("<span class=\"arText\">Slova z jazyka</span>");
+            out.println("<span class=\"arText\">Slova z jazyka</span><br>");
+            out.println("<samp>");
             if (information_teach.isEmpty()!=1){
-
+                int i=0;
                 for (String word : information_teach.getWords()){
                        out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
                        i++;
                 }
             }
-            out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/>"+formalism_teach +":<br/><span class=\"automaton\">"
-                    + input_teach+"</span><br/><br/>");
-            out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span>");
-            out.println("<span class=\"automaton\">");
+            out.println("</samp>");
+            out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/><samp>"+formalism_teach +":<br/>"
+                    + input_teach+"</samp><br/><br/>");
+            out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span><br>");
+            out.println("<p></p>");
+            out.println("<samp>");
             DeterministicFA teachInDFA = information_teach.toDFA();
             teachInDFA.minimize();
             teachInDFA.kanonize();
-            if (tab) out.println(new AutomatonToTable(information_teach.toDFA().toString()).toString());
-            else out.println(information_teach.toDFA().toString());
-            out.println("</span>");
-            out.println("</pre></div>");
-            out.println("<div class=\"rightTable\" style=\"display:block;word-wrap:break-word;\">");
-            out.println("<center><h2 class=\"transformTitle\">Jazyk odpovědi = S</h2></center><br/>");
-            out.println("<pre class=model>");
-            out.println("<span class=\"arText\">Charakteristika</span><br/>"+information_stud.getCharacteristics()+"<br/>");
+            if (tab) out.println(new AutomatonToTable(teachInDFA.toString()).toString());
+            else out.println(teachInDFA.toString());
+            out.println("</samp>");
+            out.println("</div></div></div>");
+
+            out.println("<div class=\"rightTable col-sm-6\">");
+            out.println("<h2 class=\"text-center\">Jazyk odpovědi = S</h2>");
+            out.println("<div class=\"panel panel-default\">");
+            out.println("<div class=\"panel-body whitebg\">");
+            out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_stud.getCharacteristics()+"</samp><br/><br/>");
             System.out.println(information_stud.isFinal());
-            out.println("<span class=\"arText\">Slova z jazyka</span>");
+            out.println("<span class=\"arText\">Slova z jazyka</span><br>");
+            out.println("<samp>");
             if (information_stud.isEmpty()!=1){
-                i=0;
+                int i=0;
                 for (String word : information_stud.getWords()){
-                        out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
-                        i++;
+                    out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
+                    i++;
                 }
             }
+            out.println("</samp>");
+            out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/><samp>"+formalism_stud +":<br/>"
+                    + input_stud+"</samp><br/><br/>");
+            out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span><br>");
+            out.println("<p></p>");
+            out.println("<samp>");
             DeterministicFA studInDFA = information_stud.toDFA();
-            out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/>"+formalism_stud +":<br/><span class=\"automaton\">"
-                    + input_stud+"</span><br/><br/>");
-            out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span>");
-            out.println("<span class=\"automaton\">");
             studInDFA.minimize();
             studInDFA.kanonize();
             if (tab) out.println(new AutomatonToTable(studInDFA.toString()).toString());
             else out.println(studInDFA.toString());
-            out.println("</span></td></tr>");
+            out.println("</samp>");
+            out.println("</div></div></div>");
+
             out.println("</div>");
-            out.println("<br/><div style=\"margin-left:45px;float:left;>");
+            out.println("<br/><div>");
                 //odpovednik
-                out.println("<hr width=\"100%\">");
                 out.println("<h2 class=\"transformTitle\">Vygenerovaný řetězec pro odpovědník</h2><br/>");
-                out.println("<div style=\"width:1110px;display:block;word-wrap:break-word;\"><pre class=model>"
-                        + "<span class=\"arText\">"
-                        + "b:DFA-"+formalism_teach+":"+HTMLEscaper.removeWhiteSpace(information_teach.toDFA().toString())
-                        + "</span></pre></div>");
+            out.println("<div class=\"panel panel-default\">");
+            String ropot = teachInDFA.toString();
+            ropot = ropot.replace("F=", " final=");
+            out.println("<div class=\"panel-body whitebg\">");
+                out.println("<samp style=\"word-wrap:break-word\">"
+                        + "f:DFA-" + formalism_teach + "-" + (testIso ? "Y" : "N") + ":"
+                        + HTMLEscaper.removeWhiteSpace(ropot)
+                        + "</samp>");
+            out.println("</div></div></div>");
                 out.println("<h2 class=\"transformTitle\">Vztahy mezi jazyky</h2><br/>");
-                out.println("<div>\n" +"<p style=\"float: left;\">"+ eqImage +"</p>" +"<p>");
-                out.println("<table class=\"output\"><tr class=\"bg4\">"
-                        + "<td width=\"140px\"><b>Třídy popisující jazyk<b></td>"
+                out.println("<div class=\"row\">");
+                out.println("<div class=\"col-sm-3\">");
+                out.println(eqImage);
+                out.println("</div>");
+            out.println("<div class=\"col-sm-9\">");
+                out.println("<table class=\"table\"><thead><tr>"
+                        + "<td width=\"30px\"><b>Třídy<b></td>"
                         + "<td width=\"100px\"><b>Charakteristika<b></td>"
-                        + "<td width=\"100px\"><b>Slova z jazyka<b></td>"
-                        +"<td width=\"500px\"><b>Automat popisující jazyk<b></td>");
+                        + "<td width=\"120px\"><b>Slova z jazyka<b></td>"
+                        +"<td><b>Automat<b></td>");
+                out.println("</tr></thead>");
                 int conum=0;
                 if (eq){
                     conum=2;
@@ -445,7 +465,9 @@ public class Equal extends HttpServlet {
                 out.println("<tr style=\"background-color: #ffffff;\"><td><b>"+conum+"</b></td>");
                 complement.printInformation(out, tab, 4);
                 
-                out.println("</table></p></div></div>");
+                out.println("</table>");
+            out.println("</div>");
+            out.println("</div>");
                 printFooter(out);
         } finally { 
             out.close();
@@ -469,59 +491,42 @@ public class Equal extends HttpServlet {
     }
     
     private static void printHeader(PrintWriter out, HttpServletRequest request){
-            out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Výsledek převodu jazyka</title>");
-            out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style_reg.css\">");
-            out.println("<script type=\"text/javascript\" language=\"Javascript\" src=\"https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js\"></script>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<div class=\"header\">");
-            out.println("<div class=\"topLine\">");
-            out.println("</div>");
-            out.println("<div class=\"headerAuthor\">");
-            out.println("</div>");
-            out.println("<div class=\"menuLine\">");
-            out.println("<div class=\"innerMenu\">");
-            out.println("<ul class=\"menuServices\">");
-            out.println("<li><a class=\"current\" href=\"./index.jsp\" title=\"Regulární jazyky\">Regulární jazyky</a></li>");
-            out.println("<li><a href=\"./indexcfg.jsp\" title=\"Bezkontextové gramatiky\">Bezkontextové gramatiky</a></li>");
-            out.println("</ul>");
-            out.println("<ul class=\"menu\">");
-            HttpSession session = request.getSession(false);
-            if (session != null) {
-                  if ((session.getAttribute("Login") != null)){
-                  out.println("<li>P&#345;ihlá&#353;en jako \"" + session.getAttribute("Login") + "\"</li>");
-                  String contextP = request.getContextPath();
-                  out.println("<li><a href=\""+ contextP +"/Logout\">Odhlásit</a></li>");    
-                  }
-            }
-            out.println("<li><a href=\"./admin.jsp\" title=\"Nastavení\">Nastavení</a></li>");
-            out.println("<li><a href=\"./help.jsp\" title=\"Nápověda\">Nápověda</a></li>");
-            out.println("<li><a href=\"./author.jsp\" title=\"O aplikaci\">O aplikaci</a></li>");
-            out.println("</ul>");
-            out.println("</div>");
-            out.println("</div>");
-            out.println("</div>");
-            out.println("<div class=\"page\">");
-            out.println("<div class=\"content\">");
-            out.println("<div class=\"window2\">");
+        HttpSession session = request.getSession();
+        Object loginO = session.getAttribute("Login");
+        String login = "";
+        if (loginO != null)
+            login = (String) loginO;
+        out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Výsledek převodu jazyka</title>");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/bootstrap.min.css\">");
+        out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style_fjamp.css\">");
+        out.println("<script type=\"text/javascript\" src=\"js/util.js\"></script>");
+        out.println("<script type=\"text/javascript\" src=\"js/jquery.js\"></script>");
+        out.println("<script type=\"text/javascript\" src=\"js/bootstrap.min.js\"></script>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<script>document.write(printHeader(\"" + login + "\", \"reg\"));</script>");
+        out.println("<div class=\"container\">");
+        out.println("<div class=\"panel panel-default\">");
+        out.println("<div class=\"panel-heading\">Výsledek</div>");
+        out.println("<div class=\"panel-body\">");
     }
 
     private static void printFooter(PrintWriter out){
             out.println("");
             out.println("<script>jQuery(document).ready(function(){\n" +
-                "    jQuery('#hideshow1').live('click', function(event) {        \n" +
+                "    jQuery('#hideshow1').on('click', function(event) {        \n" +
                 "         jQuery('#aut1').toggle('hide');\n" +
                 "    });\n" +
-                "    jQuery('#hideshow2').live('click', function(event) {        \n" +
+                "    jQuery('#hideshow2').on('click', function(event) {        \n" +
                 "         jQuery('#aut2').toggle('hide');\n" +
                 "    });\n" +
-                "    jQuery('#hideshow3').live('click', function(event) {        \n" +
+                "    jQuery('#hideshow3').on('click', function(event) {        \n" +
                 "         jQuery('#aut3').toggle('hide');\n" +
                 "    });\n" +
-                "    jQuery('#hideshow4').live('click', function(event) {        \n" +
+                "    jQuery('#hideshow4').on('click', function(event) {        \n" +
                 "         jQuery('#aut4').toggle('hide');\n" +
                 "    });\n" +
                 "});</script>");

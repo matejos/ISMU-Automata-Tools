@@ -105,7 +105,7 @@ public class Cyk extends HttpServlet {
     if (Boolean.parseBoolean(request.getParameter("cykISString"))) {
       // b:CFG-CYK:aabb:A->Aa'|Bb'|b'a', <Ab'>->Ab', B->Aa'|B<Ab'>|b'a', a'->a, b'->b
       String cfgString = cfg.toString().replaceAll("[ \\n\\r]", "").replace(",", ", ");
-      request.setAttribute("ISString", "b:CFG-CYK:" + word + ":" + cfgString);
+      request.setAttribute("ISString", "f:CFG-CYK:" + word + ":" + cfgString);
     }
 
     request.setAttribute("studentTable", studentTable);

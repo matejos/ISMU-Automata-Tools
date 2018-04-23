@@ -1,0 +1,71 @@
+.alert .glyphicon{
+    float:left;
+    margin-right:9px;
+}
+
+.alert div{
+    overflow:hidden;
+}
+
+h1, h2, h3, h4 {
+    color:#4B7044;
+}
+
+.panel-default>.panel-heading {
+    background-color:#E6F1E3;
+    color: #284b25;
+    font-size: 24px;
+}
+
+.panel-body {
+    background-color:#FBFFF9;
+}
+
+.logo {
+    height: 50px;
+}
+
+.table>tbody>tr>td {
+    vertical-align: middle;
+}
+
+.whitebg {
+    background-color:#FFFFFF;
+}
+
+.arText{
+    font-weight:bold;
+    font-family:Arial;
+    font-size:10pt;
+}
+
+.bg1{
+    background-color: #00ffff;
+}
+.bg2{
+    background-color: #3bff3b;
+}
+.bg3{
+    background-color: #0083ff;
+}
+.bg4{
+    background-color: #73A869;
+    color: #FFFFFF;
+}
+.bg4 a{
+    color:#000000;
+}
+.error{
+    color:#A60000;
+    font-weight: bold;
+}
+.table-min{
+    width: 0%;
+}
+.no-margin-bottom{
+    margin-bottom: 0px;
+}
+.help-modal{
+    margin: 50px;
+    width: auto;
+}

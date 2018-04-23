@@ -55,105 +55,92 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Administrace</title>
-        <link rel="stylesheet" type="text/css" href="style/style_reg.css">
-        <script type="text/javascript" language="Javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-        <style>
-            .alnright { text-align: left; }
-        </style>
+        <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="style/style_fjamp.css">
+        <script type="text/javascript" src="js/util.js"></script>
+        <script type="text/javascript" src="js/jquery.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
     </head>
     <body>
-        <div class="header" id="header">
-            <div class="topLine">
-            </div>
-            <div class="headerAuthor">
-            </div>
-            <div class="menuLine">
-                <div class="innerMenu">
-                    <ul class="menuServices">
-                        <li><a href="./index.jsp" title="Regulární jazyky">Regulární jazyky</a></li>
-                        <li><a href="./indexcfg.jsp" title="Bezkontextové gramatiky">Bezkontextové gramatiky</a></li>
-                    </ul>
-                    <ul class="menu">
-                        <li>P&#345;ihlá&#353;en jako "<c:out value="${sessionScope.Login}"/>"</li>
-                        <li><a href="${pageContext.request.contextPath}/Logout">Odhlásit</a></li>
-                        <li><a class="current" href="./admin.jsp" title="Nastavení">Nastavení</a></li>
-                        <li><a href="./help.jsp" title="Nápověda">Nápověda</a></li>
-                        <li><a href="./author.jsp" title="O aplikaci">O aplikaci</a></li>
-                    </ul>
+    <script>
+        document.write(printHeader("${sessionScope.Login}", "admin"));
+    </script>
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-heading">Administrace vkládaných úloh</div>
+            <div class="panel-body">
+                    <form method="get" action="admin.jsp">
+                        <div class="text-center">
+                            <input type="button" class="btn btn-primary turn_off_button" value="<%= readFromIsOnly ? "Opět spřístupni" : "Dočasně vypni"%>">
+                        </div>
+                        <p></p>
+                        <table class="table table-hover">
+                            <tr>
+                                <td>
+                                    Povolené adresy (<a href="javascript:;" class="is_add">vyplň adresu IS</a>)</td><td> <input type="text" name ="isaddress" class="form-control" value="<%= isAddress%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Maximální počet špatných pokusů za poslední hodinu na IP</td><td> <input type="text" name ="bannedbad" class="form-control" value="<%= bannedBad%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Maximální počet pokusů za poslední hodinu</td><td><input type="text" name ="bannedgood" class="form-control" value="<%= bannedGood%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Server databáze</td><td><input type="text" name ="dbserver" class="form-control" value="<%= dbServer%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Název databáze</td><td><input type="text" name ="dbname" class="form-control" value="<%= dbName%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Uživatel databáze</td><td><input type="text" name ="dbuser" class="form-control" value="<%= dbUser%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Heslo databáze</td><td><input type="text" name ="dbpass" class="form-control" value="<%= dbPass%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Výpis logu - počet záznamů na stránku</td><td><input type="text" name ="logcount" class="form-control" value="<%= logCount%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Počet dotazů po kterých promazat logy</td><td><input type="text" name ="logdelete" class="form-control" value="<%= logDelete%>">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Zpracovávej požadavky pouze povolených adres</td><td><input type=checkbox name="isOnly" value="yes" <%= readFromIsOnly ? "checked" : ""%>></td>
+                            </tr>
+                        </table>
+                        <div class="text-center">
+                            <input type=submit class="btn btn-primary" value="Nastav" name="set">
+                        </div>
+                    </form>
+                <p></p>
+                <div class="text-center">
+                    <a href="log.jsp">Výpis logů</a>
                 </div>
             </div>
         </div>
-        <div class="page">
-            <div class="content">
-                <center>
-                    <h1>Administrace vkládaných úloh</h1> 
-                    <form method="get" action="admin.jsp">
-                        <input type="button" class="turn_off_button" value="<%= readFromIsOnly ? "Opět spřístupni" : "Dočasně vypni"%>">
-                        <table>
-                            <tr>
-                                <td class="alnright">
-                                    Povolené adresy(<a href="javascript:;" class="is_add">vyplň adresu IS</a>)</td><td> <input type="text" name ="isaddress" value="<%= isAddress%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Maximální počet špatných pokusů za poslední hodinu na IP</td><td> <input type="text" name ="bannedbad"value="<%= bannedBad%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Maximální počet pokusů za poslední hodinu</td><td><input type="text" name ="bannedgood"value="<%= bannedGood%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Server databáze</td><td><input type="text" name ="dbserver"value="<%= dbServer%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Název databáze</td><td><input type="text" name ="dbname"value="<%= dbName%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Uživatel databáze</td><td><input type="text" name ="dbuser"value="<%= dbUser%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Heslo databáze</td><td><input type="text" name ="dbpass"value="<%= dbPass%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Výpis logu - počet záznamů na stránku</td><td><input type="text" name ="logcount"value="<%= logCount%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">
-                                    Počet dotazů po kterých promazat logy</td><td><input type="text" name ="logdelete"value="<%= logDelete%>">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="alnright">Zpracovávej požadavky pouze povolených adres</td><td><input type=checkbox name="isOnly" value="yes" <%= readFromIsOnly ? "checked" : ""%>></td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: right;padding-right: 55px;" colspan="2"><input type=submit value="Nastav" name="set"></td>
-                            </tr>
-                        </table>
-                    </form>
-                    <a href="log.jsp">Výpis logů</a>
-                    <br>
-                </center>
-            </div>
-        </div>
+    </div>
         <script>
             $(document).ready(function() {
-                $('.is_add').live('click', function() {
+                $('.is_add').on('click', function() {
                     $("[name=isaddress]").val("147.251.49.*");
                 });
-                $('.turn_off_button').live('click', function() {
+                $('.turn_off_button').on('click', function() {
                     if (<%=readFromIsOnly%>) {
                         $("[name=isOnly]").attr('checked', false);
                     }

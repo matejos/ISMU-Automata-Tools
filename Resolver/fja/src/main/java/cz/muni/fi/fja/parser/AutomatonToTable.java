@@ -37,17 +37,17 @@ public class AutomatonToTable {
         try {
             AutomatonDefinition d = DFA.match(automaton);
             DeterministicFA fa = new DefinitionToAutomaton(d).toDFA();
-            sb.append("<table class=automatonTable><tr><td></td>");
+            sb.append("<table class='table table-bordered table-min no-margin-bottom'><thead><tr><th></th>");
             for(Character c:fa.getAlphabet()){
-                sb.append("<td>").append(HTMLEscaper.escapeHTML(c.toString())).append("</td>");
+                sb.append("<th>").append(HTMLEscaper.escapeHTML(c.toString())).append("</td>");
             }
-            sb.append("</tr>");
+            sb.append("</tr></thead>");
             TreeMap<String, State> sor = new TreeMap<String, State>(fa.getAllStates());
             for(Map.Entry<String,State> e:sor.entrySet()){
-                sb.append("<tr><td>");
-                if(fa.getStartingState().equals(e.getValue()) && e.getValue().isAccepting()) sb.append("<span style=\"font-size:125%\">&#8596;</span>&nbsp;");
-                else if (e.getValue().isAccepting()) sb.append("<span style=\"font-size:125%\">&#8592;</span>&nbsp;");
-                else if (fa.getStartingState().equals(e.getValue())) sb.append("<span style=\"font-size:125%\">&#8594;</span>&nbsp;");
+                sb.append("<tr><td class=\"text-right\">");
+                if(fa.getStartingState().equals(e.getValue()) && e.getValue().isAccepting()) sb.append("<span>&#8596;</span>&nbsp;");
+                else if (e.getValue().isAccepting()) sb.append("<span>&#8592;</span>&nbsp;");
+                else if (fa.getStartingState().equals(e.getValue())) sb.append("<span>&#8594;</span>&nbsp;");
                 sb.append(HTMLEscaper.escapeHTML(e.getKey())).append("</td>");
                 for(Character c:fa.getAlphabet()){
                     sb.append("<td>");

@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cz.muni.fi.fja.Centre;
+import cz.muni.fi.xpastirc.parsers.PreParser;
+
 import javax.servlet.http.HttpSession;
 
 /**
@@ -67,9 +69,12 @@ public class Convert extends HttpServlet {
       }
     }
 
-    String model = request.getParameter("convert");
     String modelInfo = request.getParameter("teach");
     String convertInfo = request.getParameter("stud");
+    String model = request.getParameter("t");
+    if (modelInfo.equals("GRA"))
+        model = model.replaceAll("\n", ",\n");
+    model = PreParser.parse(model);
     boolean tab = Boolean.parseBoolean(request.getParameter("intable"));
     Centre c = new Centre(verbose, details);
     c.convertDevice(modelInfo, model, convertInfo, tab);
@@ -79,51 +84,33 @@ public class Convert extends HttpServlet {
       if (!verbose) {
         out.println(c);
       } else {
+          HttpSession session = request.getSession();
+          Object loginO = session.getAttribute("Login");
+          String login = "";
+          if (loginO != null)
+              login = (String) loginO;
           response.setContentType("text/html;charset=UTF-8");
           out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
-          out.println("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"cs\" lang=\"cs\">");
+          out.println("<html>");
           out.println("<head>");
-          //out.println("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">");
-          out.println("<meta http-equiv=\"Content-Language\" content=\"cs\" />");
           out.println("<title>P&#345;evod</title>");
-          out.println("<link rel='stylesheet' type='text/css' href='style/style_reg.css'>");
+          out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/bootstrap.min.css\">");
+          out.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"style/style_fjamp.css\">");
+          out.println("<script type=\"text/javascript\" src=\"js/util.js\"></script>");
+          out.println("<script type=\"text/javascript\" src=\"js/jquery.js\"></script>");
+          out.println("<script type=\"text/javascript\" src=\"js/bootstrap.min.js\"></script>");
           out.println("</head>");
           out.println("<body>");
-          out.println("<div class=\"header\">");
-          out.println("<div class=\"topLine\">");
-          out.println("</div>");
-          out.println("<div class=\"headerAuthor\">");
-          out.println("</div>");
-          out.println("<div class=\"menuLine\">");
-          out.println("<div class=\"innerMenu\">");
-          out.println("<ul class=\"menuServices\">");
-          out.println("<li><a class=\"current\" href=\"./index.jsp\" title=\"Regulární jazyky\">Regulární jazyky</a></li>");
-          out.println("<li><a href=\"./indexcfg.jsp\" title=\"Bezkontextové gramatiky\">Bezkontextové gramatiky</a></li>");
-          out.println("</ul>");
-          out.println("<ul class=\"menu\">");
-          HttpSession session = request.getSession(false);
-            if (session != null) {
-                  if ((session.getAttribute("Login") != null)){
-                  out.println("<li>P&#345;ihlá&#353;en jako \"" + session.getAttribute("Login") + "\"</li>");
-                  String contextP = request.getContextPath();
-                  out.println("<li><a href=\""+ contextP +"/Logout\">Odhlásit</a></li>");    
-                  }
-            }
-          out.println("<li><a href=\"./admin.jsp\" title=\"Nastavení\">Nastavení</a></li>");
-          out.println("<li><a href=\"./help.jsp\" title=\"Nápov&#283;da\">Nápov&#283;da</a></li>");
-          out.println("<li><a href=\"./author.jsp\" title=\"O aplikaci\">O aplikaci</a></li>");
-          out.println("</ul>");
-          out.println("</div>");
-          out.println("</div>");
-          out.println("</div>");
-          out.println("<div class=\"page\">");
-          out.println("<div class=\"content\">");
-          out.println("<div class=\"window2\">");
+          out.println("<script>document.write(printHeader(\"" + login + "\", \"reg\"));</script>");
+          out.println("<div class=\"container\">");
+          out.println("<div class=\"panel panel-default\">");
+          out.println("<div class=\"panel-heading\">P&#345;evod:" + modelInfo + "&#8594;" + convertInfo + "</div>");
+          out.println("<div class=\"panel-body\">");
         if (generateQuestion) {
-            out.println("<div style=\"position:relative;left:15px;\">");
           out.println("<h2 class=\"transformationTitle\">Vygenerovaný &#345;et&#283;zec pro odpov&#283;dník:</h2>");
-          out.println(c.getQuestion() + "<br/>");
-          out.println("</div>");
+          out.println("<pre class='whitebg'>");
+          out.println(c.getQuestion());
+          out.println("</pre>");
           out.println("<hr>");
         }
         out.println(c);

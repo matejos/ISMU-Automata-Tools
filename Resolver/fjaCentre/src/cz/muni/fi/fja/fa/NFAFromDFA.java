@@ -88,7 +88,7 @@ public class NFAFromDFA implements RegularDevice {
     if (isError()) {
       return getError().toString();
     }
-    String s = dfa.DFAToStringOrToStringNFA(false, true);
+    String s = dfa.deviceToString(false);
     StringBuffer sb = new StringBuffer(s.length() * 2);
     for (int i = 0, l = s.length(); i < l; i++) {
       if (s.charAt(i) == '<') {
@@ -105,7 +105,7 @@ public class NFAFromDFA implements RegularDevice {
     if (isError()) {
       return getError().toString();
     }
-    String s = dfa.DFAToStringOrToStringNFA(false, true);
+    String s = dfa.deviceToString2(false);
     StringBuffer sb = new StringBuffer(s.length() * 2);
     for (int i = 0, l = s.length(); i < l; i++) {
       if (s.charAt(i) == '<') {

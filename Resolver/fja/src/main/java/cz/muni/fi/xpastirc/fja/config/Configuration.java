@@ -17,7 +17,7 @@ public class Configuration {
 
     Properties prop = new Properties();
     private static final String ISONLY = "ReadFromIsOnly";
-    private static final String TOTALPATH = "/var/lib/tomcat6/webapps/fjaq3/";
+    private static final String TOTALPATH = "/var/lib/tomcat6/webapps/fjamp/";
     private static final String FILENAME = "config.properties";
     private static final String ISADDRESS = "ISAddress";
     private static final String BANNED_BAD = "BannedBad";

@@ -283,7 +283,7 @@ public class ComplexLanguageInformation implements LanguageInformation {
                 }
             }
             out.println("</td>");
-            out.println("<td class=\"automaton\"><input type='button' class=\"button\" id='hideshow"+pos+"' value=\"Zobraz/skry automat\"><div id='aut"+pos+"' style=\"display: none;\">");
+            out.println("<td class=\"automaton\"><input type='button' class=\"btn btn-default\" id='hideshow"+pos+"' value=\"Zobraz/skry automat\"><div id='aut"+pos+"' style=\"display: none;\">");
             if(verbose) out.println(new AutomatonToTable(automaton.toString()).toString());
             else out.println(HTMLEscaper.escapeHTML(automaton.toString()));
             out.println("</div></td>");

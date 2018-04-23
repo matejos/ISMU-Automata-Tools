@@ -73,18 +73,19 @@ var studentA=new Array(
 //8
         "S -> \\e | aB \n" + "B -> bA | b \n" + "A -> aB",
 //9
-        "((x+y)(x+y)(x+y))*",
+        "((x+y).(x+y).(x+y))^*",
 //10
         "(a+(b+c).a^*.(b+c))^*.(b+c).a^*");
 
 
-var teacherF=new Array("EFA","DFA","DFA","EFA","DFA","EFA","GRA","DFA","REG","DFA","DFA");
-var studentF=new Array("MIN","TOT","MIC","DFA","TOT","NFA","EFA","GRA","GRA","REG","ALL");
+var teacherF=["EFA","DFA","DFA","EFA","DFA","EFA","GRA","DFA","REG","DFA","DFA"];
+var studentF=["MIN","TOT","MIC","DFA","TOT","NFA","EFA","GRA","GRA","REG","ALL"];
 function ex(which){
-    document.getElementById("t").value=teacherA[which];
-    document.getElementById("s").value=studentA[which];
-    setCheckedValue(document.forms['equality'].elements['teach'], teacherF[which],'t');
-    setCheckedValue(document.forms['equality'].elements['stud'], studentF[which],'s');
+    var index = document.getElementById(which).selectedIndex - 1;
+    document.getElementById("t").value=teacherA[index];
+    document.getElementById("s").value=studentA[index];
+    setCheckedValue(document.forms['equality'].elements['teach'], teacherF[index],'t');
+    setCheckedValue(document.forms['equality'].elements['stud'], studentF[index],'s');
     //TODO
     //document.getElementsByName("stud")
 }

@@ -502,18 +502,27 @@ public class DFA extends DeviceAbstract {
     }
     //start
     sb.append('\u02C2' + "center" + '\u02C3');
-    sb.append('\u02C2' + "table  class=\"automatonTable\" " + '\u02C3');
+    sb.append('\u02C2' + "table  class=\"table table-bordered table-min whitebg\" " + '\u02C3');
+    sb.append('\u02C2' + "thead" + '\u02C3');
     sb.append('\u02C2' + "tr" + '\u02C3');
-    sb.append('\u02C2' + "td" + '\u02C3' + '\u02C2' + "/td" + '\u02C3');
+    sb.append('\u02C2' + "th" + '\u02C3' + '\u02C2' + "/th" + '\u02C3');
     for(int i = 0; i<alphabetCount; i++){
-        sb.append('\u02C2' + "td" + '\u02C3' + alphabets[i].toFAString() + '\u02C2' + "/td" + '\u02C3');
+        sb.append('\u02C2' + "th" + '\u02C3' + alphabets[i].toFAString() + '\u02C2' + "/th" + '\u02C3');
     }
     sb.append('\u02C2' + "/tr" + '\u02C3');
+    sb.append('\u02C2' + "/thead" + '\u02C3');
     for (int i = 0; i < controlCount && i != blackHole; i++) {
       sb.append('\u02C2' + "tr" + '\u02C3');
       sb.append('\u02C2' + "td style=\"text-align:right\"" + '\u02C3');
-      if(Arrays.binarySearch(finalControl, i) >= 0) sb.append("<-");
-      if(i==0)sb.append("->");
+      if(i==0) {
+        if(Arrays.binarySearch(finalControl, i) >= 0)
+          sb.append("&#8596;");
+        else
+          sb.append("&#8594;");
+      }
+      else {
+        if(Arrays.binarySearch(finalControl, i) >= 0) sb.append("&#8592;");
+      }
       sb.append(controls[i].toFAString() + '\u02C2' + "/td" + '\u02C3');
       for (int j = 0; j < alphabetCount; j++) {
         sb.append('\u02C2' + "td" + '\u02C3');
@@ -544,18 +553,27 @@ public class DFA extends DeviceAbstract {
     }
     //start
     sb.append('\u02C2' + "center" + '\u02C3');
-    sb.append('\u02C2' + "table class=\"automatonTable\" " + '\u02C3');
+    sb.append('\u02C2' + "table class=\"table table-bordered table-min whitebg\" " + '\u02C3');
+    sb.append('\u02C2' + "thead" + '\u02C3');
     sb.append('\u02C2' + "tr" + '\u02C3');
-    sb.append('\u02C2' + "td" + '\u02C3' + '\u02C2' + "/td" + '\u02C3');
+    sb.append('\u02C2' + "th" + '\u02C3' + '\u02C2' + "/th" + '\u02C3');
     for(int i = 0; i<alphabetCount; i++){
-        sb.append('\u02C2' + "td" + '\u02C3' + alphabets[i].toFAString() + '\u02C2' + "/td" + '\u02C3');
+        sb.append('\u02C2' + "th" + '\u02C3' + alphabets[i].toFAString() + '\u02C2' + "/th" + '\u02C3');
     }
     sb.append('\u02C2' + "/tr" + '\u02C3');
+    sb.append('\u02C2' + "/thead" + '\u02C3');
     for (int i=0; i<controlCount && i!=blackHole; i++) {
       sb.append('\u02C2' + "tr" + '\u02C3');
       sb.append('\u02C2' + "td style=\"text-align:right\"" + '\u02C3');
-      if(Arrays.binarySearch(finalControl, i) >= 0) sb.append("<-");
-      if(i==0)sb.append("->");
+      if(i==0) {
+        if(Arrays.binarySearch(finalControl, i) >= 0)
+          sb.append("&#8596;");
+        else
+          sb.append("&#8594;");
+      }
+      else {
+        if(Arrays.binarySearch(finalControl, i) >= 0) sb.append("&#8592;");
+      }
       sb.append(controls[i].toFAString() + '\u02C2' + "/td" + '\u02C3');
       for (int j = 0; j < alphabetCount; j++) {
         sb.append('\u02C2' + "td" + '\u02C3');
