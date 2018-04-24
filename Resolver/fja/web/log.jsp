@@ -39,6 +39,7 @@
         <title>Výpis logů</title>
         <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
         <link rel="stylesheet" type="text/css" href="style/style_fjamp.css">
+        <link href="./style/favicon.gif" rel="icon" type="image/gif" />
         <script type="text/javascript" src="js/util.js"></script>
         <script type="text/javascript" src="js/jquery.js"></script>
         <script type="text/javascript" src="js/bootstrap.min.js"></script>

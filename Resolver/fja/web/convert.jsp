@@ -19,7 +19,7 @@
     <title>Regulární jazyky - převod</title>
     <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style/style_fjamp.css">
-
+    <link href="./style/favicon.gif" rel="icon" type="image/gif" />
     <script type="text/javascript" src="js/DFAParser.js?v=2"></script>
     <script type="text/javascript" src="js/NFAParser.js?v=2"></script>
     <script type="text/javascript" src="js/EFAParser.js?v=2"></script>
