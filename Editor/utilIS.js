@@ -48,14 +48,14 @@ function register(id, func, elemType)
 	    {
 	      document.getElementById(id + "-error").className = "alert alert-info";
 		  document.getElementById(id + "-i").className = "";
-	      document.getElementById(id + "-error-text").innerHTML = "";
+	      document.getElementById(id + "-error-text").innerHTML = "Zde se zobrazuje nápověda syntaxe.";
 	    }
 		else
 		{
 	  		if(result.error_string != "")
 	  			document.getElementById(id + "-error-text").innerHTML = htmlentities(result.error_string);
 	  		else 
-	  			document.getElementById(id + "-error-text").innerHTML = result.error_string;
+	  			document.getElementById(id + "-error-text").innerHTML = "Syntax je korektní.";
 	  		
 	  		if (result.error == 2) {
 	  			document.getElementById(id + "-error").className = "alert alert-danger";

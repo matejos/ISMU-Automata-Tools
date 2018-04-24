@@ -187,22 +187,13 @@ public class Converter {
                             if (!formtype.equals("")) {
                                 questionNumber++;
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
+                                writer.write(getBasicWrapper(idString, parsersLocation, formtype));
                                 if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA")) {
-                                    writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
-                                            + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
-                                            + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">" +
-                                            "<div id=\"q" + idString + "-i\" class=\"\"></div>" +
-                                            "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div>" +
-                                            "</div> </div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
                                     writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "c\">Text</a></li></ul></ul>\n");
                                     writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + type + "\");</script></div>\n");
-                                } else {
-                                    writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />\n");
-                                    writer.write("<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>\n");
-                                    writer.write("<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
                                 }
                             }
                             while (s2 != null && s2.contains(":e=")) {
@@ -253,5 +244,14 @@ public class Converter {
         System.out.format("\t-r | -reset\tperform reset on files (use if they contain older version of the editor)\n");
         System.out.format("\t-k | -keep\tkeep reset versions of files (…Reset.qdef)\n");
         System.out.format("\t-i | -iso | -isomorphism\tadd isomorphism condition to the questions\n");
+    }
+
+    static String getBasicWrapper(String idString, String parsersLocation, String formtype) {
+        return "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
+                + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
+                + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
+                + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
+                + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>"
+                + "</div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n";
     }
 }
