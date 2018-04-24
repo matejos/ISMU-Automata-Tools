@@ -91,7 +91,7 @@ public class FiniteAutomataGenerator
 						stateAdded = true;
 					}
 				}
-				while (!stateAdded);
+				while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && !stateAdded);
 			}
 
 			Set<String> finalStatesReachability = new HashSet<>(a.getFinalStates());
@@ -113,7 +113,7 @@ public class FiniteAutomataGenerator
 
 			usedStates.add("q0");
 			// dopredne prechody
-			while (!unusedStates.isEmpty())
+			while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && !unusedStates.isEmpty())
 			{
 				List<String> newStates = new ArrayList<String>();
 				boolean newStateFound = false;
@@ -233,7 +233,7 @@ public class FiniteAutomataGenerator
 			}
 
 		}
-		while (usedStates.size() != statesWithoutUnreach || statesNotReachingFinalState.size() > 1);
+		while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && (usedStates.size() != statesWithoutUnreach || statesNotReachingFinalState.size() > 1));
 		// keep some tolerance for blackholes
 
 		List<String> unreachableStatesList = new ArrayList<>();
@@ -251,7 +251,7 @@ public class FiniteAutomataGenerator
 		}
 		Set<String> unreachStatesUnused = new HashSet<>(a.getUnreachableStates());
 
-		while (unreachableTransitions != 0)
+		while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && unreachableTransitions != 0)
 		{
 			int stateToIndex = CommonUtils.randInt(1, statesWithoutUnreach + unreachableStates, rand) - 1;
 			int stateFromIndex = CommonUtils.randInt(1, unreachableStates, rand) - 1;

@@ -2,6 +2,8 @@
 package generator.modules.reglang.regularExpression;
 
 import generator.common.tools.CommonUtils;
+import generator.core.FormalLanguagesExampleGenerator;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +48,7 @@ public class RegularExpressionGenerator
 
 			numberOfLeaves = concatCount + unionCount;
 		}
-		while (numberOfLeaves - emptySetsCount - epsCount - alphCount < 0 || iterCount > numberOfLeaves);
+		while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && (numberOfLeaves - emptySetsCount - epsCount - alphCount < 0 || iterCount > numberOfLeaves));
 
 		// itercount > numberofleaves TODO add validation
 
@@ -84,7 +86,7 @@ public class RegularExpressionGenerator
 		int iterDeadline = numberOfLeaves - iterCount;
 
 		int iteration = 0;
-		while (nodes.size() > 1)
+		while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && (nodes.size() > 1))
 		{
 			// add random iteration
 			if (iterCount > 0 && (iterDeadline - iteration <= 0 || rand.nextBoolean()))
@@ -93,7 +95,7 @@ public class RegularExpressionGenerator
 				RegularExpressionNode iterationNode = new RegularExpressionNode(RegularExpressionNodeType.ITERATION);
 
 				int iterationNodeId = CommonUtils.randInt(0, nodes.size() - 1, rand);
-				while (nodes.get(iterationNodeId).getNodeType().equals(RegularExpressionNodeType.ITERATION))
+				while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && (nodes.get(iterationNodeId).getNodeType().equals(RegularExpressionNodeType.ITERATION)))
 				{
 					iterationNodeId = CommonUtils.randInt(0, nodes.size() - 1, rand);
 				}
@@ -110,7 +112,7 @@ public class RegularExpressionGenerator
 			{
 				rightNodeId = CommonUtils.randInt(0, nodes.size() - 1, rand);
 			}
-			while (leftNodeId == rightNodeId);
+			while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && (leftNodeId == rightNodeId));
 			RegularExpressionNode newNode = null;
 			if (concatCount > 0 && unionCount > 0)
 			{

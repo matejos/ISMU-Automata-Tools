@@ -74,7 +74,7 @@ public class RegularGrammarGenerator
 			}
 			usedNonTerminals.add("S");
 			// dopredne prechody
-			while (!unreachableNonterminals.isEmpty())
+			while (FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE && !unreachableNonterminals.isEmpty())
 			{
 				List<String> newNonterminals = new ArrayList<String>();
 				boolean newNonTermFound = false;

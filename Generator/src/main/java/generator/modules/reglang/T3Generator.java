@@ -522,8 +522,8 @@ public class T3Generator extends GeneratorWorker implements GeneratingLogic
 			&& (a.getStates().size() <= numberOfStatesMax + numberOfUnreachableStatesMax)
 			&& (a.getNumberOfTransitions() >= numberOfTransitionsMin)
 			&& (a.getNumberOfTransitions() <= numberOfTransitionsMax) && (a.getAlphabet().size() >= sizeOfAlphabetMin) && (a
-			.getAlphabet().size() <= sizeOfAlphabetMax)) && (!this.isCancelled()));
-		if (this.isCancelled())
+			.getAlphabet().size() <= sizeOfAlphabetMax)) && FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE);
+		if (!FormalLanguagesExampleGenerator.IS_GENERATING_ACTIVE)
 		{
 			return null;
 		}
