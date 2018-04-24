@@ -168,9 +168,8 @@ public class Converter {
                     File file = new File(outputName);
                     file.createNewFile();
                     writer = new FileWriter(file);
-                    writer.write("++\n" + prefixContent);
-                    writer.write("<script src=\"" + parsersLocation + "js/utilIS.js\" type=\"text/javascript\"></script>\n");
-                    writer.write("<style type=\"text/css\">@import \"" + parsersLocation + "style/parser_style.css\";</style>\n--\n");
+                    prefixContent = prefixContent.replaceAll("%SERVER%", parsersLocation);
+                    writer.write("++\n" + prefixContent + "--\n");
                     s = reader.readLine();
                     while (s != null) {
                         if ("++".equals(s.trim()))
@@ -190,7 +189,7 @@ public class Converter {
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
                                 if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA")) {
                                     writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
-                                            + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
+                                            + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
                                             + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
                                     writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
@@ -199,7 +198,7 @@ public class Converter {
                                     writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + type + "\");</script></div>\n");
                                 } else {
                                     writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />\n");
-                                    writer.write("<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>\n");
+                                    writer.write("<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>\n");
                                     writer.write("<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <br><span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
                                 }
                             }

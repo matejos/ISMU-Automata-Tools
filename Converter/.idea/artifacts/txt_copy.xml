@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="txt copy">
+    <output-path>$PROJECT_DIR$/out/</output-path>
+    <root id="root">
+      <element id="file-copy" path="$PROJECT_DIR$/Skript_ending.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/Skript_parsers.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/Skript_prefix.txt" />
+    </root>
+  </artifact>
+</component>

@@ -12,6 +12,13 @@
           <element id="library" level="project" name="lib" />
         </element>
       </element>
+      <element id="directory" name="js">
+        <element id="file-copy" path="$PROJECT_DIR$/../Editor/editorJs.js" />
+        <element id="file-copy" path="$PROJECT_DIR$/../Editor/utilIS.js" />
+      </element>
+      <element id="directory" name="style">
+        <element id="file-copy" path="$PROJECT_DIR$/../Editor/editorCss.css" />
+      </element>
     </root>
   </artifact>
 </component>
