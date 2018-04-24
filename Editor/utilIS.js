@@ -46,24 +46,28 @@ function register(id, func, elemType)
 		var result = func(input.value);
 		if(elem.value == "") 
 	    {
-	      document.getElementById(id + "-div").className = "parser_text_default";
-	      document.getElementById(id + "-error").innerHTML = "";
+	      document.getElementById(id + "-error").className = "alert alert-info";
+		  document.getElementById(id + "-i").className = "";
+	      document.getElementById(id + "-error-text").innerHTML = "";
 	    }
 		else
 		{
 	  		if(result.error_string != "")
-	  			document.getElementById(id + "-error").innerHTML = htmlentities(result.error_string);
+	  			document.getElementById(id + "-error-text").innerHTML = htmlentities(result.error_string);
 	  		else 
-	  			document.getElementById(id + "-error").innerHTML = result.error_string;
+	  			document.getElementById(id + "-error-text").innerHTML = result.error_string;
 	  		
 	  		if (result.error == 2) {
-	  			document.getElementById(id + "-div").className = "parser_text_error";
+	  			document.getElementById(id + "-error").className = "alert alert-danger";
+				document.getElementById(id + "-i").className = "glyphicon glyphicon-remove";
 	  		}
 	  		else if(result.error == 1){
-	  			document.getElementById(id + "-div").className = "parser_text_missing";
+	  			document.getElementById(id + "-error").className = "alert alert-warning";
+				document.getElementById(id + "-i").className = "glyphicon glyphicon-warning-sign";
 	  		}
 	  		else {
-	  			document.getElementById(id + "-div").className = "parser_text_accept";
+	  			document.getElementById(id + "-error").className = "alert alert-success";
+				document.getElementById(id + "-i").className = "glyphicon glyphicon-ok";
 	  		}
 		}
 	}	

@@ -190,7 +190,10 @@ public class Converter {
                                 if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA")) {
                                     writer.write("<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                                             + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
-                                            + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <span id=\"q" + idString + "-error\" class=\"parser_error\"></span></div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
+                                            + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">" +
+                                            "<div id=\"q" + idString + "-i\" class=\"\"></div>" +
+                                            "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div>" +
+                                            "</div> </div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n");
                                     writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
