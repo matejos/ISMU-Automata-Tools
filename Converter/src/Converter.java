@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
  */
 public class Converter {
     static String prefixContentFileName = "Skript_prefix.txt";
-    static String parsersLocationFileName = "Skript_parsers.txt";
+    static String serverLocationFileName = "Skript_server.txt";
     static String endingContentFileName = "Skript_ending.txt";
 
     /**
@@ -31,15 +31,15 @@ public class Converter {
             return;
         }
 
-        String s, s2, parsersLocation = "", prefixContent = "", endingContent = "";
+        String s, s2, serverLocation = "", prefixContent = "", endingContent = "";
 
         try {
-            try (BufferedReader reader = new BufferedReader(new FileReader(parsersLocationFileName))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(serverLocationFileName))) {
                 String line = reader.readLine();
-                parsersLocation += line;
+                serverLocation += line;
             }
         } catch (Exception e) {
-            System.err.format("ERROR: Could not read parsers location from file '%s'. Exporting aborted.\n", parsersLocationFileName);
+            System.err.format("ERROR: Could not read server location from file '%s'. Exporting aborted.\n", serverLocationFileName);
             return;
         }
 
@@ -106,7 +106,7 @@ public class Converter {
             String inputName = files.get(fileNumber);
             String outputName = inputName;
             outputName = new StringBuilder(outputName).insert(outputName.lastIndexOf('.'), suffix).toString();
-            if (outputName.equals(prefixContentFileName) || outputName.equals(parsersLocationFileName)) {
+            if (outputName.equals(prefixContentFileName) || outputName.equals(serverLocationFileName)) {
                 System.err.format("ERROR: Forbidden name! Cannot convert '%s' to '%s'. Skipping...", inputName, outputName);
                 continue;
             }
@@ -181,7 +181,7 @@ public class Converter {
                     File file = new File(outputName);
                     file.createNewFile();
                     writer = new FileWriter(file);
-                    prefixContent = prefixContent.replaceAll("%SERVER%", parsersLocation);
+                    prefixContent = prefixContent.replaceAll("%SERVER%", serverLocation);
                     writer.write("++\n" + prefixContent);
 
                     // Parsers importing
@@ -191,8 +191,8 @@ public class Converter {
                             String type = iterator.next();
                             if (!validParserFilename(type))
                                 continue;
-                            writer.write("<script src=\"" + parsersLocation + "/js/" + type + "Parser.js\" type=\"text/javascript\"></script>\n");
-                            // Fallback if parsersLocation importing fails
+                            writer.write("<script src=\"" + serverLocation + "/js/" + type + "Parser.js\" type=\"text/javascript\"></script>\n");
+                            // Fallback if serverLocation importing fails
                             writer.write("<script>if (typeof " + type + "Parser == 'undefined') {\n");
                             writer.write("    document.write('<script src=\"//rawgit.com/matejos/ISMU-Automata-Editor/master/Resolver/fja/web/js/" + type + "Parser.js\">\\<\\/script>');\n");
                             writer.write("}</script>\n");
@@ -213,7 +213,7 @@ public class Converter {
                             if (!formtype.equals("")) {
                                 questionNumber++;
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
-                                writer.write(getBasicWrapper(idString, parsersLocation, formtype));
+                                writer.write(getBasicWrapper(idString, formtype));
                                 if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA")) {
                                     writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
@@ -273,7 +273,7 @@ public class Converter {
         System.out.format("\t-i | -iso | -isomorphism\tadd isomorphism condition to the questions\n");
     }
 
-    static String getBasicWrapper(String idString, String parsersLocation, String formtype) {
+    static String getBasicWrapper(String idString, String formtype) {
         return "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                 + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript>"
                 + "<div id=\"q" + idString + "-div\"> :e <p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
