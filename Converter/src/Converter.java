@@ -5,8 +5,12 @@
  */
 
 
+import javafx.util.Pair;
+
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -162,6 +166,15 @@ public class Converter {
             }
 
             try {
+                HashSet<String> types = new HashSet<>();
+                try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+                    while ((s = reader.readLine()) != null) {
+                        if (s.contains(":e=")) {
+                            String type = getFormType(s).getValue();
+                            types.add(type);
+                        }
+                    }
+                }
                 FileWriter writer;
                 try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
                     int questionNumber = 0;
@@ -169,7 +182,24 @@ public class Converter {
                     file.createNewFile();
                     writer = new FileWriter(file);
                     prefixContent = prefixContent.replaceAll("%SERVER%", parsersLocation);
-                    writer.write("++\n" + prefixContent + "--\n");
+                    writer.write("++\n" + prefixContent);
+
+                    // Parsers importing
+                    if (types.size() > 0) {
+                        Iterator<String> iterator = types.iterator();
+                        while(iterator.hasNext()) {
+                            String type = iterator.next();
+                            if (!validParserFilename(type))
+                                continue;
+                            writer.write("<script src=\"" + parsersLocation + "/js/" + type + "Parser.js\" type=\"text/javascript\"></script>\n");
+                            // Fallback if parsersLocation importing fails
+                            writer.write("<script>if (typeof " + type + "Parser == 'undefined') {\n");
+                            writer.write("    document.write('<script src=\"//rawgit.com/matejos/ISMU-Automata-Editor/master/Resolver/fja/web/js/" + type + "Parser.js\">\\<\\/script>');\n");
+                            writer.write("}</script>\n");
+                        }
+                    }
+
+                    writer.write("--\n");
                     s = reader.readLine();
                     while (s != null) {
                         if ("++".equals(s.trim()))
@@ -177,13 +207,9 @@ public class Converter {
                         boolean dontRead = false;
                         if (s.contains(":e") && !s.contains(":e=")) {
                             s2 = reader.readLine();
-                            String formtype = "";
-                            String type = s2.substring(s2.indexOf('-') + 1, s2.indexOf('-') + 4);
-                            if (type.equals("DFA") || type.equals("MIN") || type.equals("MIC") || type.equals("TOT") || type.equals("TOC") || type.equals("CAN")) {
-                                formtype = "DFA";
-                            } else if (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA")) {
-                                formtype = type;
-                            }
+                            Pair<String, String> p = getFormType(s2);
+                            String formtype = p.getKey();
+                            String type = p.getValue();
                             if (!formtype.equals("")) {
                                 questionNumber++;
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
@@ -229,7 +255,8 @@ public class Converter {
                     System.err.format("ERROR: Could not find file '%s'.\n", inputName);
                 } else {
                     System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
-                    System.err.format("Does this file contains older version of editor? In that case use argument -r\n");
+                    if (!reset)
+                        System.err.format("Does this file contains older version of editor? In that case use argument -r\n");
                     return;
                 }
             }
@@ -248,10 +275,25 @@ public class Converter {
 
     static String getBasicWrapper(String idString, String parsersLocation, String formtype) {
         return "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
-                + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src=\"" + parsersLocation + "/js/" + formtype + "Parser.js\" type=\"text/javascript\"></script>"
-                + "<div id=\"q" + idString + "-div\" class=\"parser_text_default\"> :e <p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
+                + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript>"
+                + "<div id=\"q" + idString + "-div\"> :e <p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
                 + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
                 + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>"
                 + "</div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n";
+    }
+
+    static Pair<String, String> getFormType(String s) {
+        String formtype = "";
+        String type = s.substring(s.indexOf('-') + 1, s.indexOf('-') + 4);
+        if (type.equals("DFA") || type.equals("MIN") || type.equals("MIC") || type.equals("TOT") || type.equals("TOC") || type.equals("CAN")) {
+            formtype = "DFA";
+        } else if (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA") || type.equals("CYK")) {
+            formtype = type;
+        }
+        return new Pair<String, String>(formtype, type);
+    }
+
+    static boolean validParserFilename(String type) {
+        return (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA") || type.equals("DFA") || type.equals("CFG"));
     }
 }
