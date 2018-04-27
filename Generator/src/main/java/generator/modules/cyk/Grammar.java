@@ -182,4 +182,11 @@ public class Grammar
 		return sb.toString() + LINE_SEPARATOR;
 	}
 
+	public String toIS(){
+		String s = toString();
+		s = s.substring(s.indexOf("P = {") + 5);
+		s = s.replaceAll("\\s", "");
+		s = s.substring(0, s.length() - 1);
+		return s;
+	}
 }

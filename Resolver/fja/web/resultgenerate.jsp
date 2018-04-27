@@ -86,7 +86,7 @@
                             </div>
                         </div>
                         <h4 class="transformTitle">Zadaná gramatika:</h4>
-                        <pre class="whitebg"><c:out value="${param.generateData}" /></pre>
+                        <pre class="whitebg"><c:out value="${param.t}" /></pre>
                         <br>
                         <form method="post" action="cyk.jsp">
                             <c:forEach items="${param}" var="i">

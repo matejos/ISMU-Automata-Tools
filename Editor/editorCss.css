@@ -220,3 +220,19 @@
 .alert div{
     overflow:hidden;
 }
+.cyk td{
+    padding: 0px !important;
+    min-width: 50px;
+}
+.cyk input{
+    border-radius: 0px !important;
+    padding: 6px 0px !important;
+    text-align: center;
+}
+.no-border{
+    border: none !important;
+}
+.cyk-last-row{
+    vertical-align: top;
+    padding: 0px !important;
+}

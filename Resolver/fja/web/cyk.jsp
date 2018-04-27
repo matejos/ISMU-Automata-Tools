@@ -61,13 +61,19 @@
 
                         <div class="col-sm-6">
                             <div class="form-group has-feedback">
-                                <textarea id="generate" name="generateData" class="form-control" rows="10"><c:if test="${! empty param.generateData}"><c:out value="${param.generateData}" /></c:if></textarea>
+                                <textarea id="generate" name="t" class="form-control" rows="10"><c:if test="${! empty param.t}"><c:out value="${param.t}" /></c:if></textarea>
                             </div>
                             <div id="generate-error" class="alert alert-info" title="Nápověda syntaxe.">
                                 <div id="generate-i" class=""></div>
                                 <div id="generate-error-text">Zde se zobrazuje nápověda syntaxe.</div>
                             </div>
-
+                            <div class="form-group">
+                                <label for="sel1" title="Zvolte si mód odpovědi.">Mód:</label>
+                                <select name="mode" class="form-control" id="sel1">
+                                    <option value="verbose" title="">Detailní mód</option>
+                                    <option value="tf" title="">IS mód</option>
+                                </select>
+                            </div>
                             <div class="checkbox">
                                 <label title="V odpovědi zobrazí i řetězec pro odpovědník."><input type="checkbox" id ="cykISString" name="cykISString" value="true">Vygenerovat řetězec pro odpovědník</label>
                             </div>
@@ -78,7 +84,7 @@
                                 <label for="word">Slovo:</label>
                                 <input name="word" class="form-control" id="word" type="text" maxlength="10" value="<c:if test="${! empty param.word}"><c:out value="${param.word}" /></c:if>"/>
                             </div>
-                            <table id="table" class="table borderless cyk">
+                            <table id="table" class="table cyk">
                                 <tbody>
                                 <c:forEach var="j" begin="0" end="9">
                                     <tr id="row${j}">

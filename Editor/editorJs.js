@@ -389,6 +389,100 @@ function initTextTab(wp) {
 	}
 }
 
+function initCYK(id, word)
+{
+    if (!window.jQuery_new) {
+        jQuery_new = $;
+    }
+    var wp = document.getElementById(id);
+
+    wp.textArea = vysledkovePole(id, "_e_a_1");
+    wp.textArea.setAttribute("hidden", '');
+    initCYKTable(wp, word);
+
+    jQuery_new( "form" ).submit(function (e) {
+        updateTextAreaCYK(wp);
+    });
+}
+
+function initCYKTable(wp, word)
+{
+	wp.len = word.length;
+	var row = document.createElement('div');
+	row.className = "row";
+	wp.appendChild(row);
+    var col = document.createElement('div');
+    col.className = "col-sm-6";
+    row.appendChild(col);
+    var col2 = document.createElement('div');
+    col2.className = "col-sm-6";
+    row.appendChild(col2);
+    wp.table = document.createElement('table');
+    wp.table.className = "table cyk text-center";
+    col.appendChild(wp.table);
+
+    // Creating the table
+    for (j = 0; j < wp.len; j++)
+	{
+		var tr = document.createElement('tr');
+		tr.id = "row" + j;
+		wp.table.appendChild(tr);
+        for (i = 0; i <= j; i++)
+        {
+            var td = document.createElement('td');
+            tr.appendChild(td);
+            var input = document.createElement('input');
+            input.name = "t" + i + "-" + (9 - j);
+            input.type = "text";
+            input.autocomplete = "off";
+            input.className = "form-control";
+            td.appendChild(input);
+            wp[input.name] = input;
+        }
+	}
+	// Creating the word letters labels below the table
+    var tr = document.createElement('tr');
+    wp.table.appendChild(tr);
+    for (i = 0; i < wp.len; i++)
+    {
+        var td = document.createElement('td');
+        td.className = "no-border cyk-last-row";
+        tr.appendChild(td);
+        var p = document.createTextNode(word[i]);
+        td.appendChild(p);
+    }
+
+    // Filling the table with values from answer, if it exists (basically for when in inspection mode)
+    if (wp.textArea.value != "")
+	{
+		var answer = wp.textArea.value;
+		var tokens = answer.split(" ");
+		for (i = 0; i < tokens.length; i++)
+        {
+        	var token = tokens[i];
+        	var cellName = token.substr(0, token.indexOf('='));
+        	var val = token.substr(token.indexOf('=') + 1);
+        	if (typeof wp[cellName] != "undefined") {
+                wp[cellName].value = val;
+            }
+        }
+	}
+}
+
+function updateTextAreaCYK(wp)
+{
+	var s = "";
+    for (j = 0; j < wp.len; j++)
+    {
+        for (i = 0; i <= j; i++)
+        {
+            var name = "t" + i + "-" + (9 - j);
+            s += name + "=" + wp[name].value + " ";
+        }
+    }
+    wp.textArea.value = s;
+}
+
 function updateGraphTab(wp, target)
 {
 	if (target)

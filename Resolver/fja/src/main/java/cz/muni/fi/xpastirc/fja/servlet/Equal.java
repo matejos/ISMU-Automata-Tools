@@ -69,9 +69,14 @@ public class Equal extends HttpServlet {
                 return;
             }
             if ("CFG".equals(formalism_teach)) {
-                System.out.println("CFG");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("evaluatecfg");
-                dispatcher.forward(request, response);
+                if ("CYK".equals(formalism_stud)) {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("generatecfg");
+                    dispatcher.forward(request, response);
+                }
+                else {
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("evaluatecfg");
+                    dispatcher.forward(request, response);
+                }
             }
             LanguageInformation information_teach;
             LanguageInformation information_stud;

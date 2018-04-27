@@ -188,6 +188,14 @@ public class CYKGeneralGenerator extends GeneratorWorker implements GeneratingLo
 				sbPlainTextEN.append(g.toStringPlainEn() + LINE_SEPARATOR);
 				sbPlainText.append("w = " + word + LINE_SEPARATOR + LINE_SEPARATOR);
 				sbPlainTextEN.append("w = " + word + LINE_SEPARATOR + LINE_SEPARATOR);
+				sbIS.append("Gramatika <M>"
+						+ g.toLaTeX().replace("$", "").replace("where\\\\", "</M> kde <br>").replace("\\[", "<M>")
+						.replace("\\]", "</M>").replace("\\begin{center}","").replace("\\end{center}","") + "\n");
+				sbISEN.append("Grammar <M>"
+						+ g.toLaTeX().replace("$", "").replace("where\\\\", "</M> where <br>").replace("\\[", "<M>")
+						.replace("\\]", "</M>").replace("\\begin{center}","").replace("\\end{center}","") + "\n");
+				sbIS.append("<M>w = " + word + "</M>\n<br>\n");
+				sbISEN.append("<M>w = " + word + "</M>\n<br>\n");
 				
 				
 				sbLatex.append(g.toLaTeX().replace("where", "kde") + LINE_SEPARATOR);
@@ -206,6 +214,10 @@ public class CYKGeneralGenerator extends GeneratorWorker implements GeneratingLo
 				sbPlainTextEN.append(cykTablePlain);
 				sbLatex.append(cykTableLatex);
 				sbLatexEN.append(cykTableLatex);
+				sbIS.append(":e\n");
+				sbIS.append(":e=\"f:CFG-CYK:" + word + ":" + g.toIS() + "\" ok\n");
+				sbISEN.append(":e\n");
+				sbISEN.append(":e=\"f:CFG-CYK:" + word + ":" + g.toIS() + "\" ok\n");
 				if (FormalLanguagesExampleGenerator.MULTI_THREAD_GENERATING)
 				{
 					// Option1
@@ -329,6 +341,8 @@ public class CYKGeneralGenerator extends GeneratorWorker implements GeneratingLo
 		StringBuilder sbLatexEN = new StringBuilder();
 		StringBuilder sbPlainText = new StringBuilder();
 		StringBuilder sbPlainTextEN = new StringBuilder();
+		StringBuilder sbIS = new StringBuilder();
+		StringBuilder sbISEN = new StringBuilder();
 
 		String czech = "Proveďte deterministickou syntaktickou analýzu pro zadanou gramatiku G a slovo w.";
 		String czechTex = "Proveďte deterministickou syntaktickou analýzu pro zadanou gramatiku $\\mathcal{G}$ a slovo $w$.";
@@ -338,11 +352,15 @@ public class CYKGeneralGenerator extends GeneratorWorker implements GeneratingLo
 		sbLatex.append(czechTex);
 		sbPlainText.append(czech);
 		sbPlainTextEN.append(english);
+		sbIS.append(czech);
+		sbISEN.append(english);
 
 		task.put("latex", sbLatex.toString());
 		task.put("latexEN", sbLatexEN.toString());
 		task.put("plainText", sbPlainText.toString() + LINE_SEPARATOR + LINE_SEPARATOR);
 		task.put("plainTextEN", sbPlainTextEN.toString() + LINE_SEPARATOR + LINE_SEPARATOR);
+		task.put("IS", sbIS.toString() + LINE_SEPARATOR + LINE_SEPARATOR);
+		task.put("ISEN", sbISEN.toString() + LINE_SEPARATOR + LINE_SEPARATOR);
 
 		return task;
 	}

@@ -221,6 +221,13 @@ public class Converter {
                                             + "c\">Text</a></li></ul></ul>\n");
                                     writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + type + "\");</script></div>\n");
                                 }
+                                else if (formtype.equals("CYK")) {
+                                    String word = (s2.substring(s2.indexOf(':') + 1));
+                                    word = (word.substring(word.indexOf(':') + 1));
+                                    word = (word.substring(word.indexOf(':') + 1));
+                                    word = (word.substring(0, word.indexOf(':')));
+                                    writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>initCYK(\"q" + idString + "\", \"" + word + "\");</script></div>\n");
+                                }
                             }
                             while (s2 != null && s2.contains(":e=")) {
                                 StringBuilder stringBuilder = new StringBuilder(s2.trim());
@@ -274,12 +281,17 @@ public class Converter {
     }
 
     static String getBasicWrapper(String idString, String formtype) {
-        return "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
+        String s = "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                 + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript>"
-                + "<div id=\"q" + idString + "-div\"> :e <p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
-                + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
-                + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>"
-                + "</div><script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>\n";
+                + "<div id=\"q" + idString + "-div\"> :e ";
+        if (validParserFilename(formtype)) {
+            s += "<p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
+                    + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
+                    + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>";
+            s += "<script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>";
+        }
+        s += "</div>\n";
+        return s;
     }
 
     static Pair<String, String> getFormType(String s) {
