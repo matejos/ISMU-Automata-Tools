@@ -71,15 +71,15 @@ public class ServicesController {
   
   public enum ConversionType implements OperationType {
     CYK("Algoritmus Cocke-Younger-Kasami", null),
-    NE12("<b>NE1</b> - Odstranit nenormované symboly", TransformationTypes.NE1),
-    NE22("<b>NE2</b> - Odstranit nedosažitelné symboly", TransformationTypes.NE2),
-    RED2("<b>RED</b> - Převést na redukovanou CFG", TransformationTypes.RED),
-    EPS2("<b>EPS</b> - Odstranit epsilon kroky", TransformationTypes.EPS),
-    SRF2("<b>SRF</b> - Odstranit jednoduchá pravidla", TransformationTypes.SRF),
-    PRO2("<b>PRO</b> - Převést na vlastní CFG", TransformationTypes.PRO),
-    CNF2("<b>CNF</b> - Převést do CNF", TransformationTypes.CNF),
-    RLR2("<b>RLR</b> - Odstranit levou rekurzi", TransformationTypes.RLR),
-    GNF2("<b>GNF</b> - Převést do GNF", TransformationTypes.GNF);
+    NE12("<samp><b>NE1</b></samp> - Odstranit nenormované symboly", TransformationTypes.NE1),
+    NE22("<samp><b>NE2</b></samp> - Odstranit nedosažitelné symboly", TransformationTypes.NE2),
+    RED2("<samp><b>RED</b></samp> - Převést na redukovanou CFG", TransformationTypes.RED),
+    EPS2("<samp><b>EPS</b></samp> - Odstranit epsilon kroky", TransformationTypes.EPS),
+    SRF2("<samp><b>SRF</b></samp> - Odstranit jednoduchá pravidla", TransformationTypes.SRF),
+    PRO2("<samp><b>PRO</b></samp> - Převést na vlastní CFG", TransformationTypes.PRO),
+    CNF2("<samp><b>CNF</b></samp> - Převést do CNF", TransformationTypes.CNF),
+    RLR2("<samp><b>RLR</b></samp> - Odstranit levou rekurzi", TransformationTypes.RLR),
+    GNF2("<samp><b>GNF</b></samp> - Převést do GNF", TransformationTypes.GNF);
     
     private String description;
     private TransformationTypes type;
