@@ -55,7 +55,7 @@
                 </div>
             </c:if>
             <div class="window">
-                <form method="post" action="convertcfg" name="convert">
+                <form method="post" action="convertcfg" name="convert" id="theForm">
                     <div class="row">
                         <div class="col-sm-8">
                             <h3 class="transformTitle">Vstupní gramatika:</h3>
@@ -72,9 +72,12 @@
                             <div class="form-group">
                                 <c:forEach var="tt" items="${tts}">
                                     <c:if test="${not empty tt.transformationTypes}">
-                                        <div class="radio"><label><input name="stud" value="${tt.transformationTypes}" id="${tt}" type="radio" <c:if test="${!sc.isAllowed}">disabled</c:if>>${tt.description}</div>
+                                        <div class="radio"><label><input name="stud" value="${tt.transformationTypes}" id="${tt}" type="radio" onchange="invalidate('', 's');" <c:if test="${!sc.isAllowed}">disabled</c:if>>${tt.description}</div>
                                     </c:if>
                                 </c:forEach>
+                                <div class="alert alert-danger" id="s-choose" style="display:none;">
+                                    <script>document.write(chooseOne)</script>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,6 +106,14 @@
     </div>
     <script type="text/javascript">
         register('convert', CFGParser.parse, document.getElementById('convert'));
+        $('#theForm').submit(function() {
+            var proceed = true;
+            if (document.querySelector('input[name="stud"]:checked') == null) {
+                $('#s-choose').fadeIn();
+                proceed = false;
+            }
+            return proceed; // return false to cancel form action
+        });
     </script>
 </div>
 </body>

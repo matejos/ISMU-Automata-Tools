@@ -7,6 +7,8 @@
  of the Artistic License. Please see ARTISTIC for more information.
  ----------------------------------------------------------------------------- */
 
+var chooseOne = "Zvolte jednu z mo\u017Enost\u00ED.";
+
 /* -FUNCTION--------------------------------------------------------------------
  Function:		addEvent(obj, evType, fn)
 
@@ -198,6 +200,7 @@ function htmlentities(s) {
  Usage:			Changes the parser of the textarea by given argument
  ----------------------------------------------------------------------------- */
 function invalidate(textboxinput, textboxelement) {
+    $("#" + textboxelement + "-choose").fadeOut();
     switch (textboxinput) {
         case 'TOT':
         case 'DFA':

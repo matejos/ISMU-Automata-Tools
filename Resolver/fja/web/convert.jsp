@@ -53,7 +53,7 @@
                 </div>
             </noscript>
             <div class="window">
-                <form method="post" action="Convert" name="convert">
+                <form method="post" action="Convert" name="convert" id="theForm">
                     <h3>Zadání příkladu:</h3>
                     <div class="row">
                         <div class="col-sm-3">
@@ -62,6 +62,9 @@
                                 <div class="radio"><label><input name="teach" value="EFA" type="radio" onchange="invalidate('EFA', 't');"><samp><b>EFA</b></samp> - NFA s epsilon kroky</label></div>
                                 <div class="radio"><label><input name="teach" value="GRA" type="radio" onchange="invalidate('GRA', 't');"><samp><b>GRA</b></samp> - Regulární gramatika</label></div>
                                 <div class="radio"><label><input name="teach" value="REG" type="radio" onchange="invalidate('REG', 't');"><samp><b>REG</b></samp> - Regulární výraz</label></div>
+                                <div class="alert alert-danger" id="t-choose" style="display:none;">
+                                    <script>document.write(chooseOne)</script>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-9">
@@ -78,12 +81,15 @@
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
-                                <div class="radio"><label><input name="stud" value="TOT" type="radio"><samp><b>TOT</b></samp> - Totální DFA</label></div>
-                                <div class="radio"><label><input name="stud" value="MIC" type="radio"><samp><b>MIC</b></samp> - Minimální kanonický DFA</label></div>
-                                <div class="radio"><label><input name="stud" value="MIN" type="radio"><samp><b>MIN</b></samp> - Minimalní DFA</label></div>
-                                <div class="radio"><label><input name="stud" value="DFA" type="radio"><samp><b>DFA</b></samp> - Det. konečný automat</label></div>
-                                <div class="radio"><label><input name="stud" value="NFA" type="radio"><samp><b>NFA</b></samp> - Nedet. konečný automat</label></div>
-                                <div class="radio"><label><input name="stud" value="EFA" type="radio"><samp><b>EFA</b></samp> - NFA s epsilon kroky</label></div>
+                                <div class="radio"><label><input name="stud" value="TOT" type="radio" onchange="invalidate('', 's');"><samp><b>TOT</b></samp> - Totální DFA</label></div>
+                                <div class="radio"><label><input name="stud" value="MIC" type="radio" onchange="invalidate('', 's');"><samp><b>MIC</b></samp> - Minimální kanonický DFA</label></div>
+                                <div class="radio"><label><input name="stud" value="MIN" type="radio" onchange="invalidate('', 's');"><samp><b>MIN</b></samp> - Minimalní DFA</label></div>
+                                <div class="radio"><label><input name="stud" value="DFA" type="radio" onchange="invalidate('', 's');"><samp><b>DFA</b></samp> - Det. konečný automat</label></div>
+                                <div class="radio"><label><input name="stud" value="NFA" type="radio" onchange="invalidate('', 's');"><samp><b>NFA</b></samp> - Nedet. konečný automat</label></div>
+                                <div class="radio"><label><input name="stud" value="EFA" type="radio" onchange="invalidate('', 's');"><samp><b>EFA</b></samp> - NFA s epsilon kroky</label></div>
+                                <div class="alert alert-danger" id="s-choose" style="display:none;">
+                                    <script>document.write(chooseOne)</script>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -127,6 +133,18 @@
             if(selector) {
                 invalidate(selector.value, 't');
             }
+        });
+        $('#theForm').submit(function() {
+            var proceed = true;
+            if (document.querySelector('input[name="teach"]:checked') == null) {
+                $('#t-choose').fadeIn();
+                proceed = false;
+            }
+            if (document.querySelector('input[name="stud"]:checked') == null) {
+                $('#s-choose').fadeIn();
+                proceed = false;
+            }
+            return proceed; // return false to cancel form action
         });
     </script>
 </div>

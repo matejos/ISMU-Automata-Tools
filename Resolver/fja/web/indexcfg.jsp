@@ -55,7 +55,7 @@
                     </div>
                 </c:if>
                 <div class="window">
-                    <form method="post" action="evaluatecfg" name="convert">
+                    <form method="post" action="evaluatecfg" name="convert" id="theForm">
                         <div class="row">
                             <div class="col-sm-4">
                                 <h3>Zadání příkladu:</h3>
@@ -80,11 +80,14 @@
                             <div class="col-sm-4">
                                 <h3>Typ převodu:</h3>
                                 <div class="form-group">
-                                  <c:forEach var="ct" items="${cts}">
-                                    <c:if test="${not empty ct.transformationTypes}">
-                                        <div class="radio"><label><input name="stud" value="${ct.transformationTypes}" id="${ct}" type="radio" <c:if test="${!sc.isAllowed}">disabled</c:if>>${ct.description}</label></div>
-                                    </c:if>
-                                  </c:forEach>
+                                    <c:forEach var="ct" items="${cts}">
+                                        <c:if test="${not empty ct.transformationTypes}">
+                                            <div class="radio"><label><input name="stud" value="${ct.transformationTypes}" id="${ct}" type="radio" onchange="invalidate('', 's');" <c:if test="${!sc.isAllowed}">disabled</c:if>>${ct.description}</label></div>
+                                        </c:if>
+                                    </c:forEach>
+                                    <div class="alert alert-danger" id="s-choose" style="display:none;">
+                                        <script>document.write(chooseOne)</script>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -110,6 +113,14 @@
         <script type="text/javascript">
             register('evaluate-stud', CFGParser.parse, document.getElementById('evaluate-stud'));
             register('evaluate-teach', CFGParser.parse, document.getElementById('evaluate-teach'));
+            $('#theForm').submit(function() {
+                var proceed = true;
+                if (document.querySelector('input[name="stud"]:checked') == null) {
+                    $('#s-choose').fadeIn();
+                    proceed = false;
+                }
+                return proceed; // return false to cancel form action
+            });
         </script>
     </div>
     </body>

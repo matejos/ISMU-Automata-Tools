@@ -71,7 +71,7 @@
                         <option>Mód ALL</option>
                     </select>
                 </div>
-                <form method="post" action="Equal" name="equality">
+                <form method="post" action="Equal" name="equality" id="theForm">
                     <h3>Zadání příkladu:</h3>
                     <div class="row">
                         <div class="col-sm-3">
@@ -80,6 +80,9 @@
                                 <div class="radio"><label><input name="teach" value="EFA" type="radio" onchange="invalidate('EFA', 't');"><samp><b>EFA</b></samp> - NFA s epsilon kroky</label></div>
                                 <div class="radio"><label><input name="teach" value="GRA" type="radio" onchange="invalidate('GRA', 't');"><samp><b>GRA</b></samp> - Regulární gramatika</label></div>
                                 <div class="radio"><label><input name="teach" value="REG" type="radio" onchange="invalidate('REG', 't');"><samp><b>REG</b></samp> - Regulární výraz</label></div>
+                                <div class="alert alert-danger" id="t-choose" style="display:none;">
+                                    <script>document.write(chooseOne)</script>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-9">
@@ -105,6 +108,9 @@
                                 <div class="radio"><label><input name="stud" value="GRA" type="radio" onchange="invalidate('GRA', 's');"><samp><b>GRA</b></samp> - Regulární gramatika</label></div>
                                 <div class="radio"><label><input name="stud" value="REG" type="radio" onchange="invalidate('REG', 's');"><samp><b>REG</b></samp> - Regulární výraz</label></div>
                                 <div class="radio"><label><input name="stud" value="ALL" type="radio" onchange="invalidate('ALL', 's');"><samp><b>ALL</b></samp> - Cokoliv</label></div>
+                                <div class="alert alert-danger" id="s-choose" style="display:none;">
+                                    <script>document.write(chooseOne)</script>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-9">
@@ -160,6 +166,18 @@
                 if(selector) {
                     invalidate(selector.value, 's');
                 }
+            });
+            $('#theForm').submit(function() {
+                var proceed = true;
+                if (document.querySelector('input[name="teach"]:checked') == null) {
+                    $('#t-choose').fadeIn();
+                    proceed = false;
+                }
+                if (document.querySelector('input[name="stud"]:checked') == null) {
+                    $('#s-choose').fadeIn();
+                    proceed = false;
+                }
+                return proceed; // return false to cancel form action
             });
         </script>
     </div>
