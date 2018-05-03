@@ -1,147 +1,160 @@
 /* --------------------------------------------------------------------------
-File:	util.js
-Author:	Radim Cebis
-Usage:	functions for assigning the parser to element's events
+ File:	util.js
+ Author:	Radim Cebis
+ Usage:	functions for assigning the parser to element's events
 
-You may use, modify and distribute this software under the terms and conditions
-of the Artistic License. Please see ARTISTIC for more information.
------------------------------------------------------------------------------ */
+ You may use, modify and distribute this software under the terms and conditions
+ of the Artistic License. Please see ARTISTIC for more information.
+ ----------------------------------------------------------------------------- */
 
 /* -FUNCTION--------------------------------------------------------------------
-	Function:		addEvent(obj, evType, fn)
+ Function:		addEvent(obj, evType, fn)
 
-	Usage:			adds event listener (fn) to the object (obj) on event (evType)
------------------------------------------------------------------------------ */
-function addEvent(obj, evType, fn){
- if (obj.addEventListener){
-   obj.addEventListener(evType, fn, false);
-   return true;
- } else if (obj.attachEvent){
-   var r = obj.attachEvent("on"+evType, fn);
-   return r;
- } else {
-   return false;
- }
+ Usage:			adds event listener (fn) to the object (obj) on event (evType)
+ ----------------------------------------------------------------------------- */
+function addEvent(obj, evType, fn) {
+    if (obj.addEventListener) {
+        obj.addEventListener(evType, fn, false);
+        return true;
+    } else if (obj.attachEvent) {
+        var r = obj.attachEvent("on" + evType, fn);
+        return r;
+    } else {
+        return false;
+    }
 }
 
 /* -FUNCTION--------------------------------------------------------------------
-	Function:		register(id, func)
-	Param elemType: Textarea object
-	Usage:			registers func to element with correct question ID
------------------------------------------------------------------------------ */
-function register(idTextarea, func, elem)
-{
+ Function:		register(id, func)
+ Param elemType: Textarea object
+ Usage:			registers func to element with correct question ID
+ ----------------------------------------------------------------------------- */
+function register(idTextarea, func, elem) {
 
-	//var elem = elemType;
-	function test(evt)
-	{
-		if (!evt) var evt = window.event;
-		var input = (evt.target) ? evt.target : evt.srcElement;
+    //var elem = elemType;
+    function test(evt) {
+        if (!evt) var evt = window.event;
+        var input = (evt.target) ? evt.target : evt.srcElement;
 
-		var result = func(input.value);
-		var textAreaClassName = "form-group ";
-		var iconClassName = "glyphicon ";
-		var helpClassName = "alert ";
-		if(elem.value != "")
-		{
-	  		if(result.error_string != "")
-	  			document.getElementById(idTextarea + "-error-text").innerHTML = htmlentities(result.error_string);
-	  		else
-	  			document.getElementById(idTextarea + "-error-text").innerHTML = "Syntax je korektní.";
+        var result = func(input.value);
+        var textAreaClassName = "form-group ";
+        var iconClassName = "glyphicon ";
+        var helpClassName = "alert ";
+        if (elem.value != "") {
+            if (result.error_string != "")
+                document.getElementById(idTextarea + "-error-text").innerHTML = htmlentities(result.error_string);
+            else
+                document.getElementById(idTextarea + "-error-text").innerHTML = "Syntax je korektní.";
 
-	  		if (result.error == 2) {
+            if (result.error == 2) {
                 textAreaClassName += "has-error";
-	  			iconClassName += "glyphicon-remove";
+                iconClassName += "glyphicon-remove";
                 helpClassName += "alert-danger";
-	  		}
-	  		else if(result.error == 1){
+            }
+            else if (result.error == 1) {
                 textAreaClassName += "has-warning";
                 iconClassName += "glyphicon-alert";
                 helpClassName += "alert-warning";
-	  		}
-	  		else {
+            }
+            else {
                 textAreaClassName += "has-success";
                 iconClassName += "glyphicon-ok";
                 helpClassName += "alert-success";
-	  		}
-		}
-		else
-		{
-			iconClassName = "";
+            }
+        }
+        else {
+            iconClassName = "";
             textAreaClassName = "form-group";
             helpClassName += "alert-info";
             document.getElementById(idTextarea + "-error-text").innerHTML = "Zde se zobrazuje nápověda syntaxe.";
-		}
+        }
         document.getElementById(idTextarea + "-i").className = iconClassName;
         document.getElementById(idTextarea + "-error").className = helpClassName;
-		elem.parentElement.className = textAreaClassName;
-	}
-	addEvent(elem,'change',test);
-	addEvent(elem,'keyup',test);
-	addEvent(elem,'focus',test);
-	addEvent(elem,'blur',test);
-	addEvent(elem,'mouseup',test);
-	elem.focus();
-	elem.blur();
+        elem.parentElement.className = textAreaClassName;
+    }
+
+    addEvent(elem, 'change', test);
+    addEvent(elem, 'keyup', test);
+    addEvent(elem, 'focus', test);
+    addEvent(elem, 'blur', test);
+    addEvent(elem, 'mouseup', test);
+    elem.focus();
+    elem.blur();
 }
 
-function registerAllParser(idTextarea,elem){
-        var Parsers = new Array(
-            DFAParser.parse,EFAParser.parse,GRAParser.parse,REGParser.parse,CFGParser.parse
-        )
-        var ParserNames = new Array(
-            "DFA","NFA/EFA","GRA","REG", "CFG")
-	function test(evt)
-	{
-            var good = "";
-            for (var i = 0;i<5;i++){
-                var func = Parsers[i];
-		if (!evt) var evt = window.event;
-		var input = (evt.target) ? evt.target : evt.srcElement;
+function registerAllParser(idTextarea, elem) {
+    var Parsers = new Array(
+        DFAParser.parse, EFAParser.parse, GRAParser.parse, REGParser.parse, CFGParser.parse
+    )
+    var ParserNames = new Array(
+        "DFA", "NFA/EFA", "GRA", "REG", "CFG")
 
-		var result = func(input.value);
-		if(elem.value == "")
-	    {
-	      document.getElementById(idTextarea).className = "parser_text_default";
-	 //     document.getElementById(id + "-error").innerHTML = "";
-	    }
-		else
-		{
-	  		if (result.error == 2) {
-	  			elem.className = "parser_text_error";
-	  		}
-	  		else if(result.error == 1){
-                                good=ParserNames[i];
-	  			elem.className = "parser_text_missing";
-                                break;
-	  		}
-	  		else {
-                               good=ParserNames[i];
-                               elem.className = "parser_text_accept";
-                               break;
-	  		}
-		}
+    function test(evt) {
+        var good = "";
+        var textAreaClassName = "";
+        var iconClassName = "";
+        var helpClassName = "";
+        for (var i = 0; i < 5; i++) {
+            var func = Parsers[i];
+            if (!evt) var evt = window.event;
+            var input = (evt.target) ? evt.target : evt.srcElement;
+
+            var result = func(input.value);
+            textAreaClassName = "form-group ";
+            iconClassName = "glyphicon ";
+            helpClassName = "alert ";
+            if (elem.value == "") {
+                iconClassName = "";
+                textAreaClassName = "form-group";
+                helpClassName += "alert-info";
+                document.getElementById(idTextarea + "-error-text").innerHTML = "Zde se zobrazuje nápověda syntaxe.";
             }
-	  if(result.error_string != "")
-	  	document.getElementById(idTextarea + "-error").innerHTML = good + ":"+htmlentities(result.error_string);
-	  else
-	  	document.getElementById(idTextarea + "-error").innerHTML = good + ":"+result.error_string;
+            else {
+                if (result.error == 2) {
+                    textAreaClassName += "has-error";
+                    iconClassName += "glyphicon-remove";
+                    helpClassName += "alert-danger";
+                }
+                else if (result.error == 1) {
+                    good = ParserNames[i];
+                    textAreaClassName += "has-warning";
+                    iconClassName += "glyphicon-alert";
+                    helpClassName += "alert-warning";
+                    break;
+                }
+                else {
+                    good = ParserNames[i];
+                    textAreaClassName += "has-success";
+                    iconClassName += "glyphicon-ok";
+                    helpClassName += "alert-success";
+                    break;
+                }
+            }
+        }
+        document.getElementById(idTextarea + "-i").className = iconClassName;
+        document.getElementById(idTextarea + "-error").className = helpClassName;
+        elem.parentElement.className = textAreaClassName;
+        if (result.error_string != "")
+            document.getElementById(idTextarea + "-error-text").innerHTML = good + ":" + htmlentities(result.error_string);
+        else
+            document.getElementById(idTextarea + "-error-text").innerHTML = good + ":" + result.error_string;
 
-	}
-	addEvent(elem,'change',test);
-	addEvent(elem,'keyup',test);
-	addEvent(elem,'focus',test);
-	addEvent(elem,'blur',test);
-	addEvent(elem,'mouseup',test);
-	elem.focus();
-	elem.blur();
+    }
+
+    addEvent(elem, 'change', test);
+    addEvent(elem, 'keyup', test);
+    addEvent(elem, 'focus', test);
+    addEvent(elem, 'blur', test);
+    addEvent(elem, 'mouseup', test);
+    elem.focus();
+    elem.blur();
 }
 /* -FUNCTION--------------------------------------------------------------------
-	Function:		htmlentities( s )
-	Author:			Kevin van Zonneveld (http://kevin.vanzonneveld.net)
-	Usage:			converts special characters in string to its html entities
------------------------------------------------------------------------------ */
-function htmlentities( s ){
+ Function:		htmlentities( s )
+ Author:			Kevin van Zonneveld (http://kevin.vanzonneveld.net)
+ Usage:			converts special characters in string to its html entities
+ ----------------------------------------------------------------------------- */
+function htmlentities(s) {
     // http://kevin.vanzonneveld.net
     // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
     // *     example 1: htmlentities('Kevin & van Zonneveld');
@@ -153,32 +166,32 @@ function htmlentities( s ){
     return div.innerHTML;
 }
 /* -FUNCTION--------------------------------------------------------------------
-	Function:		invalidate(textboxstyle, textboxelement )
-	Author:			Tomas Pastircak
-	Usage:			Changes the parser of the textarea by given argument
------------------------------------------------------------------------------ */
-function invalidate(textboxinput,textboxelement ){
-    switch(textboxinput){
+ Function:		invalidate(textboxstyle, textboxelement )
+ Author:			Tomas Pastircak
+ Usage:			Changes the parser of the textarea by given argument
+ ----------------------------------------------------------------------------- */
+function invalidate(textboxinput, textboxelement) {
+    switch (textboxinput) {
         case 'TOT':
         case 'DFA':
         case 'MIN':
         case 'MIC':
-            register(textboxelement, DFAParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, DFAParser.parse, document.getElementById(textboxelement));
             break;
         case 'NFA':
-            register(textboxelement, NFAParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, NFAParser.parse, document.getElementById(textboxelement));
             break;
         case 'EFA':
-            register(textboxelement, EFAParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, EFAParser.parse, document.getElementById(textboxelement));
             break;
         case 'GRA':
-            register(textboxelement, GRAParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, GRAParser.parse, document.getElementById(textboxelement));
             break;
         case 'REG':
-            register(textboxelement, REGParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, REGParser.parse, document.getElementById(textboxelement));
             break;
         case 'ALL':
-            registerAllParser(textboxelement,document.getElementById(textboxelement));
+            registerAllParser(textboxelement, document.getElementById(textboxelement));
             break;
         case 'NE1':
         case 'NE2':
@@ -190,9 +203,9 @@ function invalidate(textboxinput,textboxelement ){
         case 'RLR':
         case 'GNF':
         case 'CFG':
-            register(textboxelement, CFGParser.parse,document.getElementById(textboxelement));
+            register(textboxelement, CFGParser.parse, document.getElementById(textboxelement));
             break;
-        }
+    }
 }
 
 /* -FUNCTION--------------------------------------------------------------------
@@ -202,7 +215,7 @@ function invalidate(textboxinput,textboxelement ){
  ----------------------------------------------------------------------------- */
 function printHeader(session, activeMenu) {
     var str = "";
-	str += "<nav class='navbar navbar-default'>\n";
+    str += "<nav class='navbar navbar-default'>\n";
     str += "<div class='container-fluid'>\n";
     str += "<div class='navbar-header'>\n";
     str += "<img src='style/logotyp.png' class='logo'>";
@@ -370,7 +383,7 @@ function printHelpStart(title) {
  Author:		Matej Poklemba
  Usage:			Prints the end of the help modal
  ----------------------------------------------------------------------------- */
-function printHelpEnd(){
+function printHelpEnd() {
     var str = "";
     str += '</div>\n';
     str += '<div class="modal-footer">\n';
