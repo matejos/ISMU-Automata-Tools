@@ -8,10 +8,7 @@
 import javafx.util.Pair;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -284,7 +281,7 @@ public class Converter {
         String s = "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                 + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript>"
                 + "<div id=\"q" + idString + "-div\"> :e ";
-        if (validParserFilename(formtype)) {
+        if (typeHasSyntaxHelp(formtype)) {
             s += "<p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
                     + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
                     + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>";
@@ -305,7 +302,14 @@ public class Converter {
         return new Pair<String, String>(formtype, type);
     }
 
-    static boolean validParserFilename(String type) {
-        return (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA") || type.equals("DFA") || type.equals("CFG"));
+    static boolean typeHasSyntaxHelp(String type) {
+        return typesWithSyntaxHelp.contains(type);
     }
+
+    static boolean validParserFilename(String type) {
+        return validParsers.contains(type);
+    }
+
+    static List<String> typesWithSyntaxHelp = Arrays.asList("REG", "GRA", "NFA", "EFA", "DFA", "CFG");
+    static List<String> validParsers = Arrays.asList("REG", "GRA", "NFA", "EFA", "DFA", "CFG", "CYK");
 }

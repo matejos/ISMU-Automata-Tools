@@ -433,11 +433,13 @@ function initCYKTable(wp, word)
             tr.appendChild(td);
             var input = document.createElement('input');
             input.name = "t" + i + "-" + (9 - j);
+            input.id = "t" + i + "-" + (9 - j);
             input.type = "text";
             input.autocomplete = "off";
             input.className = "form-control";
             td.appendChild(input);
             wp[input.name] = input;
+            registerColorHighlighting(input.id, CYKParser.parse, document.getElementById(input.id));
         }
 	}
 	// Creating the word letters labels below the table

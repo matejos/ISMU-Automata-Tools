@@ -81,6 +81,33 @@ function register(id, func, elemType)
 	scroll(0,0);
 }
 
+function registerColorHighlighting(idTextarea, func, elem) {
+    function test(evt) {
+        if (!evt) var evt = window.event;
+        var input = (evt.target) ? evt.target : evt.srcElement;
+
+        var result = func(input.value);
+        var textAreaClassName = "form-control ";
+        if (elem.value != "") {
+            if (result.error == 2) {
+                textAreaClassName += "alert-danger";
+            }
+            else if (result.error == 1) {
+                textAreaClassName += "alert-warning";
+            }
+        }
+        elem.className = textAreaClassName;
+    }
+
+    addEvent(elem, 'change', test);
+    addEvent(elem, 'keyup', test);
+    addEvent(elem, 'focus', test);
+    addEvent(elem, 'blur', test);
+    addEvent(elem, 'mouseup', test);
+    elem.focus();
+    elem.blur();
+}
+
 
 /* -FUNCTION--------------------------------------------------------------------
 	Function:		vysledkovePole(idOtazky, pripona)
