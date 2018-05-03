@@ -25,8 +25,8 @@
     <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style/style_fjamp.css">
     <link href="./style/favicon.gif" rel="icon" type="image/gif" />
-    <script src="./js/util.js" type="text/javascript"></script>
     <script src="js/CFGParser.js" type="text/javascript"></script>
+    <script src="js/CYKParser.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/util.js?v=2"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -91,7 +91,8 @@
                                     <c:forEach var="i" begin="0" end="${j}">
                                         <c:set var="name" value="t${i}-${9-j}" />
                                         <td>
-                                            <input name="${name}" type="text" autocomplete="off" class="form-control" value="<c:out value="${empty param[name] ? '' : param[name]}" />" />
+                                            <input name="${name}" id="${name}" type="text" autocomplete="off" class="form-control" value="<c:out value="${empty param[name] ? '' : param[name]}" />" />
+                                            <script>invalidate('CYK','${name}');</script>
                                         </td>
                                     </c:forEach>
                                     </tr>

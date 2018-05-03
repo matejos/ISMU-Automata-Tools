@@ -87,12 +87,6 @@ h1, h2, h3, h4 {
     vertical-align: top;
     padding: 0px !important;
 }
-.greenbg{
-    background-color: palegreen;
-}
-.redbg{
-    background-color: #FEA7A7;
-}
 .cyk-cell{
     min-width: 50px;
 }

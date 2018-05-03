@@ -82,6 +82,33 @@ function register(idTextarea, func, elem) {
     elem.blur();
 }
 
+function registerColorHighlighting(idTextarea, func, elem) {
+    function test(evt) {
+        if (!evt) var evt = window.event;
+        var input = (evt.target) ? evt.target : evt.srcElement;
+
+        var result = func(input.value);
+        var textAreaClassName = "form-control ";
+        if (elem.value != "") {
+            if (result.error == 2) {
+                textAreaClassName += "alert-danger";
+            }
+            else if (result.error == 1) {
+                textAreaClassName += "alert-warning";
+            }
+        }
+        elem.className = textAreaClassName;
+    }
+
+    addEvent(elem, 'change', test);
+    addEvent(elem, 'keyup', test);
+    addEvent(elem, 'focus', test);
+    addEvent(elem, 'blur', test);
+    addEvent(elem, 'mouseup', test);
+    elem.focus();
+    elem.blur();
+}
+
 function registerAllParser(idTextarea, elem) {
     var Parsers = new Array(
         DFAParser.parse, EFAParser.parse, GRAParser.parse, REGParser.parse, CFGParser.parse
@@ -204,6 +231,9 @@ function invalidate(textboxinput, textboxelement) {
         case 'GNF':
         case 'CFG':
             register(textboxelement, CFGParser.parse, document.getElementById(textboxelement));
+            break;
+        case 'CYK':
+            registerColorHighlighting(textboxelement, CYKParser.parse, document.getElementById(textboxelement));
             break;
     }
 }
