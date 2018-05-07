@@ -46,9 +46,11 @@
                                             <tr>
                                                 <c:forEach var="i" begin="0" end="${j-1}">
                                                     <td class="cyk-cell <c:out value="${teacherTable[i][n-j] eq studentTable[i][n-j] ? 'whitebg' : 'alert-success'}" />">
-                                                        <c:forEach items="${teacherTable[i][n-j]}" var="x" varStatus="status" >
-                                                            <c:out value="${x}${status.last ? '' : ', '}" />
-                                                        </c:forEach>
+                                                        <div style="min-height: 20px">
+                                                            <c:forEach items="${teacherTable[i][n-j]}" var="x" varStatus="status" >
+                                                                <c:out value="${x}${status.last ? '' : ', '}" />
+                                                            </c:forEach>
+                                                        </div>
                                                     </td>
                                                 </c:forEach>
                                             </tr>
@@ -69,9 +71,11 @@
                                         <tr>
                                             <c:forEach var="i" begin="0" end="${j-1}">
                                                 <td class="cyk-cell <c:out value="${teacherTable[i][n-j] eq studentTable[i][n-j] ? 'whitebg' : 'alert-danger'}" />">
-                                                    <c:forEach items="${studentTable[i][n-j]}" var="x" varStatus="status" >
-                                                        <c:out value="${x}${status.last ? '' : ', '}" />
-                                                    </c:forEach>
+                                                    <div style="min-height: 20px">
+                                                        <c:forEach items="${studentTable[i][n-j]}" var="x" varStatus="status" >
+                                                            <c:out value="${x}${status.last ? '' : ', '}" />
+                                                        </c:forEach>
+                                                    </div>
                                                 </td>
                                             </c:forEach>
                                         </tr>
