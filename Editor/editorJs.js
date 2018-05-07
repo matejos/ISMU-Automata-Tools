@@ -468,6 +468,21 @@ function initCYKTable(wp, word)
                 wp[cellName].value = val;
             }
         }
+
+		//Highlighting incorrect cells when the feedback is on the page
+        jQuery_new(document).ready(function() {
+            var feedbackElement = jQuery_new("font:contains('feedback for " + word + "')");
+            var feedback = feedbackElement[0].textContent;
+            feedback = feedback.substr(feedback.indexOf(':') + 1);
+            var tokens = feedback.split(" ");
+            for (i = 0; i < tokens.length; i++) {
+                var cellName = tokens[i];
+                if (typeof wp[cellName] != "undefined") {
+                    wp[cellName].className = wp[cellName].className + " alert-danger";
+                }
+            }
+            jQuery_new(feedbackElement).hide();
+        });
 	}
 }
 

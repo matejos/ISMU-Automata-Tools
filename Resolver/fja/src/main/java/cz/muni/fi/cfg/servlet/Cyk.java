@@ -196,7 +196,22 @@ public class Cyk extends HttpServlet {
             PrintWriter out = response.getWriter();
             ;
             try {
-                out.println(studentTable.equals(teacherTable));
+                boolean result = studentTable.equals(teacherTable);
+                String feedback = "feedback for " + word + ":";
+                if (!result) {
+                    int n = word.length();
+                    for (int j = 0; j < n; j++) {
+                        for (int i = 0; i < n - j; i++) {
+                            boolean equality = studentTable.get(j).get(i).equals(teacherTable.get(j).get(i));
+                            if (!equality)
+                                feedback += "t" + j + "-" + (10 - n + i) + " ";
+                        }
+                    }
+                }
+                if (result)
+                    out.println("true");
+                else
+                    out.println("false||" + feedback);
             } finally {
                 out.close();
             }
