@@ -58,7 +58,7 @@ public class Convertx extends HttpServlet {
                 return;
             }
 
-            out.println("<table width=\"100%\"><tr><td width=\"200px\"><b>Zadání a odpověď</b></td><td>Charakteristika</td><td>Slova z jazyka</td>"
+            out.println("<table width=\"100%\"><tr><td width=\"200px\"><b>Zadání a odpověď</b></td><td>Charakteristika</td><td>P\u0159\u00EDklady slov z jazyka</td>"
                     + "<td width=\"30%\"><b>Původní popis</b></td><td><b>Výsledný převod na </b></td></tr>");
             out.println("<tr><td><b>T</b> = Jazyk zadání</td>");
             out.println("<td>"+information.getCharacteristics()+"</td><td>");

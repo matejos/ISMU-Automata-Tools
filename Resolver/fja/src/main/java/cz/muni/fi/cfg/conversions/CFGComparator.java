@@ -112,10 +112,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                             if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                             if (!studentCFG.equals(teacherTransformed)) {
                                 switch (mode) {
@@ -187,10 +187,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                         if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                         if (!studentCFG.equals(teacherTransformed)) {
                             switch (mode) {
@@ -291,10 +291,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                         if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                         if (!studentCFG.equals(teacherTransformed)) {
                             switch (mode) {
@@ -371,10 +371,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                     if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                     if (!studentCFG.equals(teacherTransformed)) {
                         switch (mode) {
@@ -464,10 +464,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                     if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                     if (!studentCFG.equals(teacherTransformed)) {
                         switch (mode) {
@@ -759,10 +759,10 @@ public class CFGComparator {
                                     feedback.append("Konečnost jazyků generovaných gramatikami není stejná. ");
                                 }
                         if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                         if (!studentCFG.equals(teacherTransformed)) {
                             switch (mode) {
@@ -829,10 +829,10 @@ public class CFGComparator {
                         }
                     } else {
                         if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                         if (cfgFinaltyEquality(teacherCFG, studentCFG)){
                                     feedbackVal += 10;
@@ -880,10 +880,10 @@ public class CFGComparator {
                         }
                     } else {
                         if((cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou zadání, které negeneruje gramatika řešení " + cfgContainsAllWords(studentCFG, form.generateWords(teacherCFG, 5)));
                                 }
                             if((cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5))).size()!=0){
-                                    feedback.append("Slova z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
+                                    feedback.append("P\u0159\u00EDklady slov z jazyka generovaného gramatikou řešení, které negeneruje gramatika zadání " + cfgContainsAllWords(teacherCFG, form.generateWords(studentCFG, 5)));
                             }
                         if (cfgFinaltyEquality(teacherCFG, studentCFG)){
                                     feedbackVal += 10;

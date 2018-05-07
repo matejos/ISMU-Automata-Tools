@@ -319,7 +319,7 @@ function printHelpReg() {
     str += '<p>Přechodovou funkci definujeme jako pravidla ve tvaru <code>(NazevVstupnihoStavu,Znak)=NazevVystupnihoStavu</code> pro deterministické automaty a <code>(NazevVstupnihoStavu,Znak)={NazevVystupnihoStavu1,NazevVystupnihoStavu2, ... ,NazevVystupnihoStavuN}</code>pro nedeterministické automaty.<br>\n';
     str += 'Pro automaty s ɛ-kroky můžeme použít jako znak také sekvenci <code>\\e</code> jako ɛ-krok.</p>\n';
     str += '<h4>Množina koncových stavů</h4>\n';
-    str += '<p>Množinu koncových stavů definujeme jako <code>final={KoncovyStav1,KoncovyStav2,...KoncovyStavN}</code>.</p>\n';
+    str += '<p>Množinu koncových stavů definujeme jako <code>final={KoncovyStav1,KoncovyStav2,...KoncovyStavN}</code>. Tento řetězec musí být umístěn na konci zápisu, respektivě cokoli po něm se ignoruje.</p>\n';
     str += '<h4>Speciální znaky v definici automatu</h4>\n';
     str += '<p>Speciálními znaky jsou symboly {,},(,),=,\\,",čárka a bílé znaky. Tyto znaky nemůžeme použít samostatně, musíme je použít po znaku zpětného lomítka \\.</p>\n';
     str += '<h4>Rozšíření přechodové funkce</h4>\n';

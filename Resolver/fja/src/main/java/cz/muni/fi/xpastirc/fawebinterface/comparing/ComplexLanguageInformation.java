@@ -278,14 +278,14 @@ public class ComplexLanguageInformation implements LanguageInformation {
             if (isEmpty()!=1){
                 int i=0;
                 for (String word : getWords()){
-                    out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
+                    out.print((i==0?"":",") + (word.equals("")?"\u025b":word));
                     i++;
                 }
             }
             out.println("</td>");
-            out.println("<td class=\"automaton\"><input type='button' class=\"btn btn-default\" id='hideshow"+pos+"' value=\"Zobraz/skry automat\"><div id='aut"+pos+"' style=\"display: none;\">");
+            out.println("<td class=\"automaton\"><input type='button' class=\"btn btn-default\" id='hideshow"+pos+"' value=\"Zobraz/skryj automat\"><div id='aut"+pos+"' style=\"display: none;\">");
             if(verbose) out.println(new AutomatonToTable(automaton.toString()).toString());
-            else out.println(HTMLEscaper.escapeHTML(automaton.toString()));
+            else out.println(HTMLEscaper.escapeHTML(automaton.toString().replaceAll("F=", "final=")));
             out.println("</div></td>");
             
     }

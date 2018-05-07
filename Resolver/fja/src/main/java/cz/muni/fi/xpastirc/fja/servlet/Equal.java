@@ -363,18 +363,22 @@ public class Equal extends HttpServlet {
             out.println("<div class=\"panel-body whitebg\">");
             out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_teach.getCharacteristics()+"</samp><br/><br/>");
             System.out.println(information_teach.isFinal());
-            out.println("<span class=\"arText\">Slova z jazyka</span><br>");
+            out.println("<span class=\"arText\">P\u0159\u00EDklady slov z jazyka</span><br>");
             out.println("<samp>");
             if (information_teach.isEmpty()!=1){
                 int i=0;
                 for (String word : information_teach.getWords()){
-                       out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
+                       out.print((i==0?"":",") + (word.equals("")?"\u025b":word));
                        i++;
                 }
             }
             out.println("</samp>");
+            String input_teach_refined = input_teach;
+            if (input_teach_refined.indexOf(" ", input_teach_refined.indexOf("F=")) != -1)
+                input_teach_refined = input_teach_refined.substring(0, input_teach_refined.indexOf(" ", input_teach_refined.indexOf("F=")));
+            input_teach_refined = input_teach_refined.replaceAll("F=", "final=");
             out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/><samp>"+formalism_teach +":<br/>"
-                    + input_teach+"</samp><br/><br/>");
+                    + input_teach_refined +"</samp><br/><br/>");
             out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span><br>");
             out.println("<p></p>");
             out.println("<samp>");
@@ -382,7 +386,7 @@ public class Equal extends HttpServlet {
             teachInDFA.minimize();
             teachInDFA.kanonize();
             if (tab) out.println(new AutomatonToTable(teachInDFA.toString()).toString());
-            else out.println(teachInDFA.toString());
+            else out.println(teachInDFA.toString().replaceAll("F=", "final="));
             out.println("</samp>");
             out.println("</div></div></div>");
 
@@ -392,18 +396,22 @@ public class Equal extends HttpServlet {
             out.println("<div class=\"panel-body whitebg\">");
             out.println("<span class=\"arText\">Charakteristika</span><br/><samp>"+information_stud.getCharacteristics()+"</samp><br/><br/>");
             System.out.println(information_stud.isFinal());
-            out.println("<span class=\"arText\">Slova z jazyka</span><br>");
+            out.println("<span class=\"arText\">P\u0159\u00EDklady slov z jazyka</span><br>");
             out.println("<samp>");
             if (information_stud.isEmpty()!=1){
                 int i=0;
                 for (String word : information_stud.getWords()){
-                    out.print((i==0?"<b>":",<b>") + (word.equals("")?"\u025b":word) + "</b>" );
+                    out.print((i==0?"":",") + (word.equals("")?"\u025b":word));
                     i++;
                 }
             }
             out.println("</samp>");
+            String input_stud_refined = input_stud;
+            if (input_stud_refined.indexOf(" ", input_stud_refined.indexOf("F=")) != -1)
+                input_stud_refined = input_stud_refined.substring(0, input_stud_refined.indexOf(" ", input_stud_refined.indexOf("F=")));
+            input_stud_refined = input_stud_refined.replaceAll("F=", "final=");
             out.println( "<br/><br/><span class=\"arText\">Původní popis</span><br/><samp>"+formalism_stud +":<br/>"
-                    + input_stud+"</samp><br/><br/>");
+                    + input_stud_refined +"</samp><br/><br/>");
             out.println("<span class=\"arText\">Popis pomocí minimálního DFA</span><br>");
             out.println("<p></p>");
             out.println("<samp>");
@@ -411,7 +419,7 @@ public class Equal extends HttpServlet {
             studInDFA.minimize();
             studInDFA.kanonize();
             if (tab) out.println(new AutomatonToTable(studInDFA.toString()).toString());
-            else out.println(studInDFA.toString());
+            else out.println(studInDFA.toString().replaceAll("F=", "final="));
             out.println("</samp>");
             out.println("</div></div></div>");
 
@@ -437,7 +445,7 @@ public class Equal extends HttpServlet {
                 out.println("<table class=\"table\"><thead><tr>"
                         + "<td width=\"30px\"><b>Třídy<b></td>"
                         + "<td width=\"100px\"><b>Charakteristika<b></td>"
-                        + "<td width=\"120px\"><b>Slova z jazyka<b></td>"
+                        + "<td width=\"120px\"><b>P\u0159\u00EDklady slov z jazyka<b></td>"
                         +"<td><b>Automat<b></td>");
                 out.println("</tr></thead>");
                 int conum=0;
