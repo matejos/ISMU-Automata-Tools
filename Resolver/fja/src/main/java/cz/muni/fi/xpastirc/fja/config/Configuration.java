@@ -28,6 +28,11 @@ public class Configuration {
     private static final String DBNAME = "DbName";
     private static final String LOGCOUNT = "LogCount";
     private static final String LOGDELETE = "LogDelete";
+    private static final String OPERATIONMODE = "OperationMode";
+    public static final String ALLOW_ALL = "allowAll";
+    public static final String ALLOW_ONLY_ADDRESS_OR_LOGGED_IN = "allowOnlyAddressOrLoggedIn";
+    public static final String ALLOW_ONLY_LOGGED_IN = "allowOnlyLoggedIn";
+    public static final String IS_IP_ADDRESS = "147.251.49.*";
     private static Configuration conf;
     /*private Configuration() throws IOException{
         prop = new Properties();
@@ -42,16 +47,9 @@ public class Configuration {
         if (conf == null) conf = new Configuration();
         return conf;
     }
-    public boolean getReadFromIsOnly(){
-        return Integer.parseInt(prop.getProperty(ISONLY, "0")) != 0 ;
-    }
 
-    public void setReadFromIsOnly(boolean readFromIsOnly) throws IOException{
-        prop.setProperty(ISONLY, readFromIsOnly?"1":"0");
-        prop.store(new FileOutputStream(TOTALPATH + FILENAME), "Zmena nastaveni cteni z IS na " + readFromIsOnly);
-    }
     public String getIsAddress(){
-        return prop.getProperty(ISADDRESS,"147.251.49.*");
+        return prop.getProperty(ISADDRESS,IS_IP_ADDRESS);
     }
     public void setIsAddress(String isAddress) throws IOException{
         prop.setProperty(ISADDRESS, isAddress);
@@ -114,5 +112,19 @@ public class Configuration {
         prop.setProperty(LOGDELETE, toSet);
         prop.store(new FileOutputStream(TOTALPATH + FILENAME), "logy - mazani");
     }
-
+    public String getOperationMode(){
+        return prop.getProperty(OPERATIONMODE,ALLOW_ALL);
+    }
+    public void setOperationMode(String toSet) throws IOException{
+        prop.setProperty(OPERATIONMODE, toSet);
+        prop.store(new FileOutputStream(TOTALPATH + FILENAME), "Zmena modu operace");
+    }
+    public boolean needLogin(String address, Object loginToken) {
+        return ((loginToken == null) &&
+                (
+                    (getOperationMode().equals(ALLOW_ONLY_ADDRESS_OR_LOGGED_IN) && !address.matches(getIsAddress())) ||
+                    getOperationMode().equals(ALLOW_ONLY_LOGGED_IN)
+                )
+            );
+    }
 }

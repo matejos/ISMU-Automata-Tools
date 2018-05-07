@@ -5,9 +5,7 @@
 <%@page import="cz.muni.fi.xpastirc.fja.config.Configuration"%>
     <%
       Configuration configuration = Configuration.getConfiguration();
-      if (configuration.getReadFromIsOnly() //povoleno cteni jen z IS
-              && !(request.getRemoteAddr().matches(configuration.getIsAddress()))//getRemoteHost v Linuxu ne vzdy funguje
-              && (session.getAttribute("Login") == null)){
+        if (configuration.needLogin(request.getRemoteAddr(), session.getAttribute("Login"))){
                 response.sendRedirect("login.jsp?from=index.jsp");
           return;
       }

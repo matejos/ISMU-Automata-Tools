@@ -145,7 +145,7 @@ public class MySQLHandler implements DBHandler{
             configuration = Configuration.getConfiguration();
             isIP = configuration.getIsAddress();
         } catch (IOException ex) {
-            isIP= "147.251.49.*";
+            isIP= Configuration.IS_IP_ADDRESS;
 
         }
         //IS is never banned
