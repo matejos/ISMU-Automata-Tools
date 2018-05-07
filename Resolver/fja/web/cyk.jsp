@@ -28,6 +28,7 @@
     <script type="text/javascript" src="js/util.js?v=2"></script>
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/exampleCyk.js"></script>
     <title>Bezkontextové gramatiky</title>
 </head>
 <body>
@@ -53,6 +54,14 @@
                 </div>
             </c:if>
             <div class="window">
+                <div class="examples">
+                    <label for="selExample">Příklady užití služby:</label>
+                    <select class="form-control" onchange="ex(id)" id="selExample">
+                        <option style="display:none" disabled selected>Vyberte příklad</option>
+                        <option>Příklad bez chyb</option>
+                        <option>Příklad s chybama</option>
+                    </select>
+                </div>
                 <form method="post" action="generatecfg" name="generate">
                     <h3 class="transformTitle">Vstupní gramatika:</h3>
                     <div class="row">
@@ -116,6 +125,7 @@
         if (word.addEventListener) {
             word.addEventListener("input", changeTable, false);
             word.addEventListener("keyup", changeTable, false);
+            word.addEventListener("blur", changeTable, false);
         }
         window.addEventListener("load",changeTable,false);
 

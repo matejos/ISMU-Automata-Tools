@@ -29,10 +29,11 @@
         <div class="panel panel-default">
             <div class="panel-heading">Algoritmus Cocke-Younger-Kasami</div>
                 <div class="panel-body">
+                    <h1>Celkový výsledek: <c:out value="${teacherTable eq studentTable ? 'TRUE' : 'FALSE'}" /></h1>
                     <c:if test="${! empty ISString}">
                         <div class="window">
                             <h3 class="transformTitle">Řetězec odpovědníku:</h3>
-                            <pre class="isString"><c:out value="${ISString}" /></pre>
+                            <pre class="isString whitebg"><c:out value="${ISString}" /></pre>
                         </div>
                     </c:if>
                     <div class="window">
