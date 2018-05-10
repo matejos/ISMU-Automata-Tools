@@ -494,7 +494,7 @@ function updateTextAreaCYK(wp)
         for (i = 0; i <= j; i++)
         {
             var name = "t" + i + "-" + (9 - j);
-            s += name + "=" + wp[name].value + " ";
+            s += name + "=" + wp[name].value.replace(/ /g, "") + " ";
         }
     }
     wp.textArea.value = s;
