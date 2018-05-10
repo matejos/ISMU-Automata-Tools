@@ -72,14 +72,17 @@ function init(id, type) {
 		var buttonSelect = document.createElement("input");
 		buttonSelect.name = "mode" + id;
 		buttonSelect.type = "radio";
+		buttonSelect.className = "editorRadio";
 
 		var buttonAddStates = document.createElement("input");
 		buttonAddStates.name = "mode" + id;
 		buttonAddStates.type = "radio";
+        buttonAddStates.className = "editorRadio";
 
 		var buttonAddTransitions = document.createElement("input");
 		buttonAddTransitions.name = "mode" + id;
 		buttonAddTransitions.type = "radio";
+        buttonAddTransitions.className = "editorRadio";
 
 		var buttonInitState = document.createElement("input");
 		buttonInitState.type = "button";
@@ -448,7 +451,7 @@ function initCYKTable(wp, word)
     for (i = 0; i < wp.len; i++)
     {
         var td = document.createElement('td');
-        td.className = "no-border cyk-last-row";
+        td.className = "text-center";
         tr.appendChild(td);
         var p = document.createTextNode(word[i]);
         td.appendChild(p);
@@ -1892,7 +1895,6 @@ function updateTextTab(wp)
 //--------------------
 
 function buttonSelectClick(rect) {
-    console.log("button select changed");
     rect.mode = modeEnum.SELECT;
     if (rect.parentSvg.makingTransition !== 0) {
         rect.parentSvg.selectedElement = rect.parentSvg.makingTransition;

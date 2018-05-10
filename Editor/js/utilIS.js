@@ -32,7 +32,11 @@ function addEvent(obj, evType, fn){
 function register(id, func, elemType)
 {
 	// when we are in inspection mode, we do not want the syntax check to work
-	if(jeProhlizeciStranka())return;
+	if(jeProhlizeciStranka()) {
+		if (document.getElementById(id + "-error"))
+        	document.getElementById(id + "-error").setAttribute("hidden", '');
+        return;
+    }
 	
 	var elem;
 	if(elemType == "area") elem = vysledkovePole(id, "_a_a_1");

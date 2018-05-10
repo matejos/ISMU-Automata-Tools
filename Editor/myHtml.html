@@ -3,16 +3,14 @@
 <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
 <style type="text/css">@import "http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css";</style>
 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-<style type="text/css">@import "//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css";</style>
-<script src="editorJs.js"></script>
-<style type="text/css">@import "editorCss.css";</style>
-<script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/utilIS.js" type="text/javascript"></script>
-<style type="text/css">@import "http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/parser_style.css";</style>
+<style type="text/css">@import "http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css";</style>
+<script src="js/editorJs.js"></script>
+<style type="text/css">@import "style/editorCss.css";</style>
+<script src="js/utilIS.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 $.fn.preventDoubleSubmission = function() {
 	$(this).on('submit',function(e){
-	console.log("hmm");
 		var $form = $(this);
 		if ($form.data('submitted') === true) {
 			e.preventDefault();
@@ -34,11 +32,9 @@ $.fn.preventDoubleSubmission = function() {
 }
 
 $(document).ready(function(){
-	console.log("ye");
 	$('form')
 		.has('input[type="submit"][data-submit-once],button[type="submit"][data-submit-once]')
 		.preventDoubleSubmission();
-	console.log("wowow");
 });
 </script>
 
@@ -48,8 +44,8 @@ $(document).ready(function(){
 
 <input name="test_sklad" type="hidden" value="tst_1">
 <p>Navrhněte DFA pro jazyk všech slov nad abecedou <m>\{a,b\}</m> obsahujících podslovo <m>aba</m> nebo <m>abbab</m>.</p>
-<input name="q1515687949-1-1" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/dfaparserN.js" type="text/javascript"></script>
-<div id="q1515687949-1-1-div" class="parser_text_default"> <textarea cols="80" name="tst_1_e_a_1" rows="10"></textarea> <span id="q1515687949-1-1-error" class="parser_error"></span></div><script type="text/javascript">register("q1515687949-1-1", dfaParser.parse)</script>
+<input name="q1515687949-1-1" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://arran.fi.muni.cz:8180/fjamp/js/DFAParser.js" type="text/javascript"></script>
+<div id="q1515687949-1-1-div" class="parser_text_default"> <textarea cols="80" name="tst_1_e_a_1" rows="10"></textarea> <div id="q1515687949-1-1-error" class="alert alert-info" title="Nápověda syntaxe učitele."><div id="q1515687949-1-1-i" class=""></div><div id="q1515687949-1-1-error-text">Zde se zobrazuje nápověda syntaxe.</div></div></div><script type="text/javascript">register("q1515687949-1-1", DFAParser.parse)</script>
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1515687949-1-1a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-1b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-1c">Text</a></li></ul></ul>
 <div id="q1515687949-1-1" class="tab-content"><script>init("q1515687949-1-1", "DFA");</script></div>
 <textarea cols="80" name="tst_1_e_a_1" rows="10"></textarea>
@@ -59,7 +55,7 @@ $(document).ready(function(){
 
 <input name="test_sklad" type="hidden" value="tst_2">
 <p>Navrhněte NFA (bez ε-kroků) pro jazyk všech slov nad abecedou <m>\{a,b,c\}</m> obsahujících zároveň podslova <m>baa</m> a <m>cbc</m>.</p>
-<input name="q1515687949-1-2" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://rawgit.com/matejos/ISMU-Automata-Editor/master/Parsers/nfaparserN.js" type="text/javascript"></script><div id="q1515687949-1-2-div" class="parser_text_default"> <textarea cols="80" name="tst_2_e_a_1" rows="10"></textarea> <span id="q1515687949-1-2-error" class="parser_error"></span></div><script type="text/javascript">register("q1515687949-1-2", nfaParser.parse)</script>
+<input name="q1515687949-1-2" type="hidden" value="" /><noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript><script src="http://arran.fi.muni.cz:8180/fjamp/js/NFAParser.js" type="text/javascript"></script><div id="q1515687949-1-2-div" class="parser_text_default"> <textarea cols="80" name="tst_2_e_a_1" rows="10"></textarea> <div id="q1515687949-1-2-error" class="alert alert-info" title="Nápověda syntaxe učitele."><div id="q1515687949-1-2-i" class=""></div><div id="q1515687949-1-2-error-text">Zde se zobrazuje nápověda syntaxe.</div></div></div><script type="text/javascript">register("q1515687949-1-2", NFAParser.parse)</script>
 <ul class="nav nav-tabs"><li class="myli active"><a data-toggle="tab" data-target="#q1515687949-1-2a">Graf</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-2b">Tabulka</a></li><li class="myli"><a data-toggle="tab" data-target="#q1515687949-1-2c">Text</a></li></ul></ul>
 <div id="q1515687949-1-2" class="tab-content"><script>init("q1515687949-1-2", "NFA");</script></div>
 <textarea cols="80" name="tst_2_e_a_1" rows="10"></textarea>

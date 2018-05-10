@@ -13,11 +13,10 @@
         </element>
       </element>
       <element id="directory" name="js">
-        <element id="file-copy" path="$PROJECT_DIR$/../Editor/editorJs.js" />
-        <element id="file-copy" path="$PROJECT_DIR$/../Editor/utilIS.js" />
+        <element id="dir-copy" path="$PROJECT_DIR$/../Editor/js" />
       </element>
       <element id="directory" name="style">
-        <element id="file-copy" path="$PROJECT_DIR$/../Editor/editorCss.css" />
+        <element id="dir-copy" path="$PROJECT_DIR$/../Editor/style" />
       </element>
     </root>
   </artifact>
