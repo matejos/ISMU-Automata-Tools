@@ -4,9 +4,6 @@
  * and open the template in the editor.
  */
 
-
-import javafx.util.Pair;
-
 import java.io.*;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -167,7 +164,7 @@ public class Converter {
                 try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
                     while ((s = reader.readLine()) != null) {
                         if (s.contains(":e=")) {
-                            String type = getFormType(s).getValue();
+                            String type = getFormType(s).type;
                             types.add(type);
                         }
                     }
@@ -204,9 +201,9 @@ public class Converter {
                         boolean dontRead = false;
                         if (s.contains(":e") && !s.contains(":e=")) {
                             s2 = reader.readLine();
-                            Pair<String, String> p = getFormType(s2);
-                            String formtype = p.getKey();
-                            String type = p.getValue();
+                            TypePair p = getFormType(s2);
+                            String formtype = p.formtype;
+                            String type = p.type;
                             if (!formtype.equals("")) {
                                 questionNumber++;
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
@@ -270,10 +267,10 @@ public class Converter {
     }
 
     static void printHelp() {
-        System.out.format("Usage: %s [-options] fileName…\n", Converter.class.getName());
+        System.out.format("Usage: %s [-options] fileName...\n", Converter.class.getName());
         System.out.format("where options include:\n");
         System.out.format("\t-r | -reset\tperform reset on files (use if they contain older version of the editor)\n");
-        System.out.format("\t-k | -keep\tkeep reset versions of files (…Reset.qdef)\n");
+        System.out.format("\t-k | -keep\tkeep reset versions of files (...Reset.qdef)\n");
         System.out.format("\t-i | -iso | -isomorphism\tadd isomorphism condition to the questions\n");
     }
 
@@ -291,7 +288,7 @@ public class Converter {
         return s;
     }
 
-    static Pair<String, String> getFormType(String s) {
+    static TypePair getFormType(String s) {
         String formtype = "";
         String type = s.substring(s.indexOf('-') + 1, s.indexOf('-') + 4);
         if (type.equals("DFA") || type.equals("MIN") || type.equals("MIC") || type.equals("TOT") || type.equals("TOC") || type.equals("CAN")) {
@@ -299,7 +296,7 @@ public class Converter {
         } else if (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA") || type.equals("CYK")) {
             formtype = type;
         }
-        return new Pair<String, String>(formtype, type);
+        return new TypePair(formtype, type);
     }
 
     static boolean typeHasSyntaxHelp(String type) {
@@ -312,4 +309,13 @@ public class Converter {
 
     static List<String> typesWithSyntaxHelp = Arrays.asList("REG", "GRA", "NFA", "EFA", "DFA", "CFG");
     static List<String> validParsers = Arrays.asList("REG", "GRA", "NFA", "EFA", "DFA", "CFG", "CYK");
+
+    static class TypePair {
+        public String formtype;
+        public String type;
+        public TypePair(String formtype, String type) {
+            this.formtype = formtype;
+            this.type = type;
+        }
+    }
 }
