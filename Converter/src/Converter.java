@@ -135,7 +135,7 @@ public class Converter {
                                     while ((s = reader.readLine()) != null && !s.equals("--")) {
                                     }
                                 } else if (s.contains(":e") && !s.contains(":e=")) {
-                                    writer.write(":e\n");
+                                    writer.write(" :e\n");
                                 } else if (!s.contains("<ul") && !s.contains("<div")
                                         && !s.contains("<input")
                                         && !s.contains("</script>")) {
