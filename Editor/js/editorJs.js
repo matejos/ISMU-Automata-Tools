@@ -73,16 +73,34 @@ function init(id, type) {
 		buttonSelect.name = "mode" + id;
 		buttonSelect.type = "radio";
 		buttonSelect.className = "editorRadio";
+		var label = document.createElement("label");
+		label.appendChild(buttonSelect);
+		label.appendChild(document.createTextNode("Výběr"));
+		var divButtonSelect = document.createElement("div");
+		divButtonSelect.className = "radio";
+        divButtonSelect.appendChild(label);
 
 		var buttonAddStates = document.createElement("input");
 		buttonAddStates.name = "mode" + id;
 		buttonAddStates.type = "radio";
         buttonAddStates.className = "editorRadio";
+        var label = document.createElement("label");
+        label.appendChild(buttonAddStates);
+        label.appendChild(document.createTextNode("Přidávat stavy"));
+        var divButtonAddStates = document.createElement("div");
+        divButtonAddStates.className = "radio";
+        divButtonAddStates.appendChild(label);
 
 		var buttonAddTransitions = document.createElement("input");
 		buttonAddTransitions.name = "mode" + id;
 		buttonAddTransitions.type = "radio";
         buttonAddTransitions.className = "editorRadio";
+        var label = document.createElement("label");
+        label.appendChild(buttonAddTransitions);
+        label.appendChild(document.createTextNode("Přidávat přechody"));
+        var divButtonAddTransitions = document.createElement("div");
+        divButtonAddTransitions.className = "radio";
+        divButtonAddTransitions.appendChild(label);
 
 		var buttonInitState = document.createElement("input");
 		buttonInitState.type = "button";
@@ -103,16 +121,9 @@ function init(id, type) {
 		modeForm.appendChild(document.createTextNode("Mód:"));
 		modeForm.appendChild(document.createElement("br"));
 
-		modeForm.appendChild(buttonSelect);
-		modeForm.appendChild(document.createTextNode("Výběr"));
-		modeForm.appendChild(document.createElement("br"));
-
-		modeForm.appendChild(buttonAddStates);
-		modeForm.appendChild(document.createTextNode("Přidávat stavy"));
-		modeForm.appendChild(document.createElement("br"));
-
-		modeForm.appendChild(buttonAddTransitions);
-		modeForm.appendChild(document.createTextNode("Přidávat přechody"));
+		modeForm.appendChild(divButtonSelect);
+		modeForm.appendChild(divButtonAddStates);
+		modeForm.appendChild(divButtonAddTransitions);
 
 		graph.appendChild(modeForm);
 
