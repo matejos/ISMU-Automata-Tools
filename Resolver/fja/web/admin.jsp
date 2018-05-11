@@ -89,6 +89,7 @@
                     <tr>
                         <td>
                             Povolené adresy (<a href="javascript:;" class="is_add">vyplň adresu IS</a>)
+                            <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Popsané regulárním výrazem"></span>
                         </td>
                         <td><input type="text" name="isaddress" class="form-control" value="<%= isAddress%>">
                         </td>
@@ -164,6 +165,7 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
         $('.is_add').on('click', function () {
             $("[name=isaddress]").val(<% out.print("\"" + Configuration.IS_IP_ADDRESS + "\""); %>);
         });
