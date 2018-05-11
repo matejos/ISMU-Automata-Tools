@@ -71,11 +71,13 @@ h1, h2, h3, h4 {
 }
 .cyk td{
     padding: 0px !important;
+    font-family: monospace;
 }
 .cyk input{
     border-radius: 0px !important;
     padding: 6px 0px !important;
     text-align: center;
+    font-family: monospace;
 }
 .cykpanel-body{
     min-height: 570px;
@@ -86,9 +88,18 @@ h1, h2, h3, h4 {
 .cyk-last-row{
     vertical-align: top;
     padding: 0px !important;
+    font-family: monospace;
 }
 .cyk-cell{
     min-width: 50px;
+    font-family: monospace;
+}
+.monospace{
+    font-family: monospace;
+}
+textarea{
+    font-family: monospace;
+    resize: none;
 }
 @media (max-width: 580px) {
     .cyk-cell{

@@ -66,7 +66,7 @@
                     <h3 class="transformTitle">Vstupní gramatika:</h3>
                     <div class="row">
 
-                        <div class="col-sm-6">
+                        <div class="col-lg-6">
                             <div class="form-group has-feedback">
                                 <textarea id="generate" name="t" class="form-control" rows="10"><c:if test="${! empty param.t}"><c:out value="${param.t}" /></c:if></textarea>
                             </div>
@@ -86,10 +86,10 @@
                             </div>
                             <input value="Ověř" type="submit" class="btn btn-primary" title="Ověř správnost vyplnění tabulky." />
                         </div>
-                        <div class="col-sm-6">
+                        <div class="col-lg-6">
                             <div class="form-group">
                                 <label for="word">Slovo:</label>
-                                <input name="word" class="form-control" id="word" type="text" maxlength="10" value="<c:if test="${! empty param.word}"><c:out value="${param.word}" /></c:if>"/>
+                                <input name="word" class="form-control monospace" id="word" type="text" maxlength="10" value="<c:if test="${! empty param.word}"><c:out value="${param.word}" /></c:if>"/>
                             </div>
                             <table id="table" class="table cyk">
                                 <tbody>
@@ -107,7 +107,7 @@
                                 <tr>
                                 <c:forEach var="i" begin="0" end="9">
                                     <td>
-                                        <input class="form-control" name="letter${i}" id="letter${i}" type="text" disabled="disabled"/>
+                                        <input class="form-control monospace" name="letter${i}" id="letter${i}" type="text" disabled="disabled"/>
                                     </td>
                                 </c:forEach>
                                 </tr>
