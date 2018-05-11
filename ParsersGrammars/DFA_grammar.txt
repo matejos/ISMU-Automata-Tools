@@ -1,0 +1,34 @@
+/~ --- Token definitions --- ~/
+
+/~ Characters to be ignored ~/
+!   ' |\t|\n|\r' ;
+
+/~ tokens ~/
+   'init' INIT
+   '=' EQUALS  
+   '\(' LEFT_PARENTHESIS
+   '\)' RIGHT_PARENTHESIS
+   '{' LEFT_BRACKET
+   '}' RIGHT_BRACKET
+   ',' COMMA
+   'final'  FINAL
+   '[a-zA-Z0-9]+' STATE_AND_ALPHABET 
+    ; 
+##
+
+/~ --- DFA Grammar specification --- ~/
+
+Start:       Init Productions Final;
+
+Init:        INIT EQUALS StateNames
+             | ;
+
+Productions: LEFT_PARENTHESIS StateNames COMMA StateNames RIGHT_PARENTHESIS EQUALS StateNames Productions 
+             | ;
+
+Final:       FINAL EQUALS Set | ;
+Set:         LEFT_BRACKET SetContent RIGHT_BRACKET;
+SetContent:  SetItems | ;
+SetItems:    StateNames | SetItems COMMA StateNames;
+
+StateNames: STATE_AND_ALPHABET | INIT | FINAL;

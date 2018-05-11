@@ -1,0 +1,2 @@
+These are the source files of parsers' grammars, that were used to generate parsers that Editor and Resolver use.
+The parser generator is a work of bachelor thesis of Radim Čebiš. Available on https://is.muni.cz/auth/th/172451/fi_b

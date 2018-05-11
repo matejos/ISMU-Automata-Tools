@@ -1,0 +1,35 @@
+/~ --- Token definitions --- ~/
+
+/~ Characters to be ignored ~/
+!   '\r| |\t' ;
+
+/~ tokens ~/   
+   '<' LESS_THAN
+   '>' BIGGER_THAN
+   '"' QUOT
+   ',' COMMA
+   '->' GO
+   '\|' PIPE   
+   '\\e' EPSILON
+   '\n' NEW_LINE
+   '[A-Z]' BIG_LETTER   
+   '[a-z0-9]' SMALL_LETTER_OR_NUM
+    ; 
+
+##
+
+/~ --- GRA Grammar specification --- ~/
+Start:   Rule Rule2;
+Rule: Nonterminal GO RuleRhs;
+RuleRhs: RuleRhsItem | RuleRhs PIPE RuleRhsItem ;
+RuleRhsItem: Terminal End | EPSILON;
+End:  Nonterminal | ;
+Rule2:  Separator Rule Rule2 | ;
+
+Separator: COMMA | NEW_LINE;
+
+Terminal: QUOT String QUOT | SMALL_LETTER_OR_NUM;
+Nonterminal: BIG_LETTER | LESS_THAN String BIGGER_THAN;
+
+String: BIG_LETTER StringCont | SMALL_LETTER_OR_NUM StringCont;
+StringCont: BIG_LETTER StringCont | SMALL_LETTER_OR_NUM StringCont | ;

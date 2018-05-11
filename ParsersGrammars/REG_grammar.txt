@@ -1,0 +1,24 @@
+/~ --- Token definitions --- ~/
+
+/~ Characters to be ignored ~/
+!   ' |\t|\n|\r' ;
+
+/~ tokens ~/   
+   '\(' LEFT_PARENTHESIS
+   '\)' RIGHT_PARENTHESIS
+   '^\+' POSITIVE_ITERATION
+   '^\*' ITERATION
+   '\.' DOT
+   '\+'  PLUS   
+   '([a-zA-Z0-9]|\\e|\\0)+' ALPHABET 
+    ; 
+
+##
+
+/~ --- REG Grammar specification --- ~/
+
+Regular : Term RegularA ;
+RegularA : PLUS Regular | DOT Regular | ITERATION Cont| POSITIVE_ITERATION Cont | ;
+Cont: Regular | RegularA ;
+
+Term  : ALPHABET | LEFT_PARENTHESIS Regular RIGHT_PARENTHESIS ;

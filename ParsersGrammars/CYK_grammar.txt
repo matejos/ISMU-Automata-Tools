@@ -1,0 +1,20 @@
+/~ --- Token definitions --- ~/
+
+/~ Characters to be ignored ~/
+!   ' |\t|\n|\r' ;
+
+/~ tokens ~/
+   '{' LEFT_BRACKET
+   '}' RIGHT_BRACKET
+   ',' COMMA
+   '[A-Z]' BIG_LETTER 
+    ; 
+##
+
+/~ --- CYK Grammar specification --- ~/
+
+Start: Nonterminals | ;
+
+Nonterminals: Nonterminal | Nonterminals COMMA Nonterminal;
+
+Nonterminal: BIG_LETTER;
