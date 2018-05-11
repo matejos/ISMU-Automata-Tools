@@ -143,13 +143,7 @@
                         </div>
                         <div class="col-sm-7"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-1">
-                            <input value="Porovnej" type="submit" class="btn btn-primary" title="Převede a porovná formalismus." />
-                        </div>
-                        <div class="col-sm-10"></div>
-                    </div>
+                    <input value="Porovnej" type="submit" class="btn btn-primary" title="Převede a porovná formalismus." />
                 </form>
             </div>
         </div>
