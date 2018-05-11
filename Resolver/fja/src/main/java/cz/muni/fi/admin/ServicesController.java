@@ -28,18 +28,18 @@ public class ServicesController {
   }
   
   public enum TransformationType implements OperationType {
-    NE1("Odstranit nenormované symboly", TransformationTypes.NE1),
-    NE2("Odstranit nedosažitelné symboly", TransformationTypes.NE2),
-    RED("Převést na redukovanou CFG", TransformationTypes.RED),
-    EPS("Odstranit epsilon kroky", TransformationTypes.EPS),
-    SRF("Odstranit jednoduchá pravidla", TransformationTypes.SRF),
-    PRO("Převést na vlastní CFG", TransformationTypes.PRO),
-    CNF("Převést do CNF", TransformationTypes.CNF),
-    RLR("Odstranit levou rekurzi", TransformationTypes.RLR),
-    GNF("Převést do GNF", TransformationTypes.GNF),
-    ESA("Převést na PDA akceptující prázdným zásobníkem", TransformationTypes.ESA),
-    FSA("Převést na rozšířený PDA akceptující koncovým stavem", TransformationTypes.FSA),
-    ANA("Analyzovat gramatiku", TransformationTypes.ANA);
+    NE1("<samp><b>NE1</b></samp> - Odstranit nenormované symboly", TransformationTypes.NE1),
+    NE2("<samp><b>NE2</b></samp> - Odstranit nedosažitelné symboly", TransformationTypes.NE2),
+    RED("<samp><b>RED</b></samp> - Převést na redukovanou CFG", TransformationTypes.RED),
+    EPS("<samp><b>EPS</b></samp> - Odstranit epsilon kroky", TransformationTypes.EPS),
+    SRF("<samp><b>SRF</b></samp> - Odstranit jednoduchá pravidla", TransformationTypes.SRF),
+    PRO("<samp><b>PRO</b></samp> - Převést na vlastní CFG", TransformationTypes.PRO),
+    CNF("<samp><b>CNF</b></samp> - Převést do CNF", TransformationTypes.CNF),
+    RLR("<samp><b>RLR</b></samp> - Odstranit levou rekurzi", TransformationTypes.RLR),
+    GNF("<samp><b>GNF</b></samp> - Převést do GNF", TransformationTypes.GNF),
+    ESA("<samp><b>ESA</b></samp> - Převést na PDA akceptující prázdným zásobníkem", TransformationTypes.ESA),
+    FSA("<samp><b>FSA</b></samp> - Převést na rozšířený PDA akceptující koncovým stavem", TransformationTypes.FSA),
+    ANA("<samp><b>ANA</b></samp> - Analyzovat gramatiku", TransformationTypes.ANA);
     
     private String description;
     private TransformationTypes type;

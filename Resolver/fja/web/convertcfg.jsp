@@ -55,7 +55,7 @@
             <div class="window">
                 <form method="post" action="convertcfg" name="convert" id="theForm">
                     <div class="row">
-                        <div class="col-sm-8">
+                        <div class="col-sm-7">
                             <h3 class="transformTitle">Vstupní gramatika:</h3>
                             <div class="form-group has-feedback">
                                 <textarea id="convert" name="inputData" class="form-control" rows="10"><c:if test="${(! empty inputData) && empty error }"><c:out value="${inputData}" /></c:if><% if (request.getParameter("inputData") != null) {out.print(request.getParameter("inputData"));} %></textarea>
@@ -65,7 +65,7 @@
                                 <div id="convert-error-text">Zde se zobrazuje nápověda syntaxe.</div>
                             </div>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             <h3>Typ převodu:</h3>
                             <div class="form-group">
                                 <c:forEach var="tt" items="${tts}">
