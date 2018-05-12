@@ -123,7 +123,7 @@ public class Equal extends HttpServlet {
                                 }
                             }
                         if (testIso) {
-                            isomorphic = AutomatonIsomorphismChecker.areIsomorphic(information_teach.toDFA(),information_stud.toDFA());
+                            isomorphic = AutomatonIsomorphismChecker.areIsomorphic(SimpleLanguageInformation.getLanguageInformation(formalism_teach, input_teach),SimpleLanguageInformation.getLanguageInformation(formalism_stud, input_stud));
                         }
                         if (!(formalism_teach.equals("DFA") || (formalism_teach.equals("MIC"))|| formalism_teach.equals("MIN")
                                 || formalism_teach.equals("CAN") || formalism_teach.equals("TOT"))){
@@ -260,7 +260,7 @@ public class Equal extends HttpServlet {
                 information_teach = ComplexLanguageInformation.getLanguageInformation(formalism_teach, input_teach);
                 information_stud = ComplexLanguageInformation.getLanguageInformation(formalism_stud, input_stud);
                 if (testIso) {
-                    isomorphic = AutomatonIsomorphismChecker.areIsomorphic(information_teach.toDFA(),information_stud.toDFA());
+                    isomorphic = AutomatonIsomorphismChecker.areIsomorphic(SimpleLanguageInformation.getLanguageInformation(formalism_teach, input_teach),SimpleLanguageInformation.getLanguageInformation(formalism_stud, input_stud));
                 }
                 if (!(formalism_teach.equals("DFA") || (formalism_teach.equals("MIC"))|| formalism_teach.equals("MIN")
                         || formalism_teach.equals("CAN") || formalism_teach.equals("TOT"))){

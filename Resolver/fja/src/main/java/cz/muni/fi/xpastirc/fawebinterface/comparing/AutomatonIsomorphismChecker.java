@@ -1,6 +1,7 @@
 package cz.muni.fi.xpastirc.fawebinterface.comparing;
 
 import cz.muni.fi.RegularLanguage.Automaton.DeterministicFA;
+import cz.muni.fi.RegularLanguage.Automaton.NondeterministicFA;
 import cz.muni.fi.RegularLanguage.Automaton.State;
 
 import java.util.HashMap;
@@ -12,11 +13,20 @@ import java.util.Stack;
  * Created by Matej on 7.4.2018.
  */
 public class AutomatonIsomorphismChecker {
-    public static boolean areIsomorphic(DeterministicFA a1, DeterministicFA a2) {
-        if (a1.getStates().size() != a2.getStates().size())
+    public static boolean areIsomorphic(LanguageInformation l1, LanguageInformation l2) {
+        NondeterministicFA nfa1 = l1.toNFA();
+        NondeterministicFA nfa2 = l2.toNFA();
+
+        if (nfa1.getStates().size() != nfa2.getStates().size())
             return false;
 
-        return checkIsomorphism(a1, a2) && checkIsomorphism(a2, a1);
+        if (nfa1.getTransitions().size() != nfa2.getTransitions().size())
+            return false;
+
+        DeterministicFA dfa1 = l1.toDFA();
+        DeterministicFA dfa2 = l2.toDFA();
+
+        return checkIsomorphism(dfa1, dfa2);
     }
 
     private static boolean checkIsomorphism(DeterministicFA a1, DeterministicFA a2) {
@@ -33,6 +43,8 @@ public class AutomatonIsomorphismChecker {
             State s = stack.pop();
             if (!discovered.contains(s)) {
                 discovered.add(s);
+                if (a1.getTransitions().getTransitionsFrom(s).size() != a2.getTransitions().getTransitionsFrom(permutation.get(s)).size())
+                    return false;
                 for (Character x : a1.getAlphabet()) {
                     State s2 = a1.getTransitions().getResultFor(s, x);
                     State s2b = a2.getTransitions().getResultFor(permutation.get(s), x);
