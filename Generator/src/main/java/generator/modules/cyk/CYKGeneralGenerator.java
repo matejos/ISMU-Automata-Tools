@@ -214,9 +214,9 @@ public class CYKGeneralGenerator extends GeneratorWorker implements GeneratingLo
 				sbPlainTextEN.append(cykTablePlain);
 				sbLatex.append(cykTableLatex);
 				sbLatexEN.append(cykTableLatex);
-				sbIS.append(":e\n");
+				sbIS.append(" :e\n");
 				sbIS.append(":e=\"f:CFG-CYK:" + word + ":" + g.toIS() + "\" ok\n");
-				sbISEN.append(":e\n");
+				sbISEN.append(" :e\n");
 				sbISEN.append(":e=\"f:CFG-CYK:" + word + ":" + g.toIS() + "\" ok\n");
 				if (FormalLanguagesExampleGenerator.MULTI_THREAD_GENERATING)
 				{
