@@ -61,18 +61,11 @@ public class Converter {
             return;
         }
 
-
-        String suffix;
-        System.out.print("Enter suffix of the export name: ");
-        Scanner scanner = new Scanner(System.in);
-        suffix = scanner.next();
-
-        long t = System.currentTimeMillis() / 1000;
-
         ArrayList<String> files = new ArrayList<>();
         boolean reset = false;
         boolean keep = false;
         boolean iso = false;
+        int isoPercent = 0;
 
         for (int i = 0; i < args.length; i++) {
             boolean invalidArg = true;
@@ -86,7 +79,12 @@ public class Converter {
             } else if (args[i].equals("-k") || args[i].equals("-keep")) {
                 keep = true;
                 invalidArg = false;
-            } else if (args[i].equals("-i") || args[i].equals("-iso") || args[i].equals("-isomorphism")) {
+            } else if (args[i].matches("-i=\\d+") || args[i].matches("-isomorphism=\\d+")) {
+                isoPercent = Integer.parseInt(args[i].substring(args[i].indexOf('=') + 1));
+                if (isoPercent < 0 || isoPercent > 100) {
+                    System.err.format("ERROR: Isomorphism partial points number not in <0,100>.\n");
+                    return;
+                }
                 iso = true;
                 invalidArg = false;
             }
@@ -95,6 +93,13 @@ public class Converter {
                 System.out.format("Argument %s invalid! Ignoring...\n", args[i]);
             }
         }
+
+        String suffix;
+        System.out.print("Enter suffix of the export name: ");
+        Scanner scanner = new Scanner(System.in);
+        suffix = scanner.next();
+
+        long t = System.currentTimeMillis() / 1000;
 
         for (int fileNumber = 0; fileNumber < files.size(); fileNumber++) {
             String inputName = files.get(fileNumber);
@@ -227,10 +232,19 @@ public class Converter {
                                 StringBuilder stringBuilder = new StringBuilder(s2.trim());
                                 stringBuilder.replace(4, 5, "f");
                                 if (stringBuilder.toString().charAt(13) == ':') {
-                                    if (iso)
+                                    if (iso) {
+                                        StringBuilder stringBuilder2 = new StringBuilder(stringBuilder.toString());
                                         stringBuilder.insert(13, "-Y");
-                                    else
+                                        if (isoPercent > 0) {
+                                            stringBuilder.append(" " + (100 - isoPercent) + "%");
+                                            stringBuilder2.insert(13, "-N");
+                                            stringBuilder2.append(" " + isoPercent + "%");
+                                            stringBuilder.append("\n" + stringBuilder2);
+                                        }
+                                    }
+                                    else {
                                         stringBuilder.insert(13, "-N");
+                                    }
                                 }
                                 if (stringBuilder.indexOf("F=") != -1) {
                                     stringBuilder.replace(stringBuilder.indexOf("F="), stringBuilder.indexOf("F=") + 2, "final=");
@@ -269,9 +283,9 @@ public class Converter {
     static void printHelp() {
         System.out.format("Usage: %s [-options] fileName...\n", Converter.class.getName());
         System.out.format("where options include:\n");
-        System.out.format("\t-r | -reset\tperform reset on files (use if they contain older version of the editor)\n");
-        System.out.format("\t-k | -keep\tkeep reset versions of files (...Reset.qdef)\n");
-        System.out.format("\t-i | -iso | -isomorphism\tadd isomorphism condition to the questions\n");
+        System.out.format("\t-r | -reset\tPerform reset on files (use if they contain older version of the editor)\n");
+        System.out.format("\t-k | -keep\tKeep reset versions of files (...Reset.qdef)\n");
+        System.out.format("\t-i=<percent> | -isomorphism=<percent>\tAdd isomorphism condition to the questions with <percent> partial points for nonisomorphic answer\n");
     }
 
     static String getBasicWrapper(String idString, String formtype) {
