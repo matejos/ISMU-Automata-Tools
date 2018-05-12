@@ -432,7 +432,7 @@ function initCYKTable(wp, word)
     col2.className = "col-sm-6";
     row.appendChild(col2);
     wp.table = document.createElement('table');
-    wp.table.className = "table cyk text-center";
+    wp.table.className = "cyk text-center";
     col.appendChild(wp.table);
 
     // Creating the table
@@ -450,7 +450,6 @@ function initCYKTable(wp, word)
             input.id = "t" + i + "-" + (9 - j);
             input.type = "text";
             input.autocomplete = "off";
-            input.className = "form-control";
             td.appendChild(input);
             wp[input.name] = input;
             registerColorHighlighting(input.id, CYKParser.parse, document.getElementById(input.id));
