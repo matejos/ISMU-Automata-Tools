@@ -25,7 +25,11 @@
 }
 
 .glyphicon-remove:before {
-    content:"\e014"
+    content: "\e014"
+}
+
+.mydisabled {
+    background-color: rgb(245, 245, 245);
 }
 
 .noselect {
@@ -36,39 +40,41 @@
     -ms-user-select: none;
     user-select: none;
 }
+
 .editable {
-	cursor: text;
+    cursor: text;
 }
+
 .movable {
     cursor: move;
 }
 
 .myli {
     cursor: pointer;
-	padding-left: 0px;
-	background: none;
+    padding-left: 0px;
+    background: none;
 }
 
 .alert {
-  padding: 15px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
-  border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
 
 .alert-danger {
-  color: #a94442;
-  background-color: #f2dede;
-  border-color: #ebccd1 !important;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1 !important;
 }
 
-.alert-warning{
+.alert-warning {
     color: #8a6d3b;
     background-color: #fcf8e3;
     border-color: #faebcc !important;
 }
 
-.alert-success{
+.alert-success {
     color: #3c763d;
     background-color: #dff0d8;
     border-color: #d6e9c6 !important;
@@ -81,207 +87,223 @@
 }
 
 .myTextArea {
-	width: 75%;
+    width: 75%;
 }
 
 .regTextArea {
-	border: 1px solid;
+    border: 1px solid;
 }
 
 .canvas {
-	border: 1px solid;
-	width: 700px;
-	height: 500px;
+    border: 1px solid;
+    width: 700px;
+    height: 500px;
 }
+
 .myTable {
-	border-spacing: 0;
+    border-spacing: 0;
     border-collapse: collapse;
 }
+
 .myCell {
-	border: 1px solid gray;
-	padding: 0;
+    border: 1px solid gray;
+    padding: 0;
 }
 
 .myCellDiv {
-	font-size: 1.5em;
-	text-align: center;
-	width: 100%;
-	border: 0px;
-	padding: 5px 0px 5px 0px;
+    font-size: 1.5em;
+    text-align: center;
+    width: 100%;
+    border: 0px;
+    padding: 5px 0px 5px 0px;
 }
 
 .rh {
-	transition: background-color 0.2s ease;
-	background-color: #cccccc;
-	text-align: right;
-	cursor: pointer;
-	border-right: 3px solid;
+    transition: background-color 0.2s ease;
+    background-color: #cccccc;
+    text-align: right;
+    cursor: pointer;
+    border-right: 3px solid;
 }
 
 .rhs {
-	background-color: lightgreen;
-	text-align: right;
-	cursor: text;
-	border-right: 3px solid;
+    background-color: lightgreen;
+    text-align: right;
+    cursor: text;
+    border-right: 3px solid;
 }
 
 .ch {
-	background-color: #cccccc;
-	border-bottom: 3px solid;
+    background-color: #cccccc;
+    border-bottom: 3px solid;
 }
 
 .tc {
     background-color: gray;
-	border: 1px solid gray;
-	cursor: default;
+    border: 1px solid gray;
+    cursor: default;
 }
 
 .rh:hover {
-	background-color: #d3f8d3;
-	cursor: pointer;
+    background-color: #d3f8d3;
+    cursor: pointer;
 }
 
 .incorrect {
-	background-color: #ff6666;
+    background-color: #ff6666;
 }
 
 .deleteButton {
-	border: 1px solid gray;
-	padding: 0px 10px 0px 10px;
+    border: 1px solid gray;
+    padding: 0px 10px 0px 10px;
     text-align: center;
-	font-size: 2em;
-	color: #c20202;
-	cursor: pointer;
+    font-size: 2em;
+    color: #c20202;
+    cursor: pointer;
 }
 
 .deleteButton:hover {
-	color: #ff0000;
-	text-decoration: none;
+    color: #ff0000;
+    text-decoration: none;
 }
 
 .addButton {
-	border: 1px solid gray;
-	padding: 0px 10px 0px 10px;
+    border: 1px solid gray;
+    padding: 0px 10px 0px 10px;
     text-align: center;
-	font-size: 2em;
-	color: #10bd00;
-	text-decoration: none;
-	cursor: pointer;
+    font-size: 2em;
+    color: #10bd00;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .addButton:hover {
-	color: #15ff00;
-	text-decoration: none;
+    color: #15ff00;
+    text-decoration: none;
 }
 
 .nav-tabs {
-  border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 
 .nav {
-  padding-left: 0;
-  margin-bottom: 0;
-  list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style: none;
 }
 
 .nav > li {
-  position: relative;
-  display: block;
+    position: relative;
+    display: block;
 }
 
 .nav:before,
 .nav:after {
-  display: table;
-  content: " ";
+    display: table;
+    content: " ";
 }
 
 .nav:after {
-  clear: both;
+    clear: both;
 }
 
 .nav > li > a {
-  position: relative;
-  display: block;
-  padding: 10px 15px;
+    position: relative;
+    display: block;
+    padding: 10px 15px;
 }
+
 .nav > li > a:hover,
 .nav > li > a:focus {
-  text-decoration: none;
-  background-color: #eee;
+    text-decoration: none;
+    background-color: #eee;
 }
+
 .nav > li.disabled > a {
-  color: #777;
+    color: #777;
 }
+
 .nav > li.disabled > a:hover,
 .nav > li.disabled > a:focus {
-  color: #777;
-  text-decoration: none;
-  cursor: not-allowed;
-  background-color: transparent;
+    color: #777;
+    text-decoration: none;
+    cursor: not-allowed;
+    background-color: transparent;
 }
 
 .nav-tabs > li {
-  float: left;
-  margin-bottom: -1px !important;;
+    float: left;
+    margin-bottom: -1px !important;;
 }
+
 .nav-tabs > li > a {
-  margin-right: 2px;
-  line-height: 1.42857143;
-  border: 1px solid transparent;
-  border-radius: 4px 4px 0 0;
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
 }
+
 .nav-tabs > li > a:hover {
-  border-color: #eee #eee #ddd;
+    border-color: #eee #eee #ddd;
 }
+
 .nav-tabs > li.active > a,
 .nav-tabs > li.active > a:hover,
 .nav-tabs > li.active > a:focus {
-  color: #555;
-  cursor: default;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-bottom-color: transparent;
+    color: #555;
+    cursor: default;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-bottom-color: transparent;
 }
+
 .tab-content > .tab-pane {
-  display: none;
+    display: none;
 }
+
 .tab-content > .active {
-  display: block;
+    display: block;
 }
+
 .fade {
-  opacity: 0;
-  -webkit-transition: opacity .15s linear;
-       -o-transition: opacity .15s linear;
-          transition: opacity .15s linear;
+    opacity: 0;
+    -webkit-transition: opacity .15s linear;
+    -o-transition: opacity .15s linear;
+    transition: opacity .15s linear;
 }
+
 .fade.in {
-  opacity: 1;
+    opacity: 1;
 }
+
 .disableddiv {
     pointer-events: none;
 }
-.alert .glyphicon{
-    float:left;
-    margin-right:9px;
+
+.alert .glyphicon {
+    float: left;
+    margin-right: 9px;
 }
 
-.alert div{
-    overflow:hidden;
+.alert div {
+    overflow: hidden;
 }
-.cyk td{
+
+.cyk td {
     padding: 0px !important;
 }
-.cyk input{
+
+.cyk input {
     border: 1px solid #ccc;
     padding: 6px 0px !important;
     text-align: center;
     max-width: 95px;
 }
 
-.editorRadio{
+.editorRadio {
     margin: 5px;
 }
 
-.text-center{
-    text-align:center
+.text-center {
+    text-align: center
 }

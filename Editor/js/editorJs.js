@@ -299,7 +299,7 @@ function init(id, type) {
 		if (jeProhlizeciStranka())
 		{
 			jQuery_new("#" + id).addClass("disableddiv");
-			jQuery_new(wp.textTab.textArea).prop("disabled", true);
+			jQuery_new(wp.textTab.textArea).prop("disabled", true).addClass("mydisabled");
 		}
 	}
 }
@@ -479,6 +479,8 @@ function initCYKTable(wp, word)
         	var val = token.substr(token.indexOf('=') + 1);
         	if (typeof wp[cellName] != "undefined") {
                 wp[cellName].value = val;
+                wp[cellName].disabled = true;
+                wp[cellName].className += " mydisabled";
             }
         }
 
@@ -491,7 +493,7 @@ function initCYKTable(wp, word)
             for (i = 0; i < tokens.length; i++) {
                 var cellName = tokens[i];
                 if (typeof wp[cellName] != "undefined") {
-                    wp[cellName].className = wp[cellName].className + " alert-danger";
+                    wp[cellName].className += " alert-danger";
                 }
             }
             jQuery_new(feedbackElement).hide();
@@ -930,7 +932,7 @@ function updateTableTabFromText(wp, pure)
 	wp.tableTab.appendChild(wp.tableTab.statusText);
 	
 	if (jeProhlizeciStranka())
-		jQuery_new(table).find("input").prop("disabled", true);
+		jQuery_new(table).find("input").prop("disabled", true).addClass("mydisabled");
 }
 
 //--------------------
