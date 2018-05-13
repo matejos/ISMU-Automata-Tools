@@ -66,8 +66,14 @@ h1, h2, h3, h4 {
     margin-bottom: 0px;
 }
 .help-modal{
-    margin: 50px;
     width: auto;
+    margin: 50px 10px 10px 10px;
+}
+@media (min-width: 860px) {
+    .help-modal {
+        width: 800px;
+        margin: 50px auto;
+    }
 }
 .cyk td{
     padding: 0px !important;

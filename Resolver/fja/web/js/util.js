@@ -316,15 +316,19 @@ function printHelpReg() {
     str += '<h4>Počáteční stav</h4>\n';
     str += '<p>Počáteční stav v automatu definujeme jako <code>init=NazevStavu</code>. Definujeme jej jako první řádek formalismu. Pokud definice jazyka neobsahuje explicitní definici počátečního stavu, pak je považován za počáteční stav ten, který je zapsán jako první.</p>\n';
     str += '<h4>Přechodová funkce</h4>\n';
-    str += '<p>Přechodovou funkci definujeme jako pravidla ve tvaru <code>(NazevVstupnihoStavu,Znak)=NazevVystupnihoStavu</code> pro deterministické automaty a <code>(NazevVstupnihoStavu,Znak)={NazevVystupnihoStavu1,NazevVystupnihoStavu2, ... ,NazevVystupnihoStavuN}</code>pro nedeterministické automaty.<br>\n';
+    str += '<p>Přechodovou funkci definujeme jako pravidla ve tvaru\n';
+    str += '<ul>\n';
+    str += '<li><code>(NazevVstupnihoStavu,Znak)=NazevVystupnihoStavu</code> pro deterministické automaty,</li>\n';
+    str += '<li><code>(NazevVstupnihoStavu,Znak)={NazevVystupnihoStavu1,NazevVystupnihoStavu2, ... ,NazevVystupnihoStavuN}</code>pro nedeterministické automaty.</li>\n';
+    str += '</ul>\n';
     str += 'Pro automaty s ɛ-kroky můžeme použít jako znak také sekvenci <code>\\e</code> jako ɛ-krok.</p>\n';
     str += '<h4>Množina koncových stavů</h4>\n';
     str += '<p>Množinu koncových stavů definujeme jako <code>final={KoncovyStav1,KoncovyStav2,...KoncovyStavN}</code>. Tento řetězec musí být umístěn na konci zápisu, respektivě cokoli po něm se ignoruje.</p>\n';
     str += '<h4>Speciální znaky v definici automatu</h4>\n';
-    str += '<p>Speciálními znaky jsou symboly {,},(,),=,\\,",čárka a bílé znaky. Tyto znaky nemůžeme použít samostatně, musíme je použít po znaku zpětného lomítka \\.</p>\n';
+    str += '<p>Speciálními znaky jsou symboly <code>{</code>,<code>}</code>,<code>(</code>,<code>)</code>,<code>=</code>,<code>\\</code>,<code>"</code>,<code>,</code> a <code> </code>. Tyto znaky nemůžeme použít samostatně, musíme je použít po znaku zpětného lomítka <code>\\</code>.</p>\n';
     str += '<h4>Rozšíření přechodové funkce</h4>\n';
-    str += '<p>Jako znak můžeme definovat také sekvenci znaků uzavřených do uvozovek, s nimi se poté pracuje jako s více přechody pod více znaky. V uvozovkách je možné používat speciální symboly mimo symbolu zpětného lomítka a symbolu uvozovek, ty musíme používat jako \\" a \\\\.</p>\n';
-    str += '<a name="tot"></a><h2>TOT,MIN,MIC - Speciální případy deterministického automatu</h2>\n';
+    str += '<p>Jako znak můžeme definovat také sekvenci znaků uzavřených do uvozovek, s nimi se poté pracuje jako s více přechody pod více znaky. V uvozovkách je možné používat speciální symboly mimo symbolu zpětného lomítka a symbolu uvozovek, ty musíme používat jako <code>\\"</code> a <code>\\\\</code>.</p>\n';
+    str += '<a name="tot"></a><h2>TOT, MIN, MIC - Speciální případy deterministického automatu</h2>\n';
     str += '<p>Všechny takto zapsané jazyky musí splňovat pravidla deterministického automatu a zároveň další upřesňující pravidla. Splnění upřesňujících pravidel není kontrolováno pomocí kontroly syntaxe.\n';
     str += '<h4>TOT - Totální deterministický konečný automat</h4>\n';
     str += '<p>Totální automat musí mít pro každý stav definovány přechody pod všemi znaky z abecedy.</p>\n';
@@ -335,16 +339,16 @@ function printHelpReg() {
     str += '<a name="gra"></a><h2>GRA - Popis jazyka gramatikou</h2>\n';
     str += '<p>Jazyk je možné popsat gramatikou, z níž definujeme pouze množinu pravidel, kterou zapisujeme jako <code>N -> tN | tN | t</code>, kde N je neterminál a t je terminál. Jednotlivé řádky od sebe musí být odděleny koncem řádku.\n';
     str += '<h4>Neterminál</h4>\n';
-    str += '<p>Neterminál je zapsán buď jedním znakem velké anglické abecedy, nebo jako více znaků uzavřených do špičatých závorek &lt; &gt;. V nich mohou být uzavřeny i speciální symboly, viz. níže.</p>\n';
+    str += '<p>Neterminál je zapsán buď jedním znakem velké anglické abecedy, nebo jako více znaků uzavřených do špičatých závorek <code><></code>. V nich mohou být uzavřeny i speciální symboly, viz. níže.</p>\n';
     str += '<h4>Terminál</h4>\n';
-    str += '<p>Terminál je zapsán jedním znakem, který není velkým písmenem anglické abecedy ani speciálním symbolem, nebo jako více znaků uzavřených do uvozovek "". V nich mohou být uzavřeny i speciální symboly, viz. níže. Pokud je terminální symbol zapsán do uvozovek, je s ním zacházeno jako s více jednoznakovými terminály.</p>\n';
+    str += '<p>Terminál je zapsán jedním znakem, který není velkým písmenem anglické abecedy ani speciálním symbolem, nebo jako více znaků uzavřených do uvozovek <code>""</code>. V nich mohou být uzavřeny i speciální symboly, viz. níže. Pokud je terminální symbol zapsán do uvozovek, je s ním zacházeno jako s více jednoznakovými terminály.</p>\n';
     str += '<h4>Speciální symboly</h4>\n';
-    str += '<p>Za speciální symboly jsou v zápisu gramatiky považovány <, >, -, |, ", mezera, čárka, konec řádku. Pokud chceme uvést, že gramatika přijímá prázdné slovo, můžeme na pravé straně prvního (počátečního) pravidla uvést symbol \\e jako symbol prázdného slova. Pak se ale počáteční neterminál nesmí vyskytovat na pravé straně žádného pravidla.\n';
+    str += '<p>Za speciální symboly jsou v zápisu gramatiky považovány <code><</code>, <code>></code>, <code>-</code>, <code>|</code>, <code>"</code>, <code> </code>, <code>,</code> a <code>\\n</code>. Pokud chceme uvést, že gramatika přijímá prázdné slovo, můžeme na pravé straně prvního (počátečního) pravidla uvést symbol <code>\\e</code> jako symbol prázdného slova. Pak se ale počáteční neterminál nesmí vyskytovat na pravé straně žádného pravidla.\n';
     str += '<a name="reg"></a><h2>REG - Popis jazyka regulárním výrazem</h2>\n';
     str += '<h4>Základní regulární výrazy</h4>\n';
-    str += '<p>Jako základní regulární výrazy můžeme používat kterékoliv znaky abecedy mimo +, ^+, *, ^*, (, ), tečka. Regulární výraz může také popisovat prázdné slovo, pak jej zapíšeme jako \\e. Může také popisovat prázdný jazyk, pak jej popíšeme jako \\0.\n';
+    str += '<p>Jako základní regulární výrazy můžeme používat kterékoliv znaky abecedy mimo <code>+</code>, <code>^+</code>, <code>*</code>, <code>^*</code>, <code>(</code>, <code>)</code> a <code>.</code>. Regulární výraz může také popisovat prázdné slovo, pak jej zapíšeme jako <code>\\e</code>. Může také popisovat prázdný jazyk, pak jej popíšeme jako <code>\\0</code>.\n';
     str += '<h4>Složené regulární výrazy</h4><p>\n';
-    str += 'Jakékoliv regulární výrazy můžeme uzavřít do závorek, tím se vyhodnotí jako první a pracuje se s nimi podobně jako se základním regulárním výrazem. Nejvyšší prioritu má operátor *, ^* a ^+, tedy iterace a pozitivní iterace. Druhou nejvyšší prioritu má operátor . (zřetězení), který nemusíme uvádět (a.b je ekvivalentní ab). Pokud není uvedena tečka, není výpočet považován za těsné zřetězení, tedy <code>ab*</code> není ekvivalentní <code>(ab)*</code> a je ekvivalentní <code>a.b*</code>. Nejnižší prioritu má operátor sjednocení +.\n';
+    str += 'Jakékoliv regulární výrazy můžeme uzavřít do závorek, tím se vyhodnotí jako první a pracuje se s nimi podobně jako se základním regulárním výrazem. Nejvyšší prioritu má operátor <code>*</code>, <code>^*</code> a <code>^+</code>, tedy iterace a pozitivní iterace. Druhou nejvyšší prioritu má operátor <code>.</code> (zřetězení), který nemusíme uvádět (a.b je ekvivalentní ab). Pokud není uvedena tečka, není výpočet považován za těsné zřetězení, tedy <code>ab*</code> není ekvivalentní <code>(ab)*</code> a je ekvivalentní <code>a.b*</code>. Nejnižší prioritu má operátor sjednocení <code>+</code>.\n';
     str += '<a name="all"></a><h2>ALL - možnost zadání více způsoby</h2>\n';
     str += 'V tomto režimu je možné jazyk zapsat více způsoby, kdy nápověda syntaxe radí, jak se bude vyhodnocovat. Výraz se snaží vyhodnotit postupně jako DFA, EFA, GRA a REG. Pozor - pokud nápověda syntaxe uvádí, že je nutno něco doplnit, může se výraz vyhodnocovat jinak, zpravidla jako REG (např. při zadání A bude kontrola syntaxe nabízet rozšíření na gramatiku, ale jazyk se správně vyhodnotí jako regulární výraz). Jedná se zejména o triviální případy, v těch je možné použít dodatečné ozávorkování celého výrazu pro přepnutí kontroly syntaxe na REG.\n';
 
@@ -362,17 +366,17 @@ function printHelpCfg() {
     str += printHelpStart("Popis formalismu");
 
     str += '<h1>CFG - Bezkontextová gramatika, syntaxe</h1>\n';
-    str += '<p>Gramatika je typu 2, jestliže každé její pravidlo je tvaru A -> α, kde |α|>=1 s eventuální výjimkou pravidla S -> \\e, pokud se S nevyskytuje na pravé straně žádného pravidla.<br>\n';
+    str += '<p>Gramatika je typu 2, jestliže každé její pravidlo je tvaru <code>A -> α</code>, kde |α|>=1 s eventuální výjimkou pravidla <code>S -> \\e</code>, pokud se <code>S</code> nevyskytuje na pravé straně žádného pravidla.<br>\n';
     str += '<h4>Iniciální neterminál</h4>\n';
     str += '<p>Iniciálním neterminálem je zvolen první nalezený neterminál.</p>\n';
     str += '<h4>Neterminál</h4>\n';
-    str += '<p>Neterminál je symbol z množiny <code>{A, ..., Z}</code>, popř. sekvence povolených symbolů uzavřených do zobáčků: &lt;cokoli&gt; popř. terminál nebo symbol množiny <code>{A, ..., Z}</code> s libovolným počtem apostrofů.</p>\n';
+    str += '<p>Neterminál je symbol z množiny <code>{A, ..., Z}</code>, popř. sekvence povolených symbolů uzavřených do špicatých závorek: <code><></code>; popř. terminál nebo symbol množiny <code>{A, ..., Z}</code> s libovolným počtem apostrofů.</p>\n';
     str += '<h4>Terminál</h4>\n';
     str += '<p>Terminál je libovolný symbol různý od neterminálního symbolu a speciálních symbolů.</p>\n';
     str += '<h4>Pravidla</h4>\n';
     str += '<p>Pravidla jsou v takovém tvaru, aby odpovídala pravidlům gramatik typu 2. Jednotlivá pravidla jsou od sebe oddělena čárkami nebo novým řádkem nebo čárkou a novým řádkem.</p>\n';
     str += '<h4>Speciální symboly</h4>\n';
-    str += '<p>Speciální symboly jsou "\\n", ",", "<", ">", "|", "\\", " \' ". Epsilon se značí jako <code>\\e</code>.</p>\n';
+    str += '<p>Speciální symboly jsou <code>\\n</code>, <code>,</code>, <code><</code>, <code>></code>, <code>|</code>, <code>\\</code>, <code>\'</code>. Epsilon se značí jako <code>\\e</code>.</p>\n';
 
     str += '<h2>Simulace odpovědníku</h2>\n';
     str += '<p>Simulace odpovědníku reprezentuje vyhodnocování odpovědí úkolů.<br>\n';
