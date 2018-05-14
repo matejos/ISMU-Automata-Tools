@@ -33,7 +33,7 @@ public class Converter {
                 serverLocation += line;
             }
         } catch (Exception e) {
-            System.err.format("ERROR: Could not read server location from file '%s'. Exporting aborted.\n", serverLocationFileName);
+            System.err.format("ERROR: Could not read server location from file '%s'. Converting aborted.\n", serverLocationFileName);
             return;
         }
 
@@ -45,7 +45,7 @@ public class Converter {
                 }
             }
         } catch (Exception e) {
-            System.err.format("ERROR: Could not read prefix content from file '%s'. Exporting aborted.\n", prefixContentFileName);
+            System.err.format("ERROR: Could not read prefix content from file '%s'. Converting aborted.\n", prefixContentFileName);
             return;
         }
 
@@ -57,7 +57,7 @@ public class Converter {
                 }
             }
         } catch (Exception e) {
-            System.err.format("ERROR: Could not read ending content from file '%s'. Exporting aborted.\n", endingContentFileName);
+            System.err.format("ERROR: Could not read ending content from file '%s'. Converting aborted.\n", endingContentFileName);
             return;
         }
 
@@ -90,7 +90,8 @@ public class Converter {
             }
 
             if (invalidArg) {
-                System.out.format("Argument %s invalid! Ignoring...\n", args[i]);
+                System.out.format("Argument %s invalid! Converting aborted.\n", args[i]);
+                return;
             }
         }
 
@@ -100,6 +101,7 @@ public class Converter {
         suffix = scanner.next();
 
         long t = System.currentTimeMillis() / 1000;
+        int errorCount = 0;
 
         for (int fileNumber = 0; fileNumber < files.size(); fileNumber++) {
             String inputName = files.get(fileNumber);
@@ -107,6 +109,7 @@ public class Converter {
             outputName = new StringBuilder(outputName).insert(outputName.lastIndexOf('.'), suffix).toString();
             if (outputName.equals(prefixContentFileName) || outputName.equals(serverLocationFileName)) {
                 System.err.format("ERROR: Forbidden name! Cannot convert '%s' to '%s'. Skipping...", inputName, outputName);
+                errorCount++;
                 continue;
             }
             System.out.format("Converting '%s' to '%s'\n", inputName, outputName);
@@ -156,8 +159,9 @@ public class Converter {
                 } catch (Exception e) {
                     if (e instanceof java.io.FileNotFoundException) {
                         System.err.format("ERROR: Could not find file '%s'.\n", inputName);
+                        errorCount++;
                     } else {
-                        System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
+                        System.err.format("ERROR: Could not read content from file '%s'. Converting aborted.\n", inputName);
                         return;
                     }
                     continue;
@@ -268,15 +272,16 @@ public class Converter {
             } catch (Exception e) {
                 if (e instanceof java.io.FileNotFoundException) {
                     System.err.format("ERROR: Could not find file '%s'.\n", inputName);
+                    errorCount++;
                 } else {
-                    System.err.format("ERROR: Could not read content from file '%s'. Exporting aborted.\n", inputName);
+                    System.err.format("ERROR: Could not read content from file '%s'. Converting aborted.\n", inputName);
                     if (!reset)
                         System.err.format("Does this file contains older version of editor? In that case use argument -r\n");
                     return;
                 }
             }
         }
-        System.out.println("Finished.");
+        System.out.format("Program finished with %d errors.\n", errorCount);
         return;
     }
 
