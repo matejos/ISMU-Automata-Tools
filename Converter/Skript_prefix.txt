@@ -16,8 +16,8 @@
 <script src="%SERVER%/js/utilIS.js" type="text/javascript"></script>
 <script>
 	if (typeof init == 'undefined') {
-		document.write('<script src="//rawgit.com/matejos/ISMU-Automata-Editor/master/Editor/editorJs.js">\<\/script>');
-		document.write('<style type="text/css">@import "//rawgit.com/matejos/ISMU-Automata-Editor/master/Editor/editorCss.css";</style>');
-		document.write('<script src="//rawgit.com/matejos/ISMU-Automata-Editor/master/Editor/utilIS.js">\<\/script>');
+		document.write('<script src="//rawgit.com/matejos/ISMU-Automata-Tools/master/Editor/editorJs.js">\<\/script>');
+		document.write('<style type="text/css">@import "//rawgit.com/matejos/ISMU-Automata-Tools/master/Editor/editorCss.css";</style>');
+		document.write('<script src="//rawgit.com/matejos/ISMU-Automata-Tools/master/Editor/utilIS.js">\<\/script>');
 	}
 </script>

@@ -197,7 +197,7 @@ public class Converter {
                             writer.write("<script src=\"" + serverLocation + "/js/" + type + "Parser.js\" type=\"text/javascript\"></script>\n");
                             // Fallback if serverLocation importing fails
                             writer.write("<script>if (typeof " + type + "Parser == 'undefined') {\n");
-                            writer.write("    document.write('<script src=\"//rawgit.com/matejos/ISMU-Automata-Editor/master/Resolver/fja/web/js/" + type + "Parser.js\">\\<\\/script>');\n");
+                            writer.write("    document.write('<script src=\"//rawgit.com/matejos/ISMU-Automata-Tools/master/Resolver/fja/web/js/" + type + "Parser.js\">\\<\\/script>');\n");
                             writer.write("}</script>\n");
                         }
                     }
