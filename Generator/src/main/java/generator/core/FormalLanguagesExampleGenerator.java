@@ -309,16 +309,12 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		plainAreaCz.setEditable(false);
 		plainAreaCz.setRows(5);
 		plainAreaCz.setName("PlainCZ"); // NOI18N
-		plainAreaCz.setLineWrap(true);
-		plainAreaCz.setWrapStyleWord(true);
 
 		plainAreaEn.setFont(TEXT_AREA_FONT);
 		plainAreaEn.setColumns(20);
 		plainAreaEn.setEditable(false);
 		plainAreaEn.setRows(5);
 		plainAreaEn.setName("PlainEN"); // NOI18N
-		plainAreaEn.setLineWrap(true);
-		plainAreaEn.setWrapStyleWord(true);
 
 		latexAreaEn.setFont(TEXT_AREA_FONT);
 		latexAreaEn.setColumns(20);
