@@ -622,13 +622,13 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		fileMenu.add(exit);
 
 		menuBar.add(fileMenu);
-		fileMenu.setMargin(new Insets(0, 20, 0, 20));
+		fileMenu.setMargin(new Insets(0, 10, 0, 10));
 
 		menuBar.add(moduleChoiceMenu);
-		moduleChoiceMenu.setMargin(new Insets(0, 20, 0, 20));
+		moduleChoiceMenu.setMargin(new Insets(0, 10, 0, 10));
 
 		menuBar.add(viewSelectionMenu);
-		viewSelectionMenu.setMargin(new Insets(0, 20, 0, 20));
+		viewSelectionMenu.setMargin(new Insets(0, 10, 0, 10));
 
 		about.addActionListener(new ActionListener()
 		{
@@ -643,7 +643,7 @@ public class FormalLanguagesExampleGenerator extends JFrame
 		helpMenu.add(about);
 
 		menuBar.add(helpMenu);
-		helpMenu.setMargin(new Insets(0, 20, 0, 20));
+		helpMenu.setMargin(new Insets(0, 10, 0, 10));
 
 		updateComponent(menuBar);
 
