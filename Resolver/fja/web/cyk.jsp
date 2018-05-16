@@ -68,7 +68,7 @@
 
                         <div class="col-lg-6">
                             <div class="form-group has-feedback">
-                                <textarea id="generate" name="t" class="form-control" rows="10"><c:if test="${! empty param.t}"><c:out value="${param.t}" /></c:if></textarea>
+                                <textarea id="generate" name="t" class="form-control" rows="12"><c:if test="${! empty param.t}"><c:out value="${param.t}" /></c:if></textarea>
                             </div>
                             <div id="generate-error" class="alert alert-info" title="Nápověda syntaxe.">
                                 <div id="generate-i" class=""></div>

@@ -19,6 +19,8 @@ import java.util.logging.Logger;
  */
 public class PamAuth implements AuthMethod {
 
+    private final String authGroup = "tomcat6";
+
     public boolean login(String name, String password) {
         try {
             System.setProperty("java.library.path", "/usr/local/lib");
@@ -44,7 +46,7 @@ public class PamAuth implements AuthMethod {
 
     public boolean authorize(String name) throws IOException {
         UserInfo userInfo = new UserInfo();
-        return userInfo.belongs2group(name, "tomcat6");
+        return userInfo.belongs2group(name, authGroup);
     }
 
 }

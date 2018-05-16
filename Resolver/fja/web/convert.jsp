@@ -54,7 +54,7 @@
                 <form method="post" action="Convert" name="convert" id="theForm">
                     <h3>Zadání příkladu:</h3>
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-4">
                             <div class="form-group">
                                 <div class="radio"><label><input name="teach" value="DFA" type="radio" onchange="invalidate('DFA', 't');"><samp><b>DFA</b></samp> - Det. konečný automat</label></div>
                                 <div class="radio"><label><input name="teach" value="EFA" type="radio" onchange="invalidate('EFA', 't');"><samp><b>EFA</b></samp> - NFA s epsilon kroky</label></div>
@@ -65,9 +65,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-9">
+                        <div class="col-lg-9 col-sm-8">
                             <div class="form-group has-feedback">
-                                <textarea id="t" name="t" class="form-control" rows="10"></textarea>
+                                <textarea id="t" name="t" class="form-control" rows="8"></textarea>
                             </div>
                             <div id="t-error" class="alert alert-info" title="Nápověda syntaxe učitele.">
                                 <div id="t-i" class=""></div>
@@ -77,7 +77,7 @@
                     </div>
                     <h3>Požadovaná odpověď:</h3>
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-5">
                             <div class="form-group">
                                 <div class="radio"><label><input name="stud" value="TOT" type="radio" onchange="invalidate('', 's');"><samp><b>TOT</b></samp> - Totální DFA</label></div>
                                 <div class="radio"><label><input name="stud" value="MIC" type="radio" onchange="invalidate('', 's');"><samp><b>MIC</b></samp> - Minimální kanonický DFA</label></div>
@@ -93,7 +93,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div class="col-lg-3 col-sm-4">
                             <div class="form-group">
                                 <div class="checkbox">
                                     <label title="V odpovědi se zobrazí automaty v tabulce."><input type="checkbox" id ="showtable" name="intable" value="true">Zobrazit automaty v tabulce</label>
@@ -103,7 +103,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-2">
+                        <div class="col-lg-2 col-sm-3">
                             <div class="form-group">
                                 <label for="sel1" title="Zvolte si mód odpovědi.">Mód:</label>
                                 <select name="mod" class="form-control" id="sel1">
@@ -112,7 +112,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="col-sm-7"></div>
                     </div>
                     <input value="Převeď" type="submit" class="btn btn-primary" title="Převede zadaný formalismus." />
                 </form>
