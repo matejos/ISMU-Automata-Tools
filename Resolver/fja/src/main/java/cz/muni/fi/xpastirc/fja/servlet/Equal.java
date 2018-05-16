@@ -16,6 +16,7 @@ import cz.muni.fi.xpastirc.parsers.PreParser;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.TreeSet;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -118,7 +119,8 @@ public class Equal extends HttpServlet {
                                 information_stud = ComplexLanguageInformation.getLanguageInformation("EFA", input_stud);
                                 epsc = information_stud.getEpscount();
                                 } catch (Exception ex){
-                                    out.println("false||Vstupní formalismus nebyl správně zadán. ||0%");
+                                    out.println("false||Vstupní formalismus nebyl správně zadán.");
+                                    //out.println("||0%");
                                     return;
                                 }
                             }
@@ -147,12 +149,14 @@ public class Equal extends HttpServlet {
                     } catch (RegLanguageException ex) {
                         out.println("false||Vstupní formalismus nebyl správně zadán: " + ex.getMessage());
                         if ((formalism_stud.equals("DFA") || (formalism_stud.equals("MIC"))|| formalism_stud.equals("MIN")
-                                || formalism_stud.equals("CAN") || formalism_stud.equals("TOT"))) out.println("Zkontrolujte, zda je automat deterministický. ");
-                        out.println("||0%");
+                                || formalism_stud.equals("CAN") || formalism_stud.equals("TOT")))
+                            out.println("Zkontrolujte, zda je automat deterministický. ");
+                        //out.println("||0%");
                         return;
                     }
                       catch (Exception ex){
-                        out.println("false||Vstupní formalismus nebyl správně zadán. ||0%");
+                        out.println("false||Vstupní formalismus nebyl správně zadán.");
+                        //out.println("||0%");
                         return;
                     }
                     //equals
@@ -206,7 +210,7 @@ public class Equal extends HttpServlet {
                             if("konečný".equals(teachNotStud.getCharacteristics())){
                                 percentage += 10;
                             }
-                            ISAnswer.append("Příklady slov z jazyka řešení, které nejsou v odpovědi: ").append(teachNotStud.getWords()).append(".\n");
+                            ISAnswer.append("Příklady slov z jazyka řešení, které nejsou v odpovědi: ").append(getWords(teachNotStud.getWords())).append(".\n");
                             percentage += 20;
                         }
                         else if (inclusion == 1){
@@ -219,7 +223,7 @@ public class Equal extends HttpServlet {
                             if("konečný".equals(studNotTeach.getCharacteristics())){
                                 percentage += 10;
                             }
-                            ISAnswer.append("Příklady slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(".\n");
+                            ISAnswer.append("Příklady slov z jazyka odpovědi, které nejsou v řešení: ").append(getWords(studNotTeach.getWords())).append(".\n");
                             percentage += 20;
                         }
                         else if (disjoint){
@@ -227,15 +231,15 @@ public class Equal extends HttpServlet {
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
                                 ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                             }
-                            ISAnswer.append("\nPříklad slov z jazyka odpovědi: ").append(information_stud.getWords()).append(".\n");
-                            ISAnswer.append("\nPříklad slov z jazyka řešení: ").append(information_teach.getWords()).append(".\n");
+                            ISAnswer.append("\nPříklad slov z jazyka odpovědi: ").append(getWords(information_stud.getWords())).append(".\n");
+                            ISAnswer.append("\nPříklad slov z jazyka řešení: ").append(getWords(information_teach.getWords())).append(".\n");
                         }else{
                             ISAnswer.append("Jazyk odpovědi není ekvivalentní se zadáním.\n");
                             if(!information_stud.getCharacteristics().equals(information_teach.getCharacteristics())){
                                 ISAnswer.append("Jazyk odpovědi je ").append(information_stud.getCharacteristics()).append(" zatímco jazyk zadání je ").append(information_teach.getCharacteristics()).append(".\n");
                             }
-                            ISAnswer.append("Příklad slov z jazyka odpovědi, které nejsou v řešení: ").append(studNotTeach.getWords()).append(".\n");
-                            ISAnswer.append("Příklad slov z jazyka řešení, ktere nejsou v odpovědi: ").append(teachNotStud.getWords()).append(".\n");
+                            ISAnswer.append("Příklad slov z jazyka odpovědi, které nejsou v řešení: ").append(getWords(studNotTeach.getWords())).append(".\n");
+                            ISAnswer.append("Příklad slov z jazyka řešení, ktere nejsou v odpovědi: ").append(getWords(teachNotStud.getWords())).append(".\n");
                         }
                         if(goodFormalism){
                             ISAnswer.append("Odpověď splňuje požadovaný formalismus.");
@@ -366,11 +370,7 @@ public class Equal extends HttpServlet {
             out.println("<span class=\"arText\">P\u0159\u00EDklady slov z jazyka</span><br>");
             out.println("<samp>");
             if (information_teach.isEmpty()!=1){
-                int i=0;
-                for (String word : information_teach.getWords()){
-                       out.print((i==0?"":",") + (word.equals("")?"\u025b":word));
-                       i++;
-                }
+                out.print(getWords(information_teach.getWords()));
             }
             out.println("</samp>");
             String input_teach_refined = input_teach;
@@ -399,11 +399,7 @@ public class Equal extends HttpServlet {
             out.println("<span class=\"arText\">P\u0159\u00EDklady slov z jazyka</span><br>");
             out.println("<samp>");
             if (information_stud.isEmpty()!=1){
-                int i=0;
-                for (String word : information_stud.getWords()){
-                    out.print((i==0?"":",") + (word.equals("")?"\u025b":word));
-                    i++;
-                }
+                out.print(getWords(information_stud.getWords()));
             }
             out.println("</samp>");
             String input_stud_refined = input_stud;
@@ -549,6 +545,16 @@ public class Equal extends HttpServlet {
             out.println("</body>");
             out.println("</html>");
             out.close();
+    }
+
+    private static String getWords(List<String> words) {
+        StringBuilder result = new StringBuilder("");
+        int i=0;
+        for (String word : words){
+            result.append((i==0?"":", ") + (word.equals("")?"\u025b":word));
+            i++;
+        }
+        return result.toString();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
