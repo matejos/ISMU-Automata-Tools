@@ -59,7 +59,7 @@
                                             <input type="password" class="form-control" id="pwd" name="password">
                                         </div>
                                         <input type="hidden" value="<%request.getParameter("from"); %>">
-                                        <input type="submit" class="btn btn-primary" value="Odeslat">
+                                        <input type="submit" class="btn btn-primary" value="Přihlásit">
                                     </div>
                                 </div>
                                 <div class="col-sm-4 col-xs-3"></div>
