@@ -337,7 +337,7 @@ function printHelpReg() {
     str += '<h4>MIC - Minimální kanonický deterministický konečný automat</h4>\n';
     str += '<p>Minimální kanonický automat musí splňovat pravidla minimálního automatu a dále musí mít všechny stavy pojmenované nepřerušenou posloupností znaků, kdy počáteční stav se vždy jmenuje A a každý další dosažený stav se jmenuje podle následujícího znaku v kódování UTF-8. Přechody do dalších stavů jsou prováděny jako prohledávání grafu do šířky pod všemi znaky z abecedy seřazenými opět podle kódování UTF-8. Tento zápis je pro každý automat unikátní.</p>\n';
     str += '<a name="gra"></a><h2>GRA - Popis jazyka gramatikou</h2>\n';
-    str += '<p>Jazyk je možné popsat gramatikou, z níž definujeme pouze množinu pravidel, kterou zapisujeme jako <code>N -> tN | tN | t</code>, kde N je neterminál a t je terminál. Jednotlivé řádky od sebe musí být odděleny koncem řádku.\n';
+    str += '<p>Jazyk je možné popsat gramatikou, z níž definujeme pouze množinu pravidel, kterou zapisujeme jako <code>N -> tN | tN | t</code>, kde N je neterminál a t je terminál. Jednotlivé pravidlá od sebe musí být odděleny koncem řádku.\n';
     str += '<h4>Neterminál</h4>\n';
     str += '<p>Neterminál je zapsán buď jedním znakem velké anglické abecedy, nebo jako více znaků uzavřených do špičatých závorek <code><></code>. V nich mohou být uzavřeny i speciální symboly, viz. níže.</p>\n';
     str += '<h4>Terminál</h4>\n';

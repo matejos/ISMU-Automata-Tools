@@ -258,7 +258,8 @@ public class Publisher
 		// }
 		// else
 		// {
-		toPublish = toPublish + interpretCommand(between, between, 0, showInput, generatorResult);
+		if (exampleNumber > 0)
+			toPublish = toPublish + interpretCommand(between, between, 0, showInput, generatorResult);
 		// }
 		exampleNumber++;
 

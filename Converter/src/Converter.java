@@ -173,7 +173,7 @@ public class Converter {
                 try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
                     while ((s = reader.readLine()) != null) {
                         if (s.contains(":e=")) {
-                            String type = getFormType(s).type;
+                            String type = getTypes(s).generalType;
                             types.add(type);
                         }
                     }
@@ -210,21 +210,21 @@ public class Converter {
                         boolean dontRead = false;
                         if (s.contains(":e") && !s.contains(":e=")) {
                             s2 = reader.readLine();
-                            TypePair p = getFormType(s2);
-                            String formtype = p.formtype;
-                            String type = p.type;
-                            if (!formtype.equals("")) {
+                            TypePair p = getTypes(s2);
+                            String generalType = p.generalType;
+                            String specificType = p.specificType;
+                            if (!generalType.equals("")) {
                                 questionNumber++;
                                 String idString = t + "-" + fileNumber + "-" + questionNumber;
-                                writer.write(getBasicWrapper(idString, formtype));
-                                if (formtype.equals("DFA") || formtype.equals("NFA") || formtype.equals("EFA")) {
+                                writer.write(getBasicWrapper(idString, generalType));
+                                if (generalType.equals("DFA") || generalType.equals("NFA") || generalType.equals("EFA")) {
                                     writer.write("<ul class=\"nav nav-tabs\"><li class=\"myli active\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "a\">Graf</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "b\">Tabulka</a></li><li class=\"myli\"><a data-toggle=\"tab\" data-target=\"#q" + idString
                                             + "c\">Text</a></li></ul></ul>\n");
-                                    writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + type + "\");</script></div>\n");
+                                    writer.write("<div id=\"q" + idString + "\" class=\"tab-content\"><script>init(\"q" + idString + "\", \"" + specificType + "\");</script></div>\n");
                                 }
-                                else if (formtype.equals("CYK")) {
+                                else if (generalType.equals("CYK")) {
                                     String word = (s2.substring(s2.indexOf(':') + 1));
                                     word = (word.substring(word.indexOf(':') + 1));
                                     word = (word.substring(word.indexOf(':') + 1));
@@ -235,23 +235,24 @@ public class Converter {
                             while (s2 != null && s2.contains(":e=")) {
                                 StringBuilder stringBuilder = new StringBuilder(s2.trim());
                                 stringBuilder.replace(4, 5, "f");
-                                if (stringBuilder.toString().charAt(13) == ':') {
-                                    if (iso) {
-                                        StringBuilder stringBuilder2 = new StringBuilder(stringBuilder.toString());
-                                        stringBuilder.insert(13, "-Y");
-                                        if (isoPercent > 0) {
-                                            stringBuilder.append(" " + (100 - isoPercent) + "%");
-                                            stringBuilder2.insert(13, "-N");
-                                            stringBuilder2.append(" " + isoPercent + "%");
-                                            stringBuilder.append("\n" + stringBuilder2);
+                                if (generalType.equals("DFA") || generalType.equals("NFA") || generalType.equals("EFA")) {
+                                    if (stringBuilder.toString().charAt(13) == ':') {
+                                        if (iso) {
+                                            StringBuilder stringBuilder2 = new StringBuilder(stringBuilder.toString());
+                                            stringBuilder.insert(13, "-Y");
+                                            if (isoPercent > 0) {
+                                                stringBuilder.append(" " + (100 - isoPercent) + "%");
+                                                stringBuilder2.insert(13, "-N");
+                                                stringBuilder2.append(" " + isoPercent + "%");
+                                                stringBuilder.append("\n" + stringBuilder2);
+                                            }
+                                        } else {
+                                            stringBuilder.insert(13, "-N");
                                         }
                                     }
-                                    else {
-                                        stringBuilder.insert(13, "-N");
+                                    if (stringBuilder.indexOf("F=") != -1) {
+                                        stringBuilder.replace(stringBuilder.indexOf("F="), stringBuilder.indexOf("F=") + 2, "final=");
                                     }
-                                }
-                                if (stringBuilder.indexOf("F=") != -1) {
-                                    stringBuilder.replace(stringBuilder.indexOf("F="), stringBuilder.indexOf("F=") + 2, "final=");
                                 }
                                 writer.write(stringBuilder.toString() + "\n");
                                 s2 = reader.readLine();
@@ -293,29 +294,36 @@ public class Converter {
         System.out.format("\t-i=<percent> | -isomorphism=<percent>\tAdd isomorphism condition to the questions with <percent> partial points for nonisomorphic answer\n");
     }
 
-    static String getBasicWrapper(String idString, String formtype) {
+    static String getBasicWrapper(String idString, String generalType) {
         String s = "<input name=\"q" + idString + "\" type=\"hidden\" value=\"\" />"
                 + "<noscript>(Nemate zapnuty JavaScript, ale pro spravnou funkci otazky je JavaScript nutny. Jako prohlizec je doporuceny Firefox.) </noscript>"
                 + "<div id=\"q" + idString + "-div\"> :e ";
-        if (typeHasSyntaxHelp(formtype)) {
+        if (typeHasSyntaxHelp(generalType)) {
             s += "<p></p><div id=\"q" + idString + "-error\" class=\"alert alert-info\" title=\"Nápověda syntaxe učitele.\">"
                     + "<div id=\"q" + idString + "-i\" class=\"\"></div>"
                     + "<div id=\"q" + idString + "-error-text\">Zde se zobrazuje nápověda syntaxe.</div></div>";
-            s += "<script type=\"text/javascript\">register(\"q" + idString + "\", " + formtype + "Parser.parse)</script>";
+            s += "<script type=\"text/javascript\">register(\"q" + idString + "\", " + generalType + "Parser.parse)</script>";
         }
         s += "</div>\n";
         return s;
     }
 
-    static TypePair getFormType(String s) {
-        String formtype = "";
-        String type = s.substring(s.indexOf('-') + 1, s.indexOf('-') + 4);
-        if (type.equals("DFA") || type.equals("MIN") || type.equals("MIC") || type.equals("TOT") || type.equals("TOC") || type.equals("CAN")) {
-            formtype = "DFA";
-        } else if (type.equals("REG") || type.equals("GRA") || type.equals("NFA") || type.equals("EFA") || type.equals("CYK")) {
-            formtype = type;
+    private static List<String> dfaTypes = Arrays.asList("DFA", "MIN", "MIC", "TOT", "TOC", "CAN");
+    private static List<String> cfgTypes = Arrays.asList("NE1", "NE2", "RED", "EPS", "SRF", "PRO", "CNF", "RLR", "GNF");
+
+    static TypePair getTypes(String s) {
+        String generalType = "";
+        String specificType = s.substring(s.indexOf('-') + 1, s.indexOf('-') + 4);
+        if (dfaTypes.indexOf(specificType) != -1) {
+            generalType = "DFA";
         }
-        return new TypePair(formtype, type);
+        else if (cfgTypes.indexOf(specificType) != -1) {
+            generalType = "CFG";
+        }
+        else if (specificType.equals("REG") || specificType.equals("GRA") || specificType.equals("NFA") || specificType.equals("EFA") || specificType.equals("CYK")) {
+            generalType = specificType;
+        }
+        return new TypePair(generalType, specificType);
     }
 
     static boolean typeHasSyntaxHelp(String type) {
@@ -330,11 +338,11 @@ public class Converter {
     static List<String> validParsers = Arrays.asList("REG", "GRA", "NFA", "EFA", "DFA", "CFG", "CYK");
 
     static class TypePair {
-        public String formtype;
-        public String type;
-        public TypePair(String formtype, String type) {
-            this.formtype = formtype;
-            this.type = type;
+        public String generalType;
+        public String specificType;
+        public TypePair(String generalType, String specificType) {
+            this.generalType = generalType;
+            this.specificType = specificType;
         }
     }
 }

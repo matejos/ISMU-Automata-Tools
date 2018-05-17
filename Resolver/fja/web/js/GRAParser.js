@@ -118,16 +118,15 @@ var GRAParser = function ()
   var others = new Array();
   		others[0] = new Array();
 		others[0].push([[[9], [13], [32]],   [1],   [1]]);
-		others[0].push([[[10]],   [9],   [2]]);
+		others[0].push([[[10]],   [8],   [2]]);
 		others[0].push([[[34]],   [4],   [3]]);
-		others[0].push([[[44]],   [5],   [4]]);
-		others[0].push([[[48, 57], [97, 122]],   [11],   [5]]);
-		others[0].push([[[60]],   [2],   [6]]);
-		others[0].push([[[62]],   [3],   [7]]);
-		others[0].push([[[65, 90]],   [10],   [8]]);
-		others[0].push([[[124]],   [7],   [9]]);
-		others[0].push([[[45]],   [6],   [10, 12]]);
-		others[0].push([[[92]],   [8],   [11, 13]]);
+		others[0].push([[[48, 57], [97, 122]],   [10],   [4]]);
+		others[0].push([[[60]],   [2],   [5]]);
+		others[0].push([[[62]],   [3],   [6]]);
+		others[0].push([[[65, 90]],   [9],   [7]]);
+		others[0].push([[[124]],   [6],   [8]]);
+		others[0].push([[[45]],   [5],   [9, 11]]);
+		others[0].push([[[92]],   [7],   [10, 12]]);
 		others[1] = new Array();
 		others[2] = new Array();
 		others[3] = new Array();
@@ -139,10 +138,9 @@ var GRAParser = function ()
 		others[9] = new Array();
 		others[10] = new Array();
 		others[11] = new Array();
+		others[11].push([[[62]],   [5],   [9]]);
 		others[12] = new Array();
-		others[12].push([[[62]],   [6],   [10]]);
-		others[13] = new Array();
-		others[13].push([[[101]],   [8],   [11]]);
+		others[12].push([[[101]],   [7],   [10]]);
 
   
   /* -FUNCTION------------------------------------------------------------------
@@ -181,7 +179,7 @@ var GRAParser = function ()
   
       if( info.src.length <= start )  
       {
-          match = 24;
+          match = 23;
           var result = new Object();
           result.match = match;
           result.last_state = last_state;   
@@ -196,14 +194,13 @@ var GRAParser = function ()
 		if( (info.src.charCodeAt( pos ) == 9 || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 1;
 		else if( (info.src.charCodeAt( pos ) == 10 )) state = 2;
 		else if( (info.src.charCodeAt( pos ) == 34 )) state = 3;
-		else if( (info.src.charCodeAt( pos ) == 44 )) state = 4;
-		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 5;
-		else if( (info.src.charCodeAt( pos ) == 60 )) state = 6;
-		else if( (info.src.charCodeAt( pos ) == 62 )) state = 7;
-		else if( (( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) )) state = 8;
-		else if( (info.src.charCodeAt( pos ) == 124 )) state = 9;
-		else if( (info.src.charCodeAt( pos ) == 45 )) state = 12;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 13;
+		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 4;
+		else if( (info.src.charCodeAt( pos ) == 60 )) state = 5;
+		else if( (info.src.charCodeAt( pos ) == 62 )) state = 6;
+		else if( (( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) )) state = 7;
+		else if( (info.src.charCodeAt( pos ) == 124 )) state = 8;
+		else if( (info.src.charCodeAt( pos ) == 45 )) state = 11;
+		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
 		else state = -1;
    	last_state = 0;
 		break;
@@ -218,7 +215,7 @@ var GRAParser = function ()
 	case 2:
 		state = -1;
    	last_state = 2;
-		match = 9;
+		match = 8;
 		match_pos = pos;
 		break;
 
@@ -232,69 +229,62 @@ var GRAParser = function ()
 	case 4:
 		state = -1;
    	last_state = 4;
-		match = 5;
+		match = 10;
 		match_pos = pos;
 		break;
 
 	case 5:
 		state = -1;
    	last_state = 5;
-		match = 11;
+		match = 2;
 		match_pos = pos;
 		break;
 
 	case 6:
 		state = -1;
    	last_state = 6;
-		match = 2;
+		match = 3;
 		match_pos = pos;
 		break;
 
 	case 7:
 		state = -1;
    	last_state = 7;
-		match = 3;
+		match = 9;
 		match_pos = pos;
 		break;
 
 	case 8:
 		state = -1;
    	last_state = 8;
-		match = 10;
+		match = 6;
 		match_pos = pos;
 		break;
 
 	case 9:
 		state = -1;
    	last_state = 9;
-		match = 7;
+		match = 5;
 		match_pos = pos;
 		break;
 
 	case 10:
 		state = -1;
    	last_state = 10;
-		match = 6;
+		match = 7;
 		match_pos = pos;
 		break;
 
 	case 11:
-		state = -1;
+		if( (info.src.charCodeAt( pos ) == 62 )) state = 9;
+		else state = -1;
    	last_state = 11;
-		match = 8;
-		match_pos = pos;
 		break;
 
 	case 12:
-		if( (info.src.charCodeAt( pos ) == 62 )) state = 10;
+		if( (info.src.charCodeAt( pos ) == 101 )) state = 10;
 		else state = -1;
    	last_state = 12;
-		break;
-
-	case 13:
-		if( (info.src.charCodeAt( pos ) == 101 )) state = 11;
-		else state = -1;
-   	last_state = 13;
 		break;
 
 }
@@ -349,7 +339,7 @@ var GRAParser = function ()
   
       if( info.src.length <= start )  
       {
-          match = 24;
+          match = 23;
           var result = new Object();
           result.match = match;
           result.last_state = last_state;   
@@ -365,14 +355,13 @@ var GRAParser = function ()
 		if( (info.src.charCodeAt( pos ) == 9 || info.src.charCodeAt( pos ) == 13 || info.src.charCodeAt( pos ) == 32 )) state = 1;
 		else if( (info.src.charCodeAt( pos ) == 10 )) state = 2;
 		else if( (info.src.charCodeAt( pos ) == 34 )) state = 3;
-		else if( (info.src.charCodeAt( pos ) == 44 )) state = 4;
-		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 5;
-		else if( (info.src.charCodeAt( pos ) == 60 )) state = 6;
-		else if( (info.src.charCodeAt( pos ) == 62 )) state = 7;
-		else if( (( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) )) state = 8;
-		else if( (info.src.charCodeAt( pos ) == 124 )) state = 9;
-		else if( (info.src.charCodeAt( pos ) == 45 )) state = 12;
-		else if( (info.src.charCodeAt( pos ) == 92 )) state = 13;
+		else if( (( info.src.charCodeAt( pos ) >= 48 && info.src.charCodeAt( pos ) <= 57 ) || ( info.src.charCodeAt( pos ) >= 97 && info.src.charCodeAt( pos ) <= 122 ) )) state = 4;
+		else if( (info.src.charCodeAt( pos ) == 60 )) state = 5;
+		else if( (info.src.charCodeAt( pos ) == 62 )) state = 6;
+		else if( (( info.src.charCodeAt( pos ) >= 65 && info.src.charCodeAt( pos ) <= 90 ) )) state = 7;
+		else if( (info.src.charCodeAt( pos ) == 124 )) state = 8;
+		else if( (info.src.charCodeAt( pos ) == 45 )) state = 11;
+		else if( (info.src.charCodeAt( pos ) == 92 )) state = 12;
 		else state = -1;
    	last_state = 0;
 		break;
@@ -387,7 +376,7 @@ var GRAParser = function ()
 	case 2:
 		state = -1;
    	last_state = 2;
-		match = 9;
+		match = 8;
 		match_pos = pos;
 		break;
 
@@ -401,69 +390,62 @@ var GRAParser = function ()
 	case 4:
 		state = -1;
    	last_state = 4;
-		match = 5;
+		match = 10;
 		match_pos = pos;
 		break;
 
 	case 5:
 		state = -1;
    	last_state = 5;
-		match = 11;
+		match = 2;
 		match_pos = pos;
 		break;
 
 	case 6:
 		state = -1;
    	last_state = 6;
-		match = 2;
+		match = 3;
 		match_pos = pos;
 		break;
 
 	case 7:
 		state = -1;
    	last_state = 7;
-		match = 3;
+		match = 9;
 		match_pos = pos;
 		break;
 
 	case 8:
 		state = -1;
    	last_state = 8;
-		match = 10;
+		match = 6;
 		match_pos = pos;
 		break;
 
 	case 9:
 		state = -1;
    	last_state = 9;
-		match = 7;
+		match = 5;
 		match_pos = pos;
 		break;
 
 	case 10:
 		state = -1;
    	last_state = 10;
-		match = 6;
+		match = 7;
 		match_pos = pos;
 		break;
 
 	case 11:
-		state = -1;
+		if( (info.src.charCodeAt( pos ) == 62 )) state = 9;
+		else state = -1;
    	last_state = 11;
-		match = 8;
-		match_pos = pos;
 		break;
 
 	case 12:
-		if( (info.src.charCodeAt( pos ) == 62 )) state = 10;
+		if( (info.src.charCodeAt( pos ) == 101 )) state = 10;
 		else state = -1;
    	last_state = 12;
-		break;
-
-	case 13:
-		if( (info.src.charCodeAt( pos ) == 101 )) state = 11;
-		else state = -1;
-   	last_state = 13;
 		break;
 
 }
@@ -1024,8 +1006,8 @@ var GRAParser = function ()
                                                   + " " + transitions_matches.transitions.join(LANG.or)
                                                   + ". " 
                                                   
-                              if(difference(expected,[24]).length) result.error_string += LANG.canCont             
-                                                  +    " {" +   getExpectedLabels(difference(expected,[24])).join(", ") + "}. "
+                              if(difference(expected,[23]).length) result.error_string += LANG.canCont             
+                                                  +    " {" +   getExpectedLabels(difference(expected,[23])).join(", ") + "}. "
                                                   + ((isProblematicWhitespace(source))? LANG.maybeWhitespace:"");
                                                  
                          
@@ -1034,8 +1016,8 @@ var GRAParser = function ()
                        else
                        {
                           // we cannot get to previously expected match by typing. So we offer only advices for other expected matches                           
-                          if(difference(expected,[24]).length)result.error_string +=  LANG.canCont 
-                                              + " {" +  getExpectedLabels(difference(expected,[24])).join(", ") + "}. "
+                          if(difference(expected,[23]).length)result.error_string +=  LANG.canCont 
+                                              + " {" +  getExpectedLabels(difference(expected,[23])).join(", ") + "}. "
                                               + ((isProblematicWhitespace(source))? LANG.maybeWhitespace:"");
                                               ;                       
                        } 
@@ -1054,17 +1036,16 @@ var GRAParser = function ()
 var parseTable = new Array();
 parseTable[0] = new Array();
 parseTable[0][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[0][2] = createLL1TabEntry(false, null, [14], false, false);
-parseTable[0][3] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][4] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][5] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][6] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][7] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][8] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][9] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][10] = createLL1TabEntry(false, null, [14], false, false);
-parseTable[0][11] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[0][24] = createLL1TabEntry(false, [10, 2], null, false, false);
+parseTable[0][2] = createLL1TabEntry(false, null, [13], false, false);
+parseTable[0][3] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][4] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][5] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][6] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][7] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][8] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][9] = createLL1TabEntry(false, null, [13], false, false);
+parseTable[0][10] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[0][23] = createLL1TabEntry(false, [9, 2], null, false, false);
 parseTable[2] = new Array();
 parseTable[2][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[2][2] = createLL1TabEntry(false, null, null, false, true);
@@ -1076,8 +1057,7 @@ parseTable[2][7] = createLL1TabEntry(false, [2], null, false, false);
 parseTable[2][8] = createLL1TabEntry(false, [2], null, false, false);
 parseTable[2][9] = createLL1TabEntry(false, [2], null, false, false);
 parseTable[2][10] = createLL1TabEntry(false, [2], null, false, false);
-parseTable[2][11] = createLL1TabEntry(false, [2], null, false, false);
-parseTable[2][24] = createLL1TabEntry(false, [2], null, false, false);
+parseTable[2][23] = createLL1TabEntry(false, [2], null, false, false);
 parseTable[3] = new Array();
 parseTable[3][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[3][2] = createLL1TabEntry(false, [3], null, false, false);
@@ -1089,8 +1069,7 @@ parseTable[3][7] = createLL1TabEntry(false, [3], null, false, false);
 parseTable[3][8] = createLL1TabEntry(false, [3], null, false, false);
 parseTable[3][9] = createLL1TabEntry(false, [3], null, false, false);
 parseTable[3][10] = createLL1TabEntry(false, [3], null, false, false);
-parseTable[3][11] = createLL1TabEntry(false, [3], null, false, false);
-parseTable[3][24] = createLL1TabEntry(false, [3], null, false, false);
+parseTable[3][23] = createLL1TabEntry(false, [3], null, false, false);
 parseTable[4] = new Array();
 parseTable[4][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[4][2] = createLL1TabEntry(false, [4], null, false, false);
@@ -1102,8 +1081,7 @@ parseTable[4][7] = createLL1TabEntry(false, [4], null, false, false);
 parseTable[4][8] = createLL1TabEntry(false, [4], null, false, false);
 parseTable[4][9] = createLL1TabEntry(false, [4], null, false, false);
 parseTable[4][10] = createLL1TabEntry(false, [4], null, false, false);
-parseTable[4][11] = createLL1TabEntry(false, [4], null, false, false);
-parseTable[4][24] = createLL1TabEntry(false, [4], null, false, false);
+parseTable[4][23] = createLL1TabEntry(false, [4], null, false, false);
 parseTable[5] = new Array();
 parseTable[5][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[5][2] = createLL1TabEntry(false, [5], null, false, false);
@@ -1115,8 +1093,7 @@ parseTable[5][7] = createLL1TabEntry(false, [5], null, false, false);
 parseTable[5][8] = createLL1TabEntry(false, [5], null, false, false);
 parseTable[5][9] = createLL1TabEntry(false, [5], null, false, false);
 parseTable[5][10] = createLL1TabEntry(false, [5], null, false, false);
-parseTable[5][11] = createLL1TabEntry(false, [5], null, false, false);
-parseTable[5][24] = createLL1TabEntry(false, [5], null, false, false);
+parseTable[5][23] = createLL1TabEntry(false, [5], null, false, false);
 parseTable[6] = new Array();
 parseTable[6][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[6][2] = createLL1TabEntry(false, [6], null, false, false);
@@ -1128,8 +1105,7 @@ parseTable[6][7] = createLL1TabEntry(false, [6], null, false, false);
 parseTable[6][8] = createLL1TabEntry(false, [6], null, false, false);
 parseTable[6][9] = createLL1TabEntry(false, [6], null, false, false);
 parseTable[6][10] = createLL1TabEntry(false, [6], null, false, false);
-parseTable[6][11] = createLL1TabEntry(false, [6], null, false, false);
-parseTable[6][24] = createLL1TabEntry(false, [6], null, false, false);
+parseTable[6][23] = createLL1TabEntry(false, [6], null, false, false);
 parseTable[7] = new Array();
 parseTable[7][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[7][2] = createLL1TabEntry(false, [7], null, false, false);
@@ -1141,8 +1117,7 @@ parseTable[7][7] = createLL1TabEntry(false, null, null, false, true);
 parseTable[7][8] = createLL1TabEntry(false, [7], null, false, false);
 parseTable[7][9] = createLL1TabEntry(false, [7], null, false, false);
 parseTable[7][10] = createLL1TabEntry(false, [7], null, false, false);
-parseTable[7][11] = createLL1TabEntry(false, [7], null, false, false);
-parseTable[7][24] = createLL1TabEntry(false, [7], null, false, false);
+parseTable[7][23] = createLL1TabEntry(false, [7], null, false, false);
 parseTable[8] = new Array();
 parseTable[8][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[8][2] = createLL1TabEntry(false, [8], null, false, false);
@@ -1154,8 +1129,7 @@ parseTable[8][7] = createLL1TabEntry(false, [8], null, false, false);
 parseTable[8][8] = createLL1TabEntry(false, null, null, false, true);
 parseTable[8][9] = createLL1TabEntry(false, [8], null, false, false);
 parseTable[8][10] = createLL1TabEntry(false, [8], null, false, false);
-parseTable[8][11] = createLL1TabEntry(false, [8], null, false, false);
-parseTable[8][24] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[8][23] = createLL1TabEntry(false, [8], null, false, false);
 parseTable[9] = new Array();
 parseTable[9][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[9][2] = createLL1TabEntry(false, [9], null, false, false);
@@ -1167,8 +1141,7 @@ parseTable[9][7] = createLL1TabEntry(false, [9], null, false, false);
 parseTable[9][8] = createLL1TabEntry(false, [9], null, false, false);
 parseTable[9][9] = createLL1TabEntry(false, null, null, false, true);
 parseTable[9][10] = createLL1TabEntry(false, [9], null, false, false);
-parseTable[9][11] = createLL1TabEntry(false, [9], null, false, false);
-parseTable[9][24] = createLL1TabEntry(false, [9], null, false, false);
+parseTable[9][23] = createLL1TabEntry(false, [9], null, false, false);
 parseTable[10] = new Array();
 parseTable[10][1] = createLL1TabEntry(true, null, null, false, false);
 parseTable[10][2] = createLL1TabEntry(false, [10], null, false, false);
@@ -1180,190 +1153,163 @@ parseTable[10][7] = createLL1TabEntry(false, [10], null, false, false);
 parseTable[10][8] = createLL1TabEntry(false, [10], null, false, false);
 parseTable[10][9] = createLL1TabEntry(false, [10], null, false, false);
 parseTable[10][10] = createLL1TabEntry(false, null, null, false, true);
-parseTable[10][11] = createLL1TabEntry(false, [10], null, false, false);
-parseTable[10][24] = createLL1TabEntry(false, [10], null, false, false);
+parseTable[10][23] = createLL1TabEntry(false, [10], null, false, false);
 parseTable[11] = new Array();
 parseTable[11][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[11][2] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][3] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][4] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][5] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][6] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][7] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][8] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][9] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][10] = createLL1TabEntry(false, [11], null, false, false);
-parseTable[11][11] = createLL1TabEntry(false, null, null, false, true);
-parseTable[11][24] = createLL1TabEntry(false, [11], null, false, false);
+parseTable[11][2] = createLL1TabEntry(false, null, [14, 5, 15], false, false);
+parseTable[11][3] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][4] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][5] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][6] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][7] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][8] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][9] = createLL1TabEntry(false, null, [14, 5, 15], false, false);
+parseTable[11][10] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[11][23] = createLL1TabEntry(false, [9, 2], null, false, false);
 parseTable[12] = new Array();
 parseTable[12][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[12][2] = createLL1TabEntry(false, null, [15, 6, 16], false, false);
-parseTable[12][3] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][4] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][5] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][6] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][7] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][8] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][9] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][10] = createLL1TabEntry(false, null, [15, 6, 16], false, false);
-parseTable[12][11] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[12][24] = createLL1TabEntry(false, [10, 2], null, false, false);
+parseTable[12][2] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][3] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][4] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][5] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][6] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][7] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][8] = createLL1TabEntry(false, null, [19, 11, 12], false, false);
+parseTable[12][9] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][10] = createLL1TabEntry(false, [8, 23], null, false, false);
+parseTable[12][23] = createLL1TabEntry(false, null, [], false, false);
 parseTable[13] = new Array();
 parseTable[13][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[13][2] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][3] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][4] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][5] = createLL1TabEntry(false, null, [20, 12, 13], false, false);
-parseTable[13][6] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][7] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][8] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][9] = createLL1TabEntry(false, null, [20, 12, 13], false, false);
-parseTable[13][10] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][11] = createLL1TabEntry(false, [5, 9, 24], null, false, false);
-parseTable[13][24] = createLL1TabEntry(false, null, [], false, false);
+parseTable[13][2] = createLL1TabEntry(false, null, [11, 12], false, false);
+parseTable[13][3] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][4] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][5] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][6] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][7] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][8] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][9] = createLL1TabEntry(false, null, [11, 12], false, false);
+parseTable[13][10] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[13][23] = createLL1TabEntry(false, [9, 2], null, false, false);
 parseTable[14] = new Array();
 parseTable[14][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[14][2] = createLL1TabEntry(false, null, [12, 13], false, false);
-parseTable[14][3] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][4] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][5] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][6] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][7] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][8] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][9] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][10] = createLL1TabEntry(false, null, [12, 13], false, false);
-parseTable[14][11] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[14][24] = createLL1TabEntry(false, [10, 2], null, false, false);
+parseTable[14][2] = createLL1TabEntry(false, null, [2, 20, 3], false, false);
+parseTable[14][3] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][4] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][5] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][6] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][7] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][8] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][9] = createLL1TabEntry(false, null, [9], false, false);
+parseTable[14][10] = createLL1TabEntry(false, [9, 2], null, false, false);
+parseTable[14][23] = createLL1TabEntry(false, [9, 2], null, false, false);
 parseTable[15] = new Array();
 parseTable[15][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[15][2] = createLL1TabEntry(false, null, [2, 21, 3], false, false);
-parseTable[15][3] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][4] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][5] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][6] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][7] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][8] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][9] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][10] = createLL1TabEntry(false, null, [10], false, false);
-parseTable[15][11] = createLL1TabEntry(false, [10, 2], null, false, false);
-parseTable[15][24] = createLL1TabEntry(false, [10, 2], null, false, false);
+parseTable[15][2] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][3] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][4] = createLL1TabEntry(false, null, [16, 22], false, false);
+parseTable[15][5] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][6] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][7] = createLL1TabEntry(false, null, [16, 22], false, false);
+parseTable[15][8] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][9] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
+parseTable[15][10] = createLL1TabEntry(false, null, [16, 22], false, false);
+parseTable[15][23] = createLL1TabEntry(false, [7, 4, 10], null, false, false);
 parseTable[16] = new Array();
 parseTable[16][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[16][2] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][3] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][4] = createLL1TabEntry(false, null, [17, 23], false, false);
-parseTable[16][5] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][6] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][7] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][8] = createLL1TabEntry(false, null, [17, 23], false, false);
-parseTable[16][9] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][10] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
-parseTable[16][11] = createLL1TabEntry(false, null, [17, 23], false, false);
-parseTable[16][24] = createLL1TabEntry(false, [8, 4, 11], null, false, false);
+parseTable[16][2] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][3] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][4] = createLL1TabEntry(false, null, [17, 18], false, false);
+parseTable[16][5] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][6] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][7] = createLL1TabEntry(false, null, [7], false, false);
+parseTable[16][8] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][9] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
+parseTable[16][10] = createLL1TabEntry(false, null, [17, 18], false, false);
+parseTable[16][23] = createLL1TabEntry(false, [4, 10, 7], null, false, false);
 parseTable[17] = new Array();
 parseTable[17][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[17][2] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][3] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][4] = createLL1TabEntry(false, null, [18, 19], false, false);
-parseTable[17][5] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][6] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][7] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][8] = createLL1TabEntry(false, null, [8], false, false);
-parseTable[17][9] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][10] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
-parseTable[17][11] = createLL1TabEntry(false, null, [18, 19], false, false);
-parseTable[17][24] = createLL1TabEntry(false, [4, 11, 8], null, false, false);
+parseTable[17][2] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][3] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][4] = createLL1TabEntry(false, null, [4, 20, 4], false, false);
+parseTable[17][5] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][6] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][7] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][8] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][9] = createLL1TabEntry(false, [4, 10], null, false, false);
+parseTable[17][10] = createLL1TabEntry(false, null, [10], false, false);
+parseTable[17][23] = createLL1TabEntry(false, [4, 10], null, false, false);
 parseTable[18] = new Array();
 parseTable[18][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[18][2] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][3] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][4] = createLL1TabEntry(false, null, [4, 21, 4], false, false);
-parseTable[18][5] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][6] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][7] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][8] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][9] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][10] = createLL1TabEntry(false, [4, 11], null, false, false);
-parseTable[18][11] = createLL1TabEntry(false, null, [11], false, false);
-parseTable[18][24] = createLL1TabEntry(false, [4, 11], null, false, false);
+parseTable[18][2] = createLL1TabEntry(false, null, [14], false, false);
+parseTable[18][3] = createLL1TabEntry(false, [9, 2, 23, 8, 6], null, false, false);
+parseTable[18][4] = createLL1TabEntry(false, [9, 2, 23, 8, 6], null, false, false);
+parseTable[18][5] = createLL1TabEntry(false, [9, 2, 23, 8, 6], null, false, false);
+parseTable[18][6] = createLL1TabEntry(false, null, [], false, false);
+parseTable[18][7] = createLL1TabEntry(false, [9, 2, 23, 8, 6], null, false, false);
+parseTable[18][8] = createLL1TabEntry(false, null, [], false, false);
+parseTable[18][9] = createLL1TabEntry(false, null, [14], false, false);
+parseTable[18][10] = createLL1TabEntry(false, [9, 2, 23, 8, 6], null, false, false);
+parseTable[18][23] = createLL1TabEntry(false, null, [], false, false);
 parseTable[19] = new Array();
 parseTable[19][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[19][2] = createLL1TabEntry(false, null, [15], false, false);
-parseTable[19][3] = createLL1TabEntry(false, [10, 2, 24, 5, 9, 7], null, false, false);
-parseTable[19][4] = createLL1TabEntry(false, [10, 2, 24, 5, 9, 7], null, false, false);
-parseTable[19][5] = createLL1TabEntry(false, null, [], false, false);
-parseTable[19][6] = createLL1TabEntry(false, [10, 2, 24, 5, 9, 7], null, false, false);
-parseTable[19][7] = createLL1TabEntry(false, null, [], false, false);
-parseTable[19][8] = createLL1TabEntry(false, [10, 2, 24, 5, 9, 7], null, false, false);
-parseTable[19][9] = createLL1TabEntry(false, null, [], false, false);
-parseTable[19][10] = createLL1TabEntry(false, null, [15], false, false);
-parseTable[19][11] = createLL1TabEntry(false, [10, 2, 24, 5, 9, 7], null, false, false);
-parseTable[19][24] = createLL1TabEntry(false, null, [], false, false);
+parseTable[19][2] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][3] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][4] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][5] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][6] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][7] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][8] = createLL1TabEntry(false, null, [8], false, false);
+parseTable[19][9] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][10] = createLL1TabEntry(false, [8], null, false, false);
+parseTable[19][23] = createLL1TabEntry(false, [8], null, false, false);
 parseTable[20] = new Array();
 parseTable[20][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[20][2] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][3] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][4] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][5] = createLL1TabEntry(false, null, [5], false, false);
-parseTable[20][6] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][7] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][8] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][9] = createLL1TabEntry(false, null, [9], false, false);
-parseTable[20][10] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][11] = createLL1TabEntry(false, [5, 9], null, false, false);
-parseTable[20][24] = createLL1TabEntry(false, [5, 9], null, false, false);
+parseTable[20][2] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][3] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][4] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][5] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][6] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][7] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][8] = createLL1TabEntry(false, [9, 10], null, false, false);
+parseTable[20][9] = createLL1TabEntry(false, null, [9, 21], false, false);
+parseTable[20][10] = createLL1TabEntry(false, null, [10, 21], false, false);
+parseTable[20][23] = createLL1TabEntry(false, [9, 10], null, false, false);
 parseTable[21] = new Array();
 parseTable[21][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[21][2] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][3] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][4] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][5] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][6] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][7] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][8] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][9] = createLL1TabEntry(false, [10, 11], null, false, false);
-parseTable[21][10] = createLL1TabEntry(false, null, [10, 22], false, false);
-parseTable[21][11] = createLL1TabEntry(false, null, [11, 22], false, false);
-parseTable[21][24] = createLL1TabEntry(false, [10, 11], null, false, false);
+parseTable[21][2] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
+parseTable[21][3] = createLL1TabEntry(false, null, [], false, false);
+parseTable[21][4] = createLL1TabEntry(false, null, [], false, false);
+parseTable[21][5] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
+parseTable[21][6] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
+parseTable[21][7] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
+parseTable[21][8] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
+parseTable[21][9] = createLL1TabEntry(false, null, [9, 21], false, false);
+parseTable[21][10] = createLL1TabEntry(false, null, [10, 21], false, false);
+parseTable[21][23] = createLL1TabEntry(false, [9, 10, 4, 3], null, false, false);
 parseTable[22] = new Array();
 parseTable[22][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[22][2] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][3] = createLL1TabEntry(false, null, [], false, false);
-parseTable[22][4] = createLL1TabEntry(false, null, [], false, false);
-parseTable[22][5] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][6] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][7] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][8] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][9] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
-parseTable[22][10] = createLL1TabEntry(false, null, [10, 22], false, false);
-parseTable[22][11] = createLL1TabEntry(false, null, [11, 22], false, false);
-parseTable[22][24] = createLL1TabEntry(false, [10, 11, 4, 3], null, false, false);
+parseTable[22][2] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][3] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][4] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][5] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][6] = createLL1TabEntry(false, null, [6, 16, 22], false, false);
+parseTable[22][7] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][8] = createLL1TabEntry(false, null, [], false, false);
+parseTable[22][9] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][10] = createLL1TabEntry(false, [6, 23, 8], null, false, false);
+parseTable[22][23] = createLL1TabEntry(false, null, [], false, false);
 parseTable[23] = new Array();
 parseTable[23][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[23][2] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][3] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][4] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][5] = createLL1TabEntry(false, null, [], false, false);
-parseTable[23][6] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][7] = createLL1TabEntry(false, null, [7, 17, 23], false, false);
-parseTable[23][8] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][9] = createLL1TabEntry(false, null, [], false, false);
-parseTable[23][10] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][11] = createLL1TabEntry(false, [7, 24, 5, 9], null, false, false);
-parseTable[23][24] = createLL1TabEntry(false, null, [], false, false);
-parseTable[24] = new Array();
-parseTable[24][1] = createLL1TabEntry(true, null, null, false, false);
-parseTable[24][2] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][3] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][4] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][5] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][6] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][7] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][8] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][9] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][10] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][11] = createLL1TabEntry(false, [24], null, false, false);
-parseTable[24][24] = createLL1TabEntry(false, null, null, true, false);
+parseTable[23][2] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][3] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][4] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][5] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][6] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][7] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][8] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][9] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][10] = createLL1TabEntry(false, [23], null, false, false);
+parseTable[23][23] = createLL1TabEntry(false, null, null, true, false);
 
   // array containing labels of symbols
   /* Symbol labels */
@@ -1373,7 +1319,6 @@ var labels = new Array(
 	"LESS_THAN" /* Terminal symbol */,
 	"BIGGER_THAN" /* Terminal symbol */,
 	"QUOT" /* Terminal symbol */,
-	"COMMA" /* Terminal symbol */,
 	"GO" /* Terminal symbol */,
 	"PIPE" /* Terminal symbol */,
 	"EPSILON" /* Terminal symbol */,
@@ -1404,7 +1349,6 @@ var regexes = new Array(
 	unescape("%3C") /* Terminal symbol */,
 	unescape("%3E") /* Terminal symbol */,
 	unescape("%22") /* Terminal symbol */,
-	unescape("%2C") /* Terminal symbol */,
 	unescape("-%3E") /* Terminal symbol */,
 	unescape("%7C") /* Terminal symbol */,
 	unescape("%5Ce") /* Terminal symbol */,
@@ -1509,7 +1453,7 @@ var regexes = new Array(
       stack = new Array();
       exp = new Array();
       // put the EOF symbol on the stack  
-      stack.push( 24 );
+      stack.push( 23 );
       // put the starting nonterminal on the stack (it is always the first one in labels array)
       stack.push(0);
       
@@ -1572,7 +1516,7 @@ var regexes = new Array(
           else
           {              
              // error has occured before end of reading the string - it's dead now
-            if(la != 24 )
+            if(la != 23 )
             {
               // 
               // errorType = 1 => error has occured before end of reading the string

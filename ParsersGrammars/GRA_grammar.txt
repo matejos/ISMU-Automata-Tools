@@ -7,7 +7,6 @@
    '<' LESS_THAN
    '>' BIGGER_THAN
    '"' QUOT
-   ',' COMMA
    '->' GO
    '\|' PIPE   
    '\\e' EPSILON
@@ -26,7 +25,7 @@ RuleRhsItem: Terminal End | EPSILON;
 End:  Nonterminal | ;
 Rule2:  Separator Rule Rule2 | ;
 
-Separator: COMMA | NEW_LINE;
+Separator: NEW_LINE;
 
 Terminal: QUOT String QUOT | SMALL_LETTER_OR_NUM;
 Nonterminal: BIG_LETTER | LESS_THAN String BIGGER_THAN;
