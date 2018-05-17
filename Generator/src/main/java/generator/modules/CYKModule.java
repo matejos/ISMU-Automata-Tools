@@ -14,7 +14,7 @@ import generator.modules.cyk.CYKHelper;
 import generator.modules.cyk.Grammar;
 import generator.modules.cyk.GrammarManager;
 import generator.modules.cyk.GrammarManagerImpl;
-import javafx.util.Pair;
+import generator.common.Pair;
 
 import java.awt.Color;
 import java.awt.Dimension;

@@ -12,7 +12,7 @@ import generator.modules.reglang.T0Generator;
 import generator.modules.reglang.T1Generator;
 import generator.modules.reglang.T2Generator;
 import generator.modules.reglang.T3Generator;
-import javafx.util.Pair;
+import generator.common.Pair;
 
 import java.awt.Component;
 import java.awt.Dimension;

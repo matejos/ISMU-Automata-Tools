@@ -15,7 +15,7 @@ import generator.modules.cfgexamplegenerator.generator.CriteriaType;
 import generator.modules.cfgexamplegenerator.generator.InputGrammarForm;
 import generator.modules.cfgexamplegenerator.generator.OutputGrammarForm;
 import generator.modules.cfgexamplegenerator.generator.SimpleCriteria;
-import javafx.util.Pair;
+import generator.common.Pair;
 
 import java.awt.Component;
 import java.awt.Cursor;

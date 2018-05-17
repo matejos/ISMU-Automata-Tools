@@ -9,7 +9,7 @@ import generator.core.FormalLanguagesExampleGenerator;
 import generator.modules.cfgexamplegenerator.ColorController;
 import generator.modules.cfgexamplegenerator.ColorPriority;
 import generator.modules.cfgexamplegenerator.cfgtransformationalgorithm.SetList;
-import javafx.util.Pair;
+import generator.common.Pair;
 
 import java.awt.Color;
 import java.awt.Container;
