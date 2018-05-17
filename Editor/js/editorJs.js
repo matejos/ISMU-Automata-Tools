@@ -467,7 +467,8 @@ function initCYKTable(wp, word)
         td.appendChild(p);
     }
 
-    // Filling the table with values from answer, if it exists (basically for when in inspection mode)
+    var isInInspectionMode = jeProhlizeciStranka();
+    // Filling the table with values from answer, if it exists (again-answer mode or inspection mode)
     if (wp.textArea.value != "")
 	{
 		var answer = wp.textArea.value;
@@ -479,25 +480,29 @@ function initCYKTable(wp, word)
         	var val = token.substr(token.indexOf('=') + 1);
         	if (typeof wp[cellName] != "undefined") {
                 wp[cellName].value = val;
-                wp[cellName].disabled = true;
-                wp[cellName].className += " mydisabled";
+                if (isInInspectionMode) {
+                    wp[cellName].disabled = true;
+                    wp[cellName].className += " mydisabled";
+                }
             }
         }
 
-		//Highlighting incorrect cells when the feedback is on the page
-        jQuery_new(document).ready(function() {
-            var feedbackElement = jQuery_new("font:contains('feedback for " + word + "')");
-            var feedback = feedbackElement[0].textContent;
-            feedback = feedback.substr(feedback.indexOf(':') + 1);
-            var tokens = feedback.split(" ");
-            for (i = 0; i < tokens.length; i++) {
-                var cellName = tokens[i];
-                if (typeof wp[cellName] != "undefined") {
-                    wp[cellName].className += " alert-danger";
+		//Highlighting incorrect cells when the feedback is on the page (only inspection mode)
+        if (isInInspectionMode) {
+            jQuery_new(document).ready(function () {
+                var feedbackElement = jQuery_new("font:contains('feedback for " + word + "')");
+                var feedback = feedbackElement[0].textContent;
+                feedback = feedback.substr(feedback.indexOf(':') + 1);
+                var tokens = feedback.split(" ");
+                for (i = 0; i < tokens.length; i++) {
+                    var cellName = tokens[i];
+                    if (typeof wp[cellName] != "undefined") {
+                        wp[cellName].className += " alert-danger";
+                    }
                 }
-            }
-            jQuery_new(feedbackElement).hide();
-        });
+                jQuery_new(feedbackElement).hide();
+            });
+        }
 	}
 }
 
