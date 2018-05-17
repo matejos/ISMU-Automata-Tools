@@ -91,6 +91,7 @@ public class Converter {
 
             if (invalidArg) {
                 System.out.format("Argument %s invalid! Converting aborted.\n", args[i]);
+                printHelp();
                 return;
             }
         }
