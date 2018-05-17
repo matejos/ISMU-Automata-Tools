@@ -176,7 +176,7 @@ public class Evaluate extends HttpServlet {
         PrintWriter out= response.getWriter();;
       try { 
         if (result[0].equals("true")) {out.println(result[0]);}
-        else {out.println(result[0]+"||"+result[1]+"||"+result[2]);}
+        else {out.println(result[0]+"||"+result[1]/*+"||"+result[2]*/);}
       } finally {out.close();}
     } else {
       request.setAttribute("windowData", result);
